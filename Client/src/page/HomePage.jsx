@@ -6,6 +6,9 @@ import Categories from '../components/categories'
 import FoodGrid from '../components/FoodGrid'
 import MainCourse from '../components/MainCourse'
 import FastFoods from '../components/FastFoods'
+import Starters from '../components/Starters'
+import Breads from '../components/Breads'
+import Rice from '../components/Rice'
 
 const HomePage = () => {
   return (
@@ -15,8 +18,11 @@ const HomePage = () => {
     <Banner />
     <Categories />
     <FoodGrid />
-    <MainCourse />
     <FastFoods />
+    <Starters />
+    <MainCourse />
+    <Breads />
+    <Rice />
     </>
   )
 }
