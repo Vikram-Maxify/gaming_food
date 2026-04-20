@@ -5,7 +5,7 @@ const uploadToImageBB = require("../utils/uploadToImageBB");
 // ✅ CREATE (already yours - kept here for completeness)
 const createCategory = async (req, res) => {
   try {
-    const { name,type } = req.body;
+    const { name } = req.body;
 
     if (!name || !req.file) {
       return res.status(400).json({ message: "Name and image required" });
