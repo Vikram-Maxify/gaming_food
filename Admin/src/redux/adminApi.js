@@ -3,8 +3,8 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:5002/api/admin",
-  withCredentials: true,
+    baseURL: "http://localhost:5002/api/admin",
+    withCredentials: true,
 });
 
 
@@ -24,25 +24,52 @@ export const logoutAdminAPI = () => API.post("/logout");
 
 // ➕ CREATE PRODUCT
 export const createProductAPI = (data) =>
-  API.post("/product", data, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
+    API.post("/product/create", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+    });
 
-// 📦 GET ALL PRODUCTS
+// 📦 GET ALL
 export const getProductsAPI = () => API.get("/product");
 
-// 🔍 GET SINGLE PRODUCT
-export const getProductByIdAPI = (id) => API.get(`/product/${id}`);
+// 🔍 GET SINGLE
+export const getProductByIdAPI = (id) =>
+    API.get(`/product/${id}`);
 
-// ✏️ UPDATE PRODUCT
+// ✏️ UPDATE
 export const updateProductAPI = (id, data) =>
-  API.put(`/product/${id}`, data, {
+    API.put(`/product/update/${id}`, data, {
+        headers: { "Content-Type": "multipart/form-data" },
+    });
+
+// ❌ DELETE
+export const deleteProductAPI = (id) =>
+    API.delete(`/product/delete/${id}`);
+
+
+// ================= CATEGORY =================
+
+// ➕ CREATE
+export const createCategoryAPI = (data) =>
+  API.post("/category/create", data, {
     headers: { "Content-Type": "multipart/form-data" },
   });
 
-// ❌ DELETE PRODUCT
-export const deleteProductAPI = (id) =>
-  API.delete(`/product/${id}`);
+// 📦 GET ALL
+export const getCategoriesAPI = () => API.get("/category");
+
+// 🔍 GET SINGLE
+export const getCategoryByIdAPI = (id) =>
+  API.get(`/category/${id}`);
+
+// ✏️ UPDATE
+export const updateCategoryAPI = (id, data) =>
+  API.put(`/category/update/${id}`, data, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+// ❌ DELETE
+export const deleteCategoryAPI = (id) =>
+  API.delete(`/category/delete/${id}`);
 
 
 export default API;

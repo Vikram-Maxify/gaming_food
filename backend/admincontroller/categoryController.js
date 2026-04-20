@@ -7,11 +7,15 @@ const createCategory = async (req, res) => {
   try {
     const { name } = req.body;
 
+
+
     if (!name || !req.file) {
       return res.status(400).json({ message: "Name and image required" });
     }
 
     const imageUrl = await uploadToImageBB(req.file);
+
+    console.log(req.body ,req.file)
 
     const category = await Category.create({
       name,

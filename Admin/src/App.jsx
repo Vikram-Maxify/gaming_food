@@ -10,6 +10,9 @@ import ShefDashboard from './pages/ShefDashboard';
 import CoinManage from './pages/CoinManage';
 import AdminLogin from './pages/AdminLogin';
 import ProtectedRoute from './redux/ProtectedRoute';
+import AddProduct from './pages/AddProduct';
+import AdminCategory from './pages/AdminCategory';
+
 
 function App() {
 
@@ -31,7 +34,8 @@ function App() {
           <Route path="settings" element={<Settings />} />
           <Route path="schef_Dash" element={<ShefDashboard />} />
           <Route path="coins_mng" element={<CoinManage />} />
-          {/* <Route path="categories" element={<ategories />} /> */}
+          <Route path="add_item" element={<AddProduct />} />
+          <Route path="categories" element={<AdminCategory />} />
         </Route>
           <Route path="/admin/login" element={<AdminLogin />} />
       </Routes>
