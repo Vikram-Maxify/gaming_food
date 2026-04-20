@@ -32,7 +32,7 @@ const Navbar = () => {
                         <Search size={18} className="text-text-primary" />
                     </button>
 
-                    <Link to="/AddTOCart">
+                    <Link to="/cart">
                         <button className="bg-card p-2 rounded-full shadow-sm relative hover:scale-105 transition">
                             <ShoppingCart size={18} className="text-text-primary" />
 
