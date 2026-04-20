@@ -8,21 +8,21 @@ const Navbar = () => {
 
             {/* LEFT (Desktop only) */}
             <div className="hidden md:flex items-center gap-6">
-                <h1 className="text-lg font-semibold">Foodie</h1>
+                <Link to="/"><h1 className="text-lg font-semibold">Foodie</h1></Link>
 
-                <nav className="flex gap-4 text-sm text-text-secondary">
-                    <Link to="/">Home</Link>
-                    <Link to="/menu">Menu</Link>
-                    <Link to="/offers">Offers</Link>
-                    <Link to="/contact">Contact</Link>
+                <nav className="flex gap-4 text-sm text-text-secondary ">
+                    <Link to="/" className="shadow-sm hover:bg-gray-300 rounded-sm px-1">Home</Link>
+                    <Link to="/menu" className="shadow-sm hover:bg-gray-300 rounded-sm px-1">Menu</Link>
+                    <Link to="/offers" className="shadow-sm hover:bg-gray-300 rounded-sm px-1">Offers</Link>
+                    <Link to="/contact" className="shadow-sm hover:bg-gray-300 rounded-sm px-1">Contact</Link>
                 </nav>
             </div>
 
             {/* RIGHT */}
             <div className="flex items-center gap-3 ml-auto">
-                <div className="flex gap-4 text-sm text-text-secondary">
-                    <Link to="/login">Login</Link>
-                    <Link to ="/register">Register</Link>
+                <div className="flex gap-4 text-sm text-text-secondary ">
+                    <Link to="/login" className="shadow-sm hover:bg-gray-300 rounded-sm px-1">Login</Link>
+                    <Link to="/register" className="shadow-sm hover:bg-gray-300 rounded-sm px-1">Register</Link>
                 </div>
 
                 {/* Desktop Icons */}
@@ -32,13 +32,15 @@ const Navbar = () => {
                         <Search size={18} className="text-text-primary" />
                     </button>
 
-                    <button className="bg-card p-2 rounded-full shadow-sm relative hover:scale-105 transition">
-                        <ShoppingCart size={18} className="text-text-primary" />
+                    <Link to="/AddTOCart">
+                        <button className="bg-card p-2 rounded-full shadow-sm relative hover:scale-105 transition">
+                            <ShoppingCart size={18} className="text-text-primary" />
 
-                        <span className="absolute -top-1 -right-1 bg-primary text-xs text-white rounded-full px-1">
-                            2
-                        </span>
-                    </button>
+                            <span className="absolute -top-1 -right-1 bg-primary text-xs text-white rounded-full px-1">
+                                2
+                            </span>
+                        </button>
+                    </Link>
 
                 </div>
 

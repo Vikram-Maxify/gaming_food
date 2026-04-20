@@ -1,5 +1,6 @@
 import React from "react";
 import { ArrowRight } from "lucide-react";
+import Pizza from "../assets/Images/pizzaBottomNavbar.jpg"
 
 const Banner = () => {
   return (
@@ -17,19 +18,16 @@ const Banner = () => {
 
         <div className="absolute w-20 h-20 bg-white/30 blur-2xl rounded-full -z-10"></div>
 
-        <button className="mt-2 flex items-center gap-1 bg-black text-white px-4 py-1.5 rounded-full text-xs hover:scale-105 transition">
+        <button className="mt-3 flex items-center gap-1 bg-black text-white px-4 py-1.5 rounded-full text-xs hover:scale-105 transition">
           Order Now
           <ArrowRight size={14} />
         </button>
       </div>
 
       {/* RIGHT IMAGE */}
-      <div className="relative">
-        <img
-          src="https://source.unsplash.com/200x200/?burger"
-          alt="food"
-          className="w-24 h-24 object-contain"
-        />
+      <div className="relative bg-transparent">
+       <img src={Pizza} alt="food"
+          className="w-44 h-24 object-cover rounded-md"></img>
       </div>
 
     </div>

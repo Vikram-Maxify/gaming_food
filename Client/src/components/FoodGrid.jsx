@@ -12,7 +12,7 @@ const foods = [
     name: "Pepperoni Pizza",
     price: "₹299",
     image:
-      "https://images.unsplash.com/photo-1601924582975-7d2b8b7b1b0f?w=400&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&auto=format&fit=crop&q=60",
   },
   {
     name: "Cold Coffee",
@@ -25,6 +25,12 @@ const foods = [
     price: "₹79",
     image:
       "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=400&auto=format&fit=crop&q=60",
+  },
+  {
+    name: "Sandwich",
+    price: "₹79",
+    image:
+      "https://images.unsplash.com/photo-1550547660-d9450f859349?w=400&auto=format&fit=crop&q=60",
   },
 ];
 

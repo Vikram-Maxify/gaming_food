@@ -9,7 +9,7 @@ const categories = [
     {
         name: "Pizza",
         image:
-            "https://images.unsplash.com/photo-1548365328-5b849a4fa0d2?w=200&auto=format&fit=crop&q=60",
+            "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&auto=format&fit=crop&q=60",
     },
     {
         name: "Drinks",

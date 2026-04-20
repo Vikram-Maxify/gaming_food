@@ -8,6 +8,7 @@ import HomePage from './page/HomePage'
 import BottomNav from './components/BottomNav'
 import Login from './page/Login'
 import Register from './page/Register'
+import AddToCart from './page/AddToCart'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -31,6 +32,12 @@ function App() {
         path='/register'
         element={
           <Register />
+        }
+      />
+      <Route
+        path='/addToCart'
+        element={
+          <AddToCart />
         }
       />
     </Routes>
