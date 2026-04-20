@@ -20,6 +20,10 @@ const Navbar = () => {
 
             {/* RIGHT */}
             <div className="flex items-center gap-3 ml-auto">
+                <div className="flex gap-4 text-sm text-text-secondary">
+                    <Link to="/login">Login</Link>
+                    <Link to ="/register">Register</Link>
+                </div>
 
                 {/* Desktop Icons */}
                 <div className="hidden md:flex items-center gap-3">
