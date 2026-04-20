@@ -12,6 +12,16 @@ const productSchema = new mongoose.Schema(
       type: String, // ImageBB URL
       required: true,
     },
+    type: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    price: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
 
     category: {
       type: mongoose.Schema.Types.ObjectId,

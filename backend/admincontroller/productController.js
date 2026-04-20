@@ -6,7 +6,7 @@ const uploadToImageBB = require("../utils/uploadToImageBB");
 // ✅ CREATE (your existing)
 const createProduct = async (req, res) => {
   try {
-    const { name, category, creditPoints } = req.body;
+    const { name, category, type, price, creditPoints } = req.body;
 
     if (!name || !category || !creditPoints || !req.file) {
       return res.status(400).json({

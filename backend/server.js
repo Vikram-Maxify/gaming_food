@@ -8,6 +8,8 @@ const { Server } = require("socket.io");
 
 const connectdb = require("./config/database");
 const gameSocket = require("./sockets/gameSocket");
+const ludoSocket = require("./sockets/ludoSocket");
+const carSocket = require("./sockets/carSocket");
 
 dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
@@ -50,8 +52,11 @@ const io = new Server(server, {
   },
 });
 
-// ✅ Connect socket logic
 gameSocket(io);
+ludoSocket(io);
+carSocket(io);
+
+
 
 // ✅ DB + Server start
 const port = process.env.PORT || 3000;

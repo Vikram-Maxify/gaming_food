@@ -9,8 +9,9 @@ import BottomNav from './components/BottomNav'
 import Login from './page/Login'
 import Register from './page/Register'
 import Profile from './page/Profile'
-import AddToCart from './page/AddToCart'
-import MenuPage from './page/MenuPage'
+import TicTacToe from './page/ticTacToe'
+import Ludo from './page/Ludo'
+import CarRace from './page/CarRace'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -37,24 +38,19 @@ function App() {
           }
         />
         <Route
+          path='/tictactoe'
+          element={
+            <TicTacToe />
+          }
+        />
+        <Route path="/ludo" element={<Ludo />} />
+        <Route path='/car' element={<CarRace />} />
+        <Route
           path='/profile'
           element={
             <Profile />
           }
         />
-        <Route
-          path='/cart'
-          element={
-            <AddToCart />
-          }
-        />
-         <Route
-          path='/menu'
-          element={
-            <MenuPage />
-          }
-        />
-
       </Routes>
 
       <BottomNav />

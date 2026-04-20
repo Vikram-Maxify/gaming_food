@@ -1,14 +1,9 @@
 const User = require("../models/authModels");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { recompileSchema } = require("../models/gameModel");
+const generateToken = require("../utils/generatetoken");
 
-
-// 🔐 Generate Token
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: "7d",
-  });
-};
 
 
 // ✅ ADMIN REGISTER (optional)
@@ -68,7 +63,7 @@ const loginAdmin = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const token = generateToken(admin._id);
+    const token = generateToken(admin._id ,admin.role);
 
     // 🍪 send cookie
     res.cookie("token", token, {
@@ -98,13 +93,13 @@ const loginAdmin = async (req, res) => {
 const getAdminProfile = async (req, res) => {
   try {
     const admin = await User.findById(req.user._id).select("-password");
+    console.log(admin);
 
     res.status(200).json(admin);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 
 // ✅ LOGOUT
