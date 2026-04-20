@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
+const User = require("../models/authModels");
 
-const protect = (req, res, next) => {
+const protect = async (req, res, next) => {
   const token = req.cookies.token;
 
   if (!token) {
@@ -8,10 +9,16 @@ const protect = (req, res, next) => {
   }
 
   try {
-    // ✅ VERIFY token (not decode)
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    req.user = decoded; // contains user id or payload
+    // 🔥 DB se user lao
+    const user = await User.findById(decoded.id).select("-password");
+
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
+
+    req.user = user; // full user object
     next();
   } catch (error) {
     return res.status(401).json({ message: "Unauthorized - Invalid token" });
