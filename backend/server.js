@@ -3,7 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const cookies = require("cookie-parser");
 const dns = require("dns");
-const connectdb = require("./congif/database");
+const connectdb = require("./config/database");
 dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
 
