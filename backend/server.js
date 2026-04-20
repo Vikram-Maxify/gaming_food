@@ -18,6 +18,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookies());
 
 app.use("/api/auth", require("./route/authRoute"));
+app.use("/api/category", require("./route/categoryRoutes"));
+app.use("/api/product", require("./route/productRoutes"));
+app.use("/api/order", require("./route/orderRoutes"));
 
 
 // admin
@@ -25,6 +28,7 @@ app.use("/api/auth", require("./route/authRoute"));
 app.use("/api/admin", require("./adminroute/adminRoutes"));
 app.use("/api/admin/category", require("./adminroute/categoryRoutes"));
 app.use("/api/admin/product", require("./adminroute/productRoutes"));
+app.use("/api/admin/order", require("./adminroute/orderRoutes"));
 
 
 
