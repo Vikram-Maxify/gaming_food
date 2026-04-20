@@ -26,7 +26,7 @@ const Login = () => {
     };
 
     useEffect(() => {
-        if (token) navigate("/dashboard");
+        if (token) navigate("/");
         return () => dispatch(resetState());
     }, [token]);
 
