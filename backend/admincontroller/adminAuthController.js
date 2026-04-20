@@ -92,15 +92,12 @@ const loginAdmin = async (req, res) => {
 // ✅ GET ADMIN PROFILE
 const getAdminProfile = async (req, res) => {
   try {
-    const admin = await User.findById(req.user._id).select("-password");
-    console.log(admin);
-
+    const admin = await User.findById(req.user.id).select("-password");
     res.status(200).json(admin);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 // ✅ LOGOUT
 const logoutAdmin = async (req, res) => {
