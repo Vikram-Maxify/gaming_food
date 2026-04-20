@@ -34,12 +34,12 @@ const carSocket = (io) => {
         }
 
         // ❌ balance check
-        if (user.credits < ENTRY_FEE) {
+        if (user.credit < ENTRY_FEE) {
           return socket.emit("errorMessage", "Insufficient balance");
         }
 
         // 💰 deduct
-        user.credits -= ENTRY_FEE;
+        user.credit -= ENTRY_FEE;
         await user.save();
 
         socket.join(tableId);
@@ -74,6 +74,12 @@ const carSocket = (io) => {
               await updatedGame.save();
 
               io.to(tableId).emit("carUpdate", updatedGame);
+
+              // ✅ 👉 ADD THIS (IMPORTANT)
+              setTimeout(async () => {
+                const freshGame = await CarGame.findById(updatedGame._id);
+                makeComputerMove(freshGame, io);
+              }, 1000);
             }
           }, 10000);
         }
@@ -94,6 +100,35 @@ const carSocket = (io) => {
       }
     });
 
+    const makeComputerMove = async (game, io) => {
+      if (game.status !== "playing") return;
+
+      const computer = game.players.find(p => !p.user);
+
+      if (!computer) return;
+
+      // random speed
+      computer.progress += Math.floor(Math.random() * 10) + 5;
+
+      // 🏁 win check
+      if (computer.progress >= FINISH) {
+        game.status = "finished";
+        game.winner = null; // 🤖 computer winner
+      }
+
+      await game.save();
+
+      io.to(game.table.toString()).emit("carUpdate", game);
+
+      // 🔁 keep moving until finish
+      if (game.status === "playing") {
+        setTimeout(async () => {
+          const freshGame = await CarGame.findById(game._id);
+          makeComputerMove(freshGame, io);
+        }, 1000);
+      }
+    };
+
     // 🚀 ACCELERATE
     socket.on("accelerate", async ({ gameId, userId }) => {
       const game = await CarGame.findById(gameId);
@@ -113,7 +148,6 @@ const carSocket = (io) => {
         game.status = "finished";
         game.winner = player.user;
 
-        // 💰 reward
         if (player.user) {
           const user = await User.findById(player.user);
           user.credits += WIN_REWARD;
@@ -124,6 +158,18 @@ const carSocket = (io) => {
       await game.save();
 
       io.to(game.table.toString()).emit("carUpdate", game);
+
+      // 🤖 👉 ADD THIS HERE (IMPORTANT)
+      if (game.status === "playing") {
+        const isComputer = game.players.some(p => !p.user);
+
+        if (isComputer) {
+          setTimeout(async () => {
+            const freshGame = await CarGame.findById(game._id);
+            makeComputerMove(freshGame, io);
+          }, 1000);
+        }
+      }
     });
   });
 };

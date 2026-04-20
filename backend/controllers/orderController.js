@@ -109,6 +109,8 @@ const createOrder = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+
 const getMyOrders = async (req, res) => {
   const orders = await Order.find({ user: req.user._id })
     .populate("items.product", "name image")

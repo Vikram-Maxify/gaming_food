@@ -62,16 +62,31 @@ const CarRace = () => {
       )}
 
       {game && (
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-2xl">
 
           <p>Status: {game.status}</p>
 
           {game.players.map((p, i) => (
-            <div key={i} className="bg-gray-800 p-2 my-2">
-              <div
-                className="bg-green-500 h-6 transition-all"
-                style={{ width: `${p.progress}%` }}
-              ></div>
+            <div key={i} className="bg-gray-800 my-4 p-3 rounded">
+
+              {/* Track */}
+              <div className="relative w-full h-16 bg-gray-700 rounded overflow-hidden">
+
+                {/* Road Line */}
+                <div className="absolute top-1/2 left-0 w-full h-1 bg-white opacity-30"></div>
+
+                {/* Car Image */}
+                <img
+                  src="https://cdn-icons-png.flaticon.com/512/744/744465.png"
+                  alt="car"
+                  className="absolute top-2 h-12 transition-all duration-300 ease-linear"
+                  style={{
+                    left: `${p.progress}%`,
+                    transform: "scaleX(-1)" // 👈 yeh add karo
+                  }}
+                />
+              </div>
+
             </div>
           ))}
 
