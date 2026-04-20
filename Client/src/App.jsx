@@ -6,6 +6,8 @@ import './App.css'
 import { Route, Routes } from 'react-router-dom'
 import HomePage from './page/HomePage'
 import BottomNav from './components/BottomNav'
+import Login from './page/Login'
+import Register from './page/Register'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -17,6 +19,18 @@ function App() {
         path='/'
         element={
           <HomePage />
+        }
+      />
+      <Route
+        path='/login'
+        element={
+          <Login />
+        }
+      />
+      <Route
+        path='/register'
+        element={
+          <Register />
         }
       />
     </Routes>
