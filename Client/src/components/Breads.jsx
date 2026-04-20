@@ -33,8 +33,7 @@ const breadsList = [
   },
 ];
 
-// const fallback =
-//   "https://via.placeholder.com/200x150?text=Bread";
+
 
 const Breads = () => {
   const [selected, setSelected] = useState([]);

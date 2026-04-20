@@ -12,6 +12,7 @@ import Profile from './page/Profile'
 import TicTacToe from './page/ticTacToe'
 import Ludo from './page/Ludo'
 import CarRace from './page/CarRace'
+import MenuPage from './page/MenuPage'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -25,12 +26,19 @@ function App() {
             <HomePage />
           }
         />
+         <Route
+          path='/menu'
+          element={
+            <MenuPage />
+          }
+        />
         <Route
           path='/login'
           element={
             <Login />
           }
         />
+        
         <Route
           path='/register'
           element={
