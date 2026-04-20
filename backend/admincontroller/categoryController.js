@@ -1,6 +1,8 @@
 const Category = require("../models/categoryModel");
 const uploadToImageBB = require("../utils/uploadToImageBB");
 
+
+// ✅ CREATE (already yours - kept here for completeness)
 const createCategory = async (req, res) => {
   try {
     const { name } = req.body;
@@ -9,10 +11,8 @@ const createCategory = async (req, res) => {
       return res.status(400).json({ message: "Name and image required" });
     }
 
-    // Upload image
     const imageUrl = await uploadToImageBB(req.file);
 
-    // Save to DB
     const category = await Category.create({
       name,
       image: imageUrl,
@@ -27,4 +27,102 @@ const createCategory = async (req, res) => {
   }
 };
 
-module.exports = { createCategory };
+
+
+// ✅ GET ALL
+const getCategories = async (req, res) => {
+  try {
+    const categories = await Category.find().sort({ createdAt: -1 });
+
+    res.status(200).json({
+      count: categories.length,
+      categories,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+
+// ✅ GET SINGLE
+const getCategoryById = async (req, res) => {
+  try {
+    const category = await Category.findById(req.params.id);
+
+    if (!category) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+
+    res.status(200).json(category);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+
+// ✅ UPDATE (with optional image change)
+const updateCategory = async (req, res) => {
+  try {
+    const { name } = req.body;
+
+    let category = await Category.findById(req.params.id);
+
+    if (!category) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+
+    // update name if provided
+    if (name) {
+      category.name = name;
+    }
+
+    // update image if new file uploaded
+    if (req.file) {
+      const imageUrl = await uploadToImageBB(req.file);
+      category.image = imageUrl;
+    }
+
+    await category.save();
+
+    res.status(200).json({
+      message: "Category updated",
+      category,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+
+// ✅ DELETE
+const deleteCategory = async (req, res) => {
+  try {
+    const category = await Category.findById(req.params.id);
+
+    if (!category) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+
+    await category.deleteOne();
+
+    res.status(200).json({
+      message: "Category deleted",
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+
+// ✅ EXPORT ALL
+module.exports = {
+  createCategory,
+  getCategories,
+  getCategoryById,
+  updateCategory,
+  deleteCategory,
+};
