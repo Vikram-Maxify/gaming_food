@@ -27,7 +27,7 @@ const Register = () => {
   };
 
   useEffect(() => {
-    if (success) navigate("/login");
+    if (success) navigate("/");
     return () => dispatch(resetState());
   }, [success]);
 
