@@ -1,37 +1,54 @@
 import React, { useState } from "react";
 
 const menuItems = [
-    { id: 1, name: "Margherita Pizza", category: "pizza", type: "veg", price: 200, rating: 4.2 },
+    { id: 1, name: "Margherita Pizza", category: "pizza", type: "veg", price: 200, rating: 4.2 , image : "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&auto=format&fit=crop&q=60"},
     { id: 2, name: "Pepperoni Pizza", category: "pizza", type: "nonveg", price: 350, rating: 4.5 },
     { id: 3, name: "Veg Burger", category: "burger", type: "veg", price: 120, rating: 4.0 },
     { id: 4, name: "Chicken Burger", category: "burger", type: "nonveg", price: 180, rating: 4.3 },
     { id: 5, name: "Pasta Alfredo", category: "pasta", type: "veg", price: 250, rating: 4.1 },
 ];
 
+// ✅ Toggle Component (same file)
+function ToggleSwitch({ isOn, onToggle }) {
+    return (
+        <button
+            onClick={onToggle}
+            className={`w-12 h-6 flex items-center rounded-full p-1 transition ${isOn ? "bg-green-500" : "bg-gray-300"
+                }`}
+        >
+            <div
+                className={`bg-white w-4 h-4 rounded-full shadow transform transition ${isOn ? "translate-x-6" : "translate-x-0"
+                    }`}
+            />
+        </button>
+    );
+}
+
 export default function MenuPage() {
 
     const [selectedCategory, setSelectedCategory] = useState("all");
-    const [selectedType, setSelectedType] = useState("all");
+    const [selectedType, setSelectedType] = useState("veg"); // ✅ default veg
     const [priceRange, setPriceRange] = useState(500);
     const [minRating, setMinRating] = useState(0);
 
     const filteredItems = menuItems.filter((item) => {
         return (
             (selectedCategory === "all" || item.category === selectedCategory) &&
-            (selectedType === "all" || item.type === selectedType) &&
+            item.type === selectedType && // ✅ direct filter (no "all" now)
             item.price <= priceRange &&
             item.rating >= minRating
         );
     });
 
     return (
+
         <div className="min-h-screen bg-gray-100 p-4">
 
             {/* 🔹 Header */}
-            <h1 className="text-2xl md:text-3xl font-bold mb-4">Menu</h1>
+            <h1 className="text-xl md:text-2xl font-semibold mb-5">Menu Items</h1>
 
             {/* 🔹 Filters Section */}
-            <div className="bg-white p-4 rounded-xl shadow mb-6">
+            <div className="bg-white p-5 rounded-xl shadow mb-6">
 
                 {/* Category */}
                 <div className="flex overflow-x-auto gap-3 pb-2">
@@ -49,25 +66,27 @@ export default function MenuPage() {
                     ))}
                 </div>
 
-                {/* Veg / Non-Veg */}
-                <div className="flex gap-3 mt-4 flex-wrap">
-                    {["all", "veg", "nonveg"].map((type) => (
-                        <button
-                            key={type}
-                            onClick={() => setSelectedType(type)}
-                            className={`px-4 py-2 rounded ${selectedType === type
-                                ? "bg-green-500 text-white"
-                                : "bg-gray-200"
-                                }`}
-                        >
-                            {type}
-                        </button>
-                    ))}
+                {/* ✅ Veg / Non-Veg Toggle */}
+                <div className="mt-4 flex items-center gap-3">
+                    <span className="text-sm font-medium">
+                        {selectedType === "veg" ? "Veg 🌱" : "Non-Veg 🍗"}
+                    </span>
+
+                    <ToggleSwitch
+                        isOn={selectedType === "veg"}
+                        onToggle={() =>
+                            setSelectedType((prev) =>
+                                prev === "veg" ? "nonveg" : "veg"
+                            )
+                        }
+                    />
                 </div>
 
                 {/* Price Range */}
                 <div className="mt-4">
-                    <p className="text-sm font-medium">Price up to ₹{priceRange}</p>
+                    <p className="text-sm font-medium">
+                        Price up to ₹{priceRange}
+                    </p>
                     <input
                         type="range"
                         min="0"
@@ -102,6 +121,7 @@ export default function MenuPage() {
                         key={item.id}
                         className="bg-white p-4 rounded-xl shadow hover:shadow-lg transition"
                     >
+                       
                         <h2 className="text-lg font-semibold">{item.name}</h2>
 
                         <p className="text-sm text-gray-500 capitalize">
@@ -110,7 +130,9 @@ export default function MenuPage() {
 
                         <div className="flex justify-between items-center mt-2">
                             <span className="font-bold">₹{item.price}</span>
-                            <span className="text-yellow-500">⭐ {item.rating}</span>
+                            <span className="text-yellow-500">
+                                ⭐ {item.rating}
+                            </span>
                         </div>
 
                         <button className="mt-3 w-full bg-red-500 text-white py-2 rounded hover:bg-red-600">
