@@ -32,6 +32,12 @@ const foods = [
     image:
       "https://images.unsplash.com/photo-1550547660-d9450f859349?w=400&auto=format&fit=crop&q=60",
   },
+  {
+    name: "Sandwich",
+    price: "₹79",
+    image:
+      "https://images.unsplash.com/photo-1550547660-d9450f859349?w=400&auto=format&fit=crop&q=60",
+  },
 ];
 
 const FoodGrid = () => {
