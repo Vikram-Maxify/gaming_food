@@ -11,6 +11,7 @@ import Register from './page/Register'
 import Profile from './page/Profile'
 import TicTacToe from './page/ticTacToe'
 import Ludo from './page/Ludo'
+import CarRace from './page/CarRace'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -43,6 +44,7 @@ function App() {
           }
         />
         <Route path="/ludo" element={<Ludo />} />
+        <Route path='/car' element={<CarRace />} />
         <Route
           path='/profile'
           element={
