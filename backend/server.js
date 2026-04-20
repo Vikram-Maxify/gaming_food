@@ -16,6 +16,13 @@ app.use(cookies());
 app.use("/api/auth", require("./route/authRoute"));
 
 
+// admin
+
+app.use("/api/admin/category", require("./adminroute/categoryRoutes"));
+app.use("/api/admin/product", require("./adminroute/productRoutes"));
+
+
+
 const port = process.env.PORT || 3000;
 connectdb()
 app.listen(port, () => {
