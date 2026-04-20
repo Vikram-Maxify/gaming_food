@@ -8,13 +8,22 @@ import Users from './pages/Users';
 import Settings from './pages/Settings';
 import ShefDashboard from './pages/ShefDashboard';
 import CoinManage from './pages/CoinManage';
+import AdminLogin from './pages/AdminLogin';
+import ProtectedRoute from './redux/ProtectedRoute';
 
 function App() {
 
   return (
     <>
       <Routes>
-        <Route path="/admin" element={<AdminLayout />}>
+        <Route
+  path="/admin"
+  element={
+    <ProtectedRoute>
+      <AdminLayout />
+    </ProtectedRoute>
+  }
+>
           <Route index element={<Dashboard />} />
           <Route path="menu" element={<Menu />} />
           <Route path="orders" element={<Orders />} />
@@ -24,6 +33,7 @@ function App() {
           <Route path="coins_mng" element={<CoinManage />} />
           {/* <Route path="categories" element={<ategories />} /> */}
         </Route>
+          <Route path="/admin/login" element={<AdminLogin />} />
       </Routes>
     </>
   )
