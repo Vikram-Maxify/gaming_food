@@ -8,7 +8,7 @@ import HomePage from './page/HomePage'
 import BottomNav from './components/BottomNav'
 import Login from './page/Login'
 import Register from './page/Register'
-import AddToCart from './page/AddToCart'
+import Profile from './page/Profile'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -35,9 +35,9 @@ function App() {
         }
       />
       <Route
-        path='/addToCart'
+        path='/profile'
         element={
-          <AddToCart />
+          <Profile />
         }
       />
     </Routes>
