@@ -1,6 +1,7 @@
 const Order = require("../models/orderModel");
 const User = require("../models/authModels");
 const Product = require("../models/productModel");
+const Table = require("../models/tableModel");
 
 // ✅ Select Table
 const selectTable = async (req, res) => {
@@ -11,37 +12,35 @@ const selectTable = async (req, res) => {
       return res.status(400).json({ message: "Table number required" });
     }
 
+    const user = await User.findById(req.user._id);
+
     // ✅ Check table exists
     const table = await Table.findOne({ tableNumber });
     if (!table) {
       return res.status(404).json({ message: "Table not found" });
     }
 
-    // ✅ Check already occupied (direct table check better)
+    // ✅ NEW LOGIC
     if (table.isOccupied) {
+      // 👉 Agar same user ki table hai → allow
+      if (user.tableNumber === tableNumber) {
+        return res.json({
+          message: "Table already selected by you",
+          tableNumber,
+        });
+      }
+
+      // 👉 Kisi aur ki hai → block
       return res.status(400).json({
         message: "Table already occupied",
       });
     }
 
-    // ✅ Optional: Order check (extra safety)
-    const existingOrder = await Order.findOne({
-      tableNumber,
-      status: { $in: ["pending", "preparing"] },
-    });
-
-    if (existingOrder) {
-      return res.status(400).json({
-        message: "Table already occupied (order exists)",
-      });
-    }
-
     // ✅ Assign table to user
-    const user = await User.findById(req.user._id);
     user.tableNumber = tableNumber;
     await user.save();
 
-    // 🔥 IMPORTANT: Update table status
+    // ✅ Update table status
     table.isOccupied = true;
     await table.save();
 
@@ -55,6 +54,7 @@ const selectTable = async (req, res) => {
     }
 
     res.json({ message: "Table selected", tableNumber });
+
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

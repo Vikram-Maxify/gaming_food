@@ -70,8 +70,17 @@ const verifyRegisterOTP = async (req, res) => {
         const user = await User.create({
             name: tempUser.name,
             mobile: tempUser.mobile,
+            
             password: tempUser.password
         });
+
+
+        const token = await generateToken(user._id, user.role);
+        res.cookie("token", token, {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24,
+        })
+
 
         // 🧹 Delete temp user
         await TempUser.findByIdAndDelete(tempUserId);
