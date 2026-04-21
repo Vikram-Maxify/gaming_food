@@ -71,5 +71,16 @@ export const updateCategoryAPI = (id, data) =>
 export const deleteCategoryAPI = (id) =>
   API.delete(`/category/delete/${id}`);
 
+//=================Table=======================//
+
+export const createTableAPI = (data) =>
+  axios.post("/api/tables", data);
+
+export const getTablesAPI = () =>
+  axios.get("/api/tables");
+
+export const deleteTableAPI = (id) =>
+  axios.delete(`/api/tables/${id}`);
+
 
 export default API;
