@@ -107,7 +107,7 @@ const AddToCart = () => {
                 <p className="text-gray-500">Cart is empty 😢</p>
               ) : (
                 cartItems.map((item, index) => (
-                  <div key={index} className="flex items-center gap-3 pb-4 border-b">
+                  <div key={index} className="flex items-center gap-3 pb-4">
 
                     <img
                       src={item.image}
@@ -156,7 +156,7 @@ const AddToCart = () => {
                 <span>₹{cartItems.length ? 50 : 0}</span>
               </div>
 
-              <div className="flex justify-between font-semibold text-lg border-t pt-3">
+              <div className="flex justify-between font-semibold text-lg pt-3">
                 <span>Total</span>
                 <span>
                   ₹{totalAmount + (cartItems.length ? 50 : 0)}
