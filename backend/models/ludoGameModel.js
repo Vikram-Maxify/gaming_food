@@ -13,7 +13,7 @@ const ludoSchema = new mongoose.Schema(
       {
         user: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "User",
+         ref: "Auth",
           default: null, // 🤖 allow computer
         },
         color: {

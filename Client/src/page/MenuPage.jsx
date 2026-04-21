@@ -1,274 +1,279 @@
 import React, { useState, useEffect, useRef } from "react";
 import { IoIosStar } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
+
 import { fetchProducts } from "../reducer/slice/productSlice";
+import {
+  addToCartThunk,
+  getCartThunk,
+} from "../reducer/slice/cartSlice";
+import { selectTable, createOrder } from "../reducer/slice/orderSlice";
 
 export default function MenuPage() {
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-    const { products, loading, error } = useSelector(
-        (state) => state.products
-    );
+  // ✅ Redux state
+  const { products, loading, error } = useSelector((state) => state.products);
+  const {
+    cartItems,
+    loading: cartLoading,
+  } = useSelector((state) => state.cart);
+  const { tableNumber, loading: orderLoading } = useSelector(
+    (state) => state.order
+  );
 
-    const [selectedCategory, setSelectedCategory] = useState("all");
-    const [selectedType, setSelectedType] = useState("veg");
-    const [priceRange, setPriceRange] = useState(500);
-    const [quantity, setQuantity] = useState(1);
+  // ✅ Filters
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedType, setSelectedType] = useState("veg");
+  const [priceRange, setPriceRange] = useState(500);
 
-    // ✅ POPUP STATES
-    const [showVariantPopup, setShowVariantPopup] = useState(false);
-    const [showDetailPopup, setShowDetailPopup] = useState(false);
+  // ✅ Variant state
+  const [selectedVariants, setSelectedVariants] = useState({});
 
-    const [activeProduct, setActiveProduct] = useState(null);
-    const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
+  // 🔥 Fetch products + cart
+  useEffect(() => {
+    dispatch(fetchProducts());
+    dispatch(getCartThunk()); // ✅ important
+  }, [dispatch]);
 
-    const popupRef = useRef(null);
+  // ✅ Min price
+  const getMinPrice = (variants = []) => {
+    if (!variants.length) return 0;
+    return Math.min(...variants.map((v) => v.price));
+  };
 
-    useEffect(() => {
-        dispatch(fetchProducts());
-    }, [dispatch]);
-
-    // ✅ CLOSE ON OUTSIDE CLICK
-    useEffect(() => {
-        function handleOutsideClick(e) {
-            if (popupRef.current && !popupRef.current.contains(e.target)) {
-                setShowVariantPopup(false);
-                setShowDetailPopup(false);
-            }
-        }
-
-        if (showVariantPopup || showDetailPopup) {
-            document.addEventListener("mousedown", handleOutsideClick);
-        }
-
-        return () => {
-            document.removeEventListener("mousedown", handleOutsideClick);
-        };
-    }, [showVariantPopup, showDetailPopup]);
-
-    // ✅ GET MIN PRICE
-    const getMinPrice = (variants = []) => {
-        if (!variants.length) return 0;
-        return Math.min(...variants.map((v) => v.price));
-    };
-
-    // ✅ FILTER
-    const filteredItems = products?.filter((item) => {
-        const minPrice = getMinPrice(item.variants);
-
-        return (
-            (selectedCategory === "all" ||
-                item.category?.name === selectedCategory) &&
-            item.type === selectedType &&
-            minPrice <= priceRange &&
-            item.status === "active" &&
-            item.isAvailable === true
-        );
-    });
-
-    // ✅ OPEN DETAIL POPUP (CARD CLICK)
-    const handleCardClick = (item) => {
-        setActiveProduct(item);
-        setShowDetailPopup(true);
-    };
-
-    // ✅ OPEN VARIANT POPUP (ADD BUTTON)
-    const handleAddToCart = (product, qty = 1) => {
-        setActiveProduct(product);
-        setSelectedVariantIndex(0);
-        setShowVariantPopup(true);
-
-        console.log("Quantity 👉", qty);
-    };
-
-    const handleConfirmAdd = () => {
-        const variant = activeProduct.variants[selectedVariantIndex];
-
-        const cartItem = {
-            productId: activeProduct._id,
-            name: activeProduct.name,
-            image: activeProduct.image,
-            variantName: variant.name,
-            price: variant.price,
-            quantity: 1,
-        };
-
-        console.log("ADD TO CART 👉", cartItem);
-
-        setShowVariantPopup(false);
-    };
+  // ✅ Filter products
+  const filteredItems = products?.filter((item) => {
+    const minPrice = getMinPrice(item.variants);
 
     return (
-        <>
-            <div className="min-h-screen bg-gray-100 p-4">
-                <h1 className="text-xl md:text-2xl font-semibold mb-5">
-                    Menu Items
-                </h1>
-
-                {/* PRODUCTS */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-
-                    {filteredItems?.map((item) => {
-                        const minPrice = getMinPrice(item.variants);
-
-                        return (
-                            <div
-                                key={item._id}
-                                onClick={() => handleCardClick(item)}
-                                className="bg-white p-4 rounded-xl shadow hover:shadow-xl transition cursor-pointer"
-                            >
-                                <img
-                                    src={item.image}
-                                    className="w-full h-52 object-cover rounded-lg transition-transform duration-500 hover:scale-105"
-                                />
-
-                                <h2 className="text-lg font-semibold mt-2">
-                                    {item.name}
-                                </h2>
-
-                                <p className="text-sm text-gray-500 capitalize">
-                                    {item.type} • {item.category?.name}
-                                </p>
-
-                                <div className="flex justify-between items-center mt-2">
-                                    <span className="font-bold">
-                                        ₹{minPrice}
-                                    </span>
-
-                                    <div className="flex items-center text-white bg-green-600 px-1 rounded">
-                                        {item.rating || 4}
-                                        <IoIosStar />
-                                    </div>
-                                </div>
-
-                                <button
-                                    onClick={(e) => handleAddToCart(item, e)}
-                                    className="mt-3 w-full bg-red-500 text-white py-2 rounded hover:bg-red-600"
-                                >
-                                    Add to Cart
-                                </button>
-                            </div>
-                        );
-                    })}
-                </div>
-            </div>
-
-            {showDetailPopup && activeProduct && (
-                <div className="fixed inset-0 bg-black/60 flex items-end md:items-center justify-center z-50">
-
-                    <div className="relative w-full md:max-w-md md:mx-auto">
-                        {/* ❌ Close Button */}
-                        <button
-                            onClick={() => setShowDetailPopup(false)}
-                            className="absolute -top-14 left-1/2 -translate-x-1/2 bg-black text-white text-xl px-4 py-2 rounded-full shadow-lg z-50"
-                        >
-                            ✕
-                        </button>
-
-                        {/* Modal */}
-                        <div
-                            ref={popupRef}
-                            className="bg-white w-full rounded-t-2xl md:rounded-2xl overflow-hidden 
-                            max-h-[85vh] md:max-h-[80vh] flex flex-col"                        >
-
-                            {/* Image */}
-                            <div className="w-full h-52 md:h-52">
-                                <img
-                                    src={activeProduct.image}
-                                    className="w-full h-full object-cover"
-                                />
-                            </div>
-
-                            {/* Content */}
-                            <div className="p-4 flex-1 overflow-y-auto">
-
-                                <h2 className="text-xl font-semibold">
-                                    {activeProduct.name}
-                                </h2>
-
-                                <p className="text-gray-500 text-sm mt-1">
-                                    {activeProduct.type} • {activeProduct.category?.name}
-                                </p>
-
-                                {/* Rating */}
-                                <div className="flex items-center gap-1 mt-2 bg-green-600 text-white w-fit px-2 rounded">
-                                    {activeProduct.rating || 4}
-                                    <IoIosStar />
-                                </div>
-
-                                {/* Price */}
-                                <p className="text-lg font-bold mt-3">
-                                    ₹{activeProduct.variants?.[selectedVariantIndex]?.price}
-                                </p>
-
-                                {/* Description */}
-                                <p className="text-sm text-gray-600 mt-2">
-                                    Delicious food item prepared with fresh ingredients.
-                                </p>
-
-                                {/* 🔥 VARIANTS */}
-                                <div className="mt-4">
-                                    <p className="font-medium mb-2">Choose portion</p>
-
-                                    <div className="flex gap-2 flex-wrap">
-                                        {activeProduct.variants.map((variant, index) => {
-                                            // 🔥 Short label logic
-                                            const getShortName = (name) => {
-                                                const n = name.toLowerCase();
-                                                if (n.includes("quarter")) return "Q";
-                                                if (n.includes("half")) return "H";
-                                                if (n.includes("full")) return "F";
-                                                return name.charAt(0).toUpperCase();
-                                            };
-
-                                            return (
-                                                <button
-                                                    key={index}
-                                                    onClick={() => setSelectedVariantIndex(index)}
-                                                    className={`px-3 py-2 rounded-lg border text-sm font-medium transition
-                                                        ${selectedVariantIndex === index
-                                                            ? "bg-red-500 text-white border-red-500"
-                                                            : "bg-white text-gray-700 border-gray-300"
-                                                        }`}
-                                                >
-                                                    {/* 👇 Responsive text */}
-                                                    <span className="hidden sm:inline">
-                                                        {variant.name}
-                                                    </span>
-                                                    <span className="sm:hidden">
-                                                        {getShortName(variant.name)}
-                                                    </span>
-
-                                                    <span className="ml-1">₹{variant.price}</span>
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* 🔥 BOTTOM SECTION */}
-                            <div className="p-4 border-t bg-white flex items-center gap-3">
-
-                                {/* Quantity */}
-                               
-
-                                {/* Add to Cart */}
-                                <button
-                                    onClick={() => {
-                                        handleConfirmAdd();
-                                        setShowDetailPopup(false);
-                                    }}
-                                    className="flex-1 bg-red-500 text-white py-3 rounded-xl text-lg font-medium"
-                                >
-                                    Add to Cart
-                                </button>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-        </>
+      (selectedCategory === "all" ||
+        item.category?.name === selectedCategory) &&
+      item.type === selectedType &&
+      minPrice <= priceRange &&
+      item.status === "active" &&
+      item.isAvailable === true
     );
+  });
+
+  // ✅ Select variant
+  const handleVariantChange = (productId, index) => {
+    setSelectedVariants((prev) => ({
+      ...prev,
+      [productId]: index,
+    }));
+  };
+
+  // 🔥 ✅ FIXED ADD TO CART (THUNK)
+  const handleAddToCart = (product) => {
+    const variantIndex = selectedVariants[product._id] || 0;
+    const variant = product.variants[variantIndex];
+
+    dispatch(
+      addToCartThunk({
+        productId: product._id,
+        variantId: variant._id, // ⚠️ IMPORTANT
+        quantity: 1,
+      })
+    );
+  };
+
+  // ✅ Select table
+  const handleSelectTable = (table) => {
+    dispatch(selectTable(table));
+  };
+
+  // 🔥 ✅ FIXED ORDER
+  const handlePlaceOrder = () => {
+    if (!tableNumber) {
+      alert("Please select table first ❗");
+      return;
+    }
+
+    if (cartItems.length === 0) {
+      alert("Cart is empty ❗");
+      return;
+    }
+
+    const items = cartItems.map((item) => ({
+      product: item.product, // 👈 backend se aata hai
+      variantId: item.variantId, // ⚠️ IMPORTANT
+      quantity: item.quantity,
+    }));
+
+    dispatch(createOrder(items));
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-100 p-4 pb-24">
+
+      <h1 className="text-xl md:text-2xl font-semibold mb-5">
+        Menu Items
+      </h1>
+
+      {/* 🪑 TABLE SELECT */}
+      <div className="mb-5">
+        <h2 className="mb-2 font-semibold">Select Table</h2>
+        <div className="flex gap-2 flex-wrap">
+          {[1, 2, 3, 4, 5].map((t) => (
+            <button
+              key={t}
+              onClick={() => handleSelectTable(t)}
+              className={`px-4 py-2 rounded ${
+                tableNumber === t
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200"
+              }`}
+            >
+              Table {t}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 🔹 Filters */}
+      <div className="bg-white p-3 rounded-xl shadow mb-6">
+        <div className="flex flex-wrap gap-2">
+
+          {/* Category */}
+          {["all", "pizza", "burger", "pasta"].map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={`px-3 py-1.5 rounded-full text-sm border ${
+                selectedCategory === cat
+                  ? "bg-gray-900 text-white"
+                  : "bg-white"
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+
+          {/* Veg / Non-Veg */}
+          <button
+            onClick={() =>
+              setSelectedType((prev) =>
+                prev === "veg" ? "non-veg" : "veg"
+              )
+            }
+            className={`px-3 py-1.5 rounded-full text-sm border ${
+              selectedType === "veg"
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-700"
+            }`}
+          >
+            {selectedType === "veg" ? "Veg 🌱" : "Non-Veg 🍗"}
+          </button>
+
+          {/* Price */}
+          {[100, 200, 300, 500].map((price) => (
+            <button
+              key={price}
+              onClick={() => setPriceRange(price)}
+              className={`px-3 py-1.5 rounded-full text-sm border ${
+                priceRange === price
+                  ? "bg-orange-500 text-white"
+                  : ""
+              }`}
+            >
+              ₹{price}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 🔹 Loading/Error */}
+      {loading && <p>Loading...</p>}
+      {error && <p className="text-red-500">{error}</p>}
+
+      {/* 🍔 PRODUCTS */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+
+        {filteredItems?.map((item) => {
+          const selectedIndex = selectedVariants[item._id] || 0;
+          const selectedVariant = item.variants[selectedIndex];
+          const minPrice = getMinPrice(item.variants);
+
+          return (
+            <div key={item._id} className="bg-white p-4 rounded-xl shadow">
+
+              <img
+                src={item.image}
+                className="w-full h-52 object-cover rounded-lg"
+              />
+
+              <h2 className="text-lg font-semibold mt-2">
+                {item.name}
+              </h2>
+
+              <p className="text-sm text-gray-500 capitalize">
+                {item.type} • {item.category?.name}
+              </p>
+
+              <div className="flex justify-between mt-2">
+                <span className="font-bold">
+                  ₹{selectedVariant?.price || minPrice}
+                </span>
+
+                <div className="flex items-center text-white bg-green-600 px-1 rounded">
+                  {item.rating || 4}
+                  <IoIosStar />
+                </div>
+              </div>
+
+              {/* Variant */}
+              <select
+                className="mt-2 w-full border rounded p-1"
+                value={selectedIndex}
+                onChange={(e) =>
+                  handleVariantChange(item._id, Number(e.target.value))
+                }
+              >
+                {item.variants.map((v, i) => (
+                  <option key={i} value={i}>
+                    {v.name} - ₹{v.price}
+                  </option>
+                ))}
+              </select>
+
+              {/* 🛒 BUTTON */}
+              <button
+                onClick={() => handleAddToCart(item)}
+                disabled={cartLoading}
+                className="mt-3 w-full bg-red-500 text-white py-2 rounded"
+              >
+                {cartLoading ? "Adding..." : "Add to Cart"}
+              </button>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* 🛒 BOTTOM BAR */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white shadow p-3 flex justify-between items-center">
+
+        <div>
+          <p className="text-sm">Items: {cartItems.length}</p>
+          <p className="text-xs text-gray-500">
+            Table: {tableNumber || "Not selected"}
+          </p>
+        </div>
+
+        <button
+          onClick={handlePlaceOrder}
+          className="bg-green-600 text-white px-4 py-2 rounded"
+        >
+          {orderLoading ? "Placing..." : "Place Order"}
+        </button>
+      </div>
+
+      {/* Empty */}
+      {!loading && filteredItems?.length === 0 && (
+        <p className="text-center mt-6 text-gray-500">
+          No items found 😢
+        </p>
+      )}
+    </div>
+  );
 }
