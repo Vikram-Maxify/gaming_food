@@ -40,6 +40,8 @@ app.use("/api/admin/category", require("./adminroute/categoryRoutes"));
 app.use("/api/admin/product", require("./adminroute/productRoutes"));
 app.use("/api/admin/order", require("./adminroute/orderRoutes"));
 app.use("/api/admin/table", require("./adminroute/tableRoutes"));
+app.use("/api/admin/settings", require("./adminroute/adminSettingsRoutes"));
+
 
 // ✅ Create HTTP server
 const server = http.createServer(app);
