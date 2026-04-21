@@ -1,168 +1,211 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IoIosStar } from "react-icons/io";
-
-
-const menuItems = [
-    { id: 1, name: "Margherita Pizza", category: "pizza", type: "veg", price: 200, discount: 30, rating: 4.2, image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&auto=format&fit=crop&q=60" },
-    { id: 2, name: "Pepperoni Pizza", category: "pizza", type: "nonveg", price: 350, discount: 40, rating: 4.5, image: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=300&auto=format&fit=crop&q=80" },
-    { id: 3, name: "Veg Burger", category: "burger", type: "veg", price: 120, discount: 25, rating: 4.0, image: "https://plus.unsplash.com/premium_photo-1683619761492-639240d29bb5?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
-    { id: 4, name: "Chicken Burger", category: "burger", type: "nonveg", price: 180, discount: 60, rating: 4.3, image: "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
-    { id: 5, name: "Pasta Alfredo", category: "pasta", type: "veg", price: 250, discount: 42, rating: 4.1, image: "https://plus.unsplash.com/premium_photo-1664478288635-b9703a502393?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
-];
-
-// ✅ Toggle Component (same file)
-function ToggleSwitch({ isOn, onToggle }) {
-    return (
-        <button
-            onClick={onToggle}
-            className={`w-12 h-6 flex items-center rounded-full p-1 transition ${isOn ? "bg-green-500" : "bg-gray-300"
-                }`}
-        >
-            <div
-                className={`bg-white w-4 h-4 rounded-full shadow transform transition ${isOn ? "translate-x-6" : "translate-x-0"
-                    }`}
-            />
-        </button>
-    );
-}
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProducts } from "../reducer/slice/productSlice";
+// import { addToCart } from "../redux/slices/cartSlice"; // optional
 
 export default function MenuPage() {
+  const dispatch = useDispatch();
 
-    const [selectedCategory, setSelectedCategory] = useState("all");
-    const [selectedType, setSelectedType] = useState("veg"); // ✅ default veg
-    const [priceRange, setPriceRange] = useState(500);
-    const [minRating, setMinRating] = useState(0);
+  const { products, loading, error } = useSelector(
+    (state) => state.products
+  );
 
-    const filteredItems = menuItems.filter((item) => {
-        return (
-            (selectedCategory === "all" || item.category === selectedCategory) &&
-            item.type === selectedType && // ✅ direct filter (no "all" now)
-            item.price <= priceRange &&
-            item.rating >= minRating
-        );
-    });
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedType, setSelectedType] = useState("veg");
+  const [priceRange, setPriceRange] = useState(500);
+
+  // ✅ Store selected variant per product
+  const [selectedVariants, setSelectedVariants] = useState({});
+
+  // 🔥 Fetch products
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
+
+  // ✅ Get minimum price
+  const getMinPrice = (variants = []) => {
+    if (!variants.length) return 0;
+    return Math.min(...variants?.map((v) => v.price));
+  };
+
+  // ✅ Filter logic
+  const filteredItems = products?.filter((item) => {
+    const minPrice = getMinPrice(item.variants);
 
     return (
+      (selectedCategory === "all" ||
+        item.category?.name === selectedCategory) &&
+      item.type === selectedType &&
+      minPrice <= priceRange &&
+      item.status === "active" &&
+      item.isAvailable === true
+    );
+  });
 
-        <div className="min-h-screen bg-gray-100 p-4">
+  // ✅ Handle variant change
+  const handleVariantChange = (productId, index) => {
+    setSelectedVariants((prev) => ({
+      ...prev,
+      [productId]: index,
+    }));
+  };
 
-            {/* 🔹 Header */}
-            <h1 className="text-xl md:text-2xl font-semibold mb-5">Menu Items</h1>
+  // ✅ Add to cart
+  const handleAddToCart = (product) => {
+    const variantIndex = selectedVariants[product._id] || 0;
+    const variant = product.variants[variantIndex];
 
-            {/* 🔹 Filters Section */}
-           <div className="bg-white p-3 rounded-xl shadow mb-6">
+    const cartItem = {
+      productId: product._id,
+      name: product.name,
+      image: product.image,
+      variantName: variant.name,
+      price: variant.price,
+      quantity: 1,
+    };
 
-    <div className="flex flex-wrap items-center gap-2">
+    console.log("ADD TO CART 👉", cartItem);
 
-        {/* Category */}
-        {["all", "pizza", "burger", "pasta"].map((cat) => (
+    // dispatch(addToCart(cartItem));
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-100 p-4">
+      <h1 className="text-xl md:text-2xl font-semibold mb-5">
+        Menu Items
+      </h1>
+
+      {/* 🔹 Filters */}
+      <div className="bg-white p-3 rounded-xl shadow mb-6">
+        <div className="flex flex-wrap items-center gap-2">
+
+          {/* Category */}
+          {["all", "pizza", "burger", "pasta"].map((cat) => (
             <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-3 py-1.5 rounded-full text-sm border ${
-                    selectedCategory === cat
-                        ? "bg-gray-900 text-white border-gray-900"
-                        : "bg-white text-gray-700 border-gray-300"
-                }`}
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={`px-3 py-1.5 rounded-full text-sm border ${
+                selectedCategory === cat
+                  ? "bg-gray-900 text-white"
+                  : "bg-white text-gray-700"
+              }`}
             >
-                {cat}
+              {cat}
             </button>
-        ))}
+          ))}
 
-        {/* Veg / Non-Veg */}
-        <button
+          {/* Veg / Non-Veg */}
+          <button
             onClick={() =>
-                setSelectedType((prev) =>
-                    prev === "veg" ? "nonveg" : "veg"
-                )
+              setSelectedType((prev) =>
+                prev === "veg" ? "non-veg" : "veg"
+              )
             }
             className={`px-3 py-1.5 rounded-full text-sm border ${
-                selectedType === "veg"
-                    ? "bg-green-100 text-green-700 border-green-400"
-                    : "bg-red-100 text-red-700 border-red-400"
+              selectedType === "veg"
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-700"
             }`}
-        >
+          >
             {selectedType === "veg" ? "Veg 🌱" : "Non-Veg 🍗"}
-        </button>
+          </button>
 
-        {/* Price */}
-        {[100, 200, 300, 500].map((price) => (
+          {/* Price */}
+          {[100, 200, 300, 500].map((price) => (
             <button
-                key={price}
-                onClick={() => setPriceRange(price)}
-                className={`px-3 py-1.5 rounded-full text-sm border ${
-                    priceRange === price
-                        ? "bg-orange-500 text-white border-orange-500"
-                        : "bg-white text-gray-700 border-gray-300"
-                }`}
+              key={price}
+              onClick={() => setPriceRange(price)}
+              className={`px-3 py-1.5 rounded-full text-sm border ${
+                priceRange === price
+                  ? "bg-orange-500 text-white"
+                  : ""
+              }`}
             >
-                ₹{price}
+              ₹{price}
             </button>
-        ))}
-
-        {/* Rating */}
-        {[3, 4, 4.5].map((rate) => (
-            <button
-                key={rate}
-                onClick={() => setMinRating(rate)}
-                className={`px-3 py-1.5 rounded-full text-sm border flex items-center gap-1 ${
-                    minRating === rate
-                        ? "bg-yellow-400 text-black border-yellow-400"
-                        : "bg-white text-gray-700 border-gray-300"
-                }`}
-            >
-                {rate}+ <IoIosStar />
-            </button>
-        ))}
-
-    </div>
-</div>
-
-            {/* 🔹 Items Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {filteredItems.map((item) => (
-                    <div
-                        key={item.id}
-                        className="bg-white p-4 rounded-xl shadow hover:shadow-xl transition hover:outline outline-gray-200"
-                    >
-                        <div className="relative w-full">
-                            <img
-                                src={item.image}
-                                className="w-full h-52 object-cover rounded-lg transition-transform duration-500 hover:scale-105"
-                            />
-
-                            <h3 className="absolute bottom-2 left-2 bg-black/65 text-white px-2 py-1 rounded-md text-sm">
-                                {item.discount}% OFF
-                            </h3>
-                        </div>
-                        <h2 className="text-lg font-semibold mt-2">{item.name}</h2>
-
-                        <p className="text-sm text-gray-500 capitalize">
-                            {item.type} • {item.category}
-                        </p>
-
-                        <div className="flex justify-between items-center mt-2">
-                            <span className="font-bold">₹{item.price}</span>
-
-                            <div className="flex items-center gap-0 text-white bg-[#267E3E] px-[5px] rounded-md">
-                                <span>{item.rating}</span>
-                                <IoIosStar className="text-sm" />
-                            </div>
-                        </div>
-
-                        <button className="mt-3 w-full bg-red-500 text-white py-2 rounded hover:bg-red-600">
-                            Add to Cart
-                        </button>
-                    </div>
-                ))}
-            </div>
-
-            {/* Empty State */}
-            {filteredItems.length === 0 && (
-                <p className="text-center mt-6 text-gray-500">
-                    No items found 😢
-                </p>
-            )}
+          ))}
         </div>
-    );
+      </div>
+
+      {/* 🔹 Loading / Error */}
+      {loading && <p>Loading...</p>}
+      {error && <p className="text-red-500">{error}</p>}
+
+      {/* 🔹 Products */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+
+        {filteredItems?.map((item) => {
+          const selectedIndex = selectedVariants[item._id] || 0;
+          const selectedVariant = item.variants[selectedIndex];
+          const minPrice = getMinPrice(item.variants);
+
+          return (
+            <div
+              key={item._id}
+              className="bg-white p-4 rounded-xl shadow hover:shadow-xl transition"
+            >
+              {/* Image */}
+              <img
+                src={item.image}
+                className="w-full h-52 object-cover rounded-lg"
+              />
+
+              {/* Name */}
+              <h2 className="text-lg font-semibold mt-2">
+                {item.name}
+              </h2>
+
+              {/* Info */}
+              <p className="text-sm text-gray-500 capitalize">
+                {item.type} • {item.category?.name}
+              </p>
+
+              {/* Price */}
+              <div className="flex justify-between items-center mt-2">
+                <span className="font-bold">
+                  ₹{selectedVariant?.price || minPrice}
+                </span>
+
+                <div className="flex items-center text-white bg-green-600 px-1 rounded">
+                  {item.rating || 4}
+                  <IoIosStar />
+                </div>
+              </div>
+
+              {/* Variant Selector */}
+              <select
+                className="mt-2 w-full border rounded p-1"
+                value={selectedIndex}
+                onChange={(e) =>
+                  handleVariantChange(item._id, Number(e.target.value))
+                }
+              >
+                {item.variants.map((variant, index) => (
+                  <option key={index} value={index}>
+                    {variant.name} - ₹{variant.price}
+                  </option>
+                ))}
+              </select>
+
+              {/* Button */}
+              <button
+                onClick={() => handleAddToCart(item)}
+                className="mt-3 w-full bg-red-500 text-white py-2 rounded hover:bg-red-600"
+              >
+                Add to Cart
+              </button>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Empty */}
+      {!loading && filteredItems?.length === 0 && (
+        <p className="text-center mt-6 text-gray-500">
+          No items found 😢
+        </p>
+      )}
+    </div>
+  );
 }
