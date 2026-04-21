@@ -8,6 +8,7 @@ import {
     getCartThunk,
 } from "../reducer/slice/cartSlice";
 import { selectTable, createOrder } from "../reducer/slice/orderSlice";
+import Navbar from "../components/Navbar";
 
 export default function MenuPage() {
     const dispatch = useDispatch();
@@ -111,25 +112,8 @@ export default function MenuPage() {
   // ================================
   return (
     <>
-      <div className="min-h-screen bg-gray-100 p-4 pb-24">
-
-        {/* 🔥 TABLE */}
-        <div className="mb-4">
-          <h2 className="font-semibold mb-2">Select Table</h2>
-          <div className="flex gap-2">
-            {[1, 2, 3, 4].map((t) => (
-              <button
-                key={t}
-                onClick={() => dispatch(selectTable(t))}
-                className={`px-3 py-1 rounded ${
-                  tableNumber === t ? "bg-blue-600 text-white" : "bg-gray-200"
-                }`}
-              >
-                T{t}
-              </button>
-            ))}
-          </div>
-        </div>
+    <Navbar/>
+      <div className="min-h-screen bg-gray-100 p-4 pb-24 mt-10">
 
         {/* 🔥 FILTER BAR */}
         <div className="bg-white p-3 rounded-xl shadow mb-4 flex flex-wrap gap-2">
@@ -194,7 +178,7 @@ export default function MenuPage() {
               >
                 <img
                   src={item.image}
-                  className="h-40 w-full object-cover rounded"
+                  className="h-52 w-full object-cover rounded"
                 />
 
                 <h2 className="mt-2 font-semibold">{item.name}</h2>
