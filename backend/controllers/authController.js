@@ -1,32 +1,90 @@
+const generateToken = require("../utils/generatetoken");
+const TempUser = require("../models/tempUserModel");
 const User = require("../models/authModels");
 const bcrypt = require("bcryptjs");
-const generateToken = require("../utils/generatetoken");
-
+const sendOTP = require("../utils/sendOTP");
 
 const register = async (req, res) => {
-
     const { name, mobile, password } = req.body;
 
     try {
-        const userexit = await User.findOne({ mobile });
-
-        if (userexit) {
-            res.status(400).json({ message: "user already exist" })
+        // ❌ Already registered check
+        const userExist = await User.findOne({ mobile });
+        if (userExist) {
+            return res.status(400).json({ message: "User already exists" });
         }
 
-        const hasdedpassword = await bcrypt.hash(password, 10)
+        // 🔥 Delete old temp user (same mobile)
+        await TempUser.deleteMany({ mobile });
 
-        const user = await User.create({
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // ✅ Generate OTP
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+        const tempUser = await TempUser.create({
             name,
             mobile,
-            password: hasdedpassword
-        })
+            password: hashedPassword,
+            otp,
+            otpExpire: Date.now() + 5 * 60 * 1000
+        });
 
-        res.status(200).json({ user })
+        // 📲 Send OTP
+        await sendOTP(mobile, otp);
+
+        res.json({
+            message: "OTP sent",
+            tempUserId: tempUser._id
+        });
+
     } catch (error) {
-        res.status(400).json({ message: error.message })
+        res.status(400).json({ message: error.message });
     }
-}
+};
+
+const verifyRegisterOTP = async (req, res) => {
+    const { tempUserId, otp } = req.body;
+
+    try {
+        const tempUser = await TempUser.findById(tempUserId);
+
+        if (!tempUser) {
+            return res.status(400).json({ message: "Session expired" });
+        }
+
+        // ❌ OTP expire → delete temp user
+        if (tempUser.otpExpire < Date.now()) {
+            await TempUser.findByIdAndDelete(tempUserId);
+
+            return res.status(400).json({
+                message: "OTP expired, please register again"
+            });
+        }
+
+        if (tempUser.otp !== otp) {
+            return res.status(400).json({ message: "Invalid OTP" });
+        }
+
+        // ✅ Move to main User
+        const user = await User.create({
+            name: tempUser.name,
+            mobile: tempUser.mobile,
+            password: tempUser.password
+        });
+
+        // 🧹 Delete temp user
+        await TempUser.findByIdAndDelete(tempUserId);
+
+        res.json({
+            message: "Registration successful",
+            user
+        });
+
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
 
 const login = async (req, res) => {
     const { mobile, password } = req.body;
@@ -47,7 +105,7 @@ const login = async (req, res) => {
         }
 
         // ✅ Generate token
-        const token = await generateToken(user._id,user.role);
+        const token = await generateToken(user._id, user.role);
 
         res.cookie("token", token, {
             httpOnly: true,
@@ -90,7 +148,8 @@ module.exports = {
     register,
     login,
     getUser,
-    logout
+    logout,
+    verifyRegisterOTP
 }
 
 

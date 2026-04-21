@@ -1,11 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const upload = require("../middleware/upload");
+const { updateSettings, getSettings } = require("../admincontroller/adminSettingsController");
 
-const {
-  updateSettings,
-  getSettings,
-} = require("../controllers/adminSettingsController");
+
 
 // multer config
 
