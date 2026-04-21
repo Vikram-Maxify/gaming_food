@@ -4,13 +4,13 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { fetchProducts } from "../reducer/slice/productSlice";
 import {
-  addToCartThunk,
-  getCartThunk,
+    addToCartThunk,
+    getCartThunk,
 } from "../reducer/slice/cartSlice";
 import { selectTable, createOrder } from "../reducer/slice/orderSlice";
 
 export default function MenuPage() {
-  const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
   // 🔥 Redux
   const { products, loading } = useSelector((state) => state.products);
@@ -239,12 +239,9 @@ export default function MenuPage() {
 
       {/* 🔥 POPUP */}
       {showDetailPopup && activeProduct && (
-        <div className="fixed inset-0 bg-black/60 flex justify-center items-end md:items-center z-50">
+        <div className="fixed inset-0 bg-black/60 flex justify-center items-end md:items-center z-50 pb-20 md:pb-0">
 
-          <div
-            ref={popupRef}
-            className="bg-white w-full md:max-w-md rounded-2xl p-4"
-          >
+          <div ref={popupRef} className="bg-white w-full md:max-w-md rounded-2xl p-4 mb-4 md:mb-0">
             <img
               src={activeProduct.image}
               className="w-full h-40 object-cover rounded"
