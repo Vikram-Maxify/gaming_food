@@ -8,10 +8,14 @@ import {
     deleteCategory,
     updateCategory,
 } from "../redux/slice/categorySlice"
+import { getProducts } from "../redux/slice/AdminProductSlice";
+import { ImBin } from "react-icons/im";
+import { FaRegEdit } from "react-icons/fa";
 
 const Category = () => {
     const dispatch = useDispatch();
     const { categories, loading } = useSelector((state) => state.category);
+    const { products } = useSelector((state) => state.product);
 
     const [name, setName] = useState("");
     const [image, setImage] = useState(null);
@@ -20,6 +24,7 @@ const Category = () => {
 
     useEffect(() => {
         dispatch(getCategories());
+        dispatch(getProducts());
     }, [dispatch]);
 
     // ➕ ADD / UPDATE
@@ -55,6 +60,13 @@ const Category = () => {
     // ❌ DELETE
     const handleDelete = (id) => {
         dispatch(deleteCategory(id));
+    };
+
+    // 🔥 Count products per category
+    const getProductCount = (categoryId) => {
+        return products.filter(
+            (p) => p.category?._id === categoryId || p.category === categoryId
+        ).length;
     };
 
     return (
@@ -97,9 +109,10 @@ const Category = () => {
             <div className="bg-white rounded-xl shadow overflow-hidden">
 
                 {/* Header */}
-                <div className="grid grid-cols-4 bg-gray-100 p-3 text-sm font-semibold">
+                <div className="grid grid-cols-5 bg-gray-100 p-3 text-sm font-semibold">
                     <span>Image</span>
                     <span>Name</span>
+                    <span>Products</span>
                     <span>Date</span>
                     <span>Action</span>
                 </div>
@@ -113,7 +126,7 @@ const Category = () => {
                     categories.map((cat) => (
                         <div
                             key={cat._id}
-                            className="grid grid-cols-4 p-3 border-t items-center text-sm"
+                            className="grid grid-cols-5 p-3 border-t items-center text-sm"
                         >
                             {/* Image */}
                             <img
@@ -123,10 +136,15 @@ const Category = () => {
                             />
 
                             {/* Name */}
-                            <span>{cat.name}</span>
+                            <span className="font-medium">{cat.name}</span>
+
+                            {/* Product Count */}
+                            <span className="text-orange-600 font-semibold">
+                                {getProductCount(cat._id)} items
+                            </span>
 
                             {/* Date */}
-                            <span>
+                            <span className="text-gray-500">
                                 {new Date(cat.createdAt).toLocaleDateString()}
                             </span>
 
@@ -134,16 +152,16 @@ const Category = () => {
                             <div className="flex gap-2">
                                 <button
                                     onClick={() => handleEdit(cat)}
-                                    className="px-2 py-1 bg-gray-200 rounded"
+                                    className="px-2 py-1 bg-gray-200 rounded text-xl"
                                 >
-                                    Edit
+                                     <FaRegEdit />
                                 </button>
 
                                 <button
                                     onClick={() => handleDelete(cat._id)}
-                                    className="px-2 py-1 bg-red-200 text-red-600 rounded"
+                                    className="px-2 py-1 bg-red-200 text-red-600 rounded text-xl"
                                 >
-                                    Delete
+                                    <ImBin />
                                 </button>
                             </div>
                         </div>

@@ -13,6 +13,7 @@ import {
     LogOut,
     SquareMenu,
     Table,
+    User,
     
 } from "lucide-react";
 
@@ -31,6 +32,7 @@ const Sidebar = () => {
         { to: "/admin/users", label: "Users", icon: Users },
         { to: "/admin/coins_mng", label: "Coin Manage", icon: Gift },
         { to: "/admin/settings", label: "Settings", icon: Settings },
+        { to: "/admin/profile", label: "Profile", icon: User },
     ];
 
     // 🔥 Logout handler

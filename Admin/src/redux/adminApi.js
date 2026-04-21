@@ -85,11 +85,15 @@ export const updateSettingsAPI = (data) =>
 
 // 🔹 GET ALL ORDERS
 export const getOrdersAPI = () =>
-  API.get("/admin/order");
+  API.get("/order/all");
 
 // 🔹 UPDATE STATUS
 export const updateOrderStatusAPI = (id, data) =>
-  API.put(`/admin/order/${id}`, data);
+  API.put(`/order/${id}`, data);
+
+// 🔹 GET ALL USERS
+export const getAllUsersAPI = () =>
+  API.get("/users");
 
 
 export default API;
