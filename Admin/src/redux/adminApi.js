@@ -74,4 +74,22 @@ export const deleteTableAPI = (id) =>
   API.delete(`/table/delete/${id}`);
 
 
+// 🔹 GET SETTINGS
+export const getSettingsAPI = () =>
+  API.get("/admin/settings");
+
+// 🔹 UPDATE SETTINGS
+export const updateSettingsAPI = (data) =>
+  API.post("/admin/settings", data); // formData (title + logo)
+
+
+// 🔹 GET ALL ORDERS
+export const getOrdersAPI = () =>
+  API.get("/admin/order");
+
+// 🔹 UPDATE STATUS
+export const updateOrderStatusAPI = (id, data) =>
+  API.put(`/admin/order/${id}`, data);
+
+
 export default API;
