@@ -63,7 +63,7 @@ const selectTable = async (req, res) => {
 // ✅ Create Order
 const createOrder = async (req, res) => {
   try {
-    const { items } = req.body;
+    const { items, takeaway } = req.body;
 
     if (!items || items.length === 0) {
       return res.status(400).json({ message: "No items" });
@@ -71,7 +71,8 @@ const createOrder = async (req, res) => {
 
     const user = await User.findById(req.user._id);
 
-    if (!user.tableNumber) {
+    // ❌ Table required only for dine-in
+    if (!takeaway && !user.tableNumber) {
       return res.status(400).json({
         message: "Please select table first",
       });
@@ -87,16 +88,21 @@ const createOrder = async (req, res) => {
         return res.status(400).json({ message: "Invalid product" });
       }
 
-      const credits = product.creditPoints * item.quantity;
+      const quantity = item.quantity || 1;
+      const spiceLevel = item.spiceLevel || "medium"; // 🌶️ default
+
+      const credits = product.creditPoints * quantity;
       totalCredits += credits;
 
       orderItems.push({
         product: product._id,
-        quantity: item.quantity,
+        quantity,
         creditPoints: product.creditPoints,
+        spiceLevel, // ✅ added
       });
     }
 
+    // ⚠️ spelling fix: credits (not credit)
     if (user.credits < totalCredits) {
       return res.status(400).json({
         message: "Not enough credits",
@@ -108,18 +114,21 @@ const createOrder = async (req, res) => {
 
     const order = await Order.create({
       user: user._id,
-      tableNumber: user.tableNumber,
+      tableNumber: takeaway ? "TAKEAWAY" : user.tableNumber,
+      takeaway: takeaway || false, // ✅ added
       items: orderItems,
       totalCredits,
       status: "pending",
     });
 
-    // 🔥 Table update (important)
-    const table = await Table.findOne({ tableNumber: user.tableNumber });
-    if (table) {
-      table.isOccupied = true;
-      table.currentOrder = order._id; // latest order
-      await table.save();
+    // 🔥 Table update only for dine-in
+    if (!takeaway) {
+      const table = await Table.findOne({ tableNumber: user.tableNumber });
+      if (table) {
+        table.isOccupied = true;
+        table.currentOrder = order._id;
+        await table.save();
+      }
     }
 
     const populatedOrder = await Order.findById(order._id)

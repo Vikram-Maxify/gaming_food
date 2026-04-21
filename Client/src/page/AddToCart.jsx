@@ -18,6 +18,7 @@ const AddToCart = () => {
 
   const [selectedTable, setSelectedTable] = useState(null);
   const [showTableModal, setShowTableModal] = useState(false);
+  const [takeaway, setTakeaway] = useState(false); // 🥡
 
   // 🔥 Fetch tables
   useEffect(() => {
@@ -58,23 +59,39 @@ const AddToCart = () => {
     );
   };
 
+  // 🌶️ Spice Update
+  const updateSpice = (item, spiceLevel) => {
+    dispatch(
+      updateQuantityThunk({
+        productId: item.product,
+        variantId: item.variantId,
+        spiceLevel,
+      })
+    );
+  };
+
   // ✅ PLACE ORDER
   const handlePlaceOrder = async () => {
-    if (!selectedTable) {
-      alert("Please select a table");
-      return;
-    }
-
     try {
-      // ✅ Step 1: Select Table
-      await dispatch(selectTable(selectedTable)).unwrap();
+      // 👉 Only for dine-in
+      if (!takeaway) {
+        if (!selectedTable) {
+          alert("Please select a table");
+          return;
+        }
+        await dispatch(selectTable(selectedTable)).unwrap();
+      }
 
-      // ✅ Step 2: Create Order
+      // ✅ Create Order
       await dispatch(
         createOrder({
-          tableNumber: selectedTable,
-          items: cartItems,
-          totalAmount,
+          takeaway,
+          tableNumber: takeaway ? null : selectedTable,
+          items: cartItems.map((item) => ({
+            product: item.product,
+            quantity: item.quantity,
+            spiceLevel: item.spiceLevel || "medium",
+          })),
         })
       ).unwrap();
 
@@ -82,8 +99,9 @@ const AddToCart = () => {
 
       setShowTableModal(false);
       setSelectedTable(null);
+      setTakeaway(false);
 
-      // 👉 Optional: clear cart
+      // 👉 optional: clear cart
       // dispatch(clearCart());
 
     } catch (err) {
@@ -117,20 +135,37 @@ const AddToCart = () => {
 
                     <div className="flex-1">
                       <h3 className="font-medium">{item.name}</h3>
+
                       <p className="text-sm text-gray-500">
                         {item.variantName}
                       </p>
+
                       <p className="text-green-600 font-semibold">
                         ₹{item.price * item.quantity}
                       </p>
+
+                      {/* 🌶️ Spice Selector */}
+                      <select
+                        value={item.spiceLevel || "medium"}
+                        onChange={(e) =>
+                          updateSpice(item, e.target.value)
+                        }
+                        className="mt-1 border rounded px-2 py-1 text-sm"
+                      >
+                        <option value="low">🌶️ Low</option>
+                        <option value="medium">🌶️ Medium</option>
+                        <option value="high">🌶️ High</option>
+                      </select>
                     </div>
 
+                    {/* Quantity */}
                     <div className="flex items-center border rounded-lg">
                       <button onClick={() => decreaseQty(item)} className="px-2">−</button>
                       <span className="px-3">{item.quantity}</span>
                       <button onClick={() => increaseQty(item)} className="px-2">+</button>
                     </div>
 
+                    {/* Remove */}
                     <button
                       onClick={() => removeItem(item)}
                       className="bg-red-500 text-white px-3 py-1 rounded"
@@ -163,8 +198,24 @@ const AddToCart = () => {
                 </span>
               </div>
 
+              {/* 🥡 Takeaway Toggle */}
+              <div className="flex items-center justify-between mt-3">
+                <span>Takeaway</span>
+                <input
+                  type="checkbox"
+                  checked={takeaway}
+                  onChange={(e) => setTakeaway(e.target.checked)}
+                />
+              </div>
+
               <button
-                onClick={() => setShowTableModal(true)}
+                onClick={() => {
+                  if (takeaway) {
+                    handlePlaceOrder();
+                  } else {
+                    setShowTableModal(true);
+                  }
+                }}
                 disabled={!cartItems.length}
                 className="w-full mt-4 bg-black text-white py-2 rounded disabled:bg-gray-400"
               >
