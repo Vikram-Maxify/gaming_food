@@ -13,6 +13,7 @@ import ProtectedRoute from './redux/ProtectedRoute';
 import AddProduct from './pages/AddProduct';
 import AdminCategory from './pages/AdminCategory';
 import AdminOrders from './pages/AdminOrders';
+import AdminOtpSettings from './pages/AdminOtpSettings';
 
 
 function App() {
@@ -21,13 +22,13 @@ function App() {
     <>
       <Routes>
         <Route
-  path="/admin"
-  element={
-    <ProtectedRoute>
-      <AdminLayout />
-    </ProtectedRoute>
-  }
->
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<Dashboard />} />
           <Route path="menu" element={<Menu />} />
           <Route path="orders" element={<Orders />} />
@@ -37,9 +38,10 @@ function App() {
           <Route path="coins_mng" element={<CoinManage />} />
           <Route path="add_item" element={<AddProduct />} />
           <Route path="categories" element={<AdminCategory />} />
+          <Route path='order' element={<AdminOrders />} />
+          <Route path='otpsetting' element={<AdminOtpSettings />} />
         </Route>
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path='/order' element={<AdminOrders />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
       </Routes>
     </>
   )

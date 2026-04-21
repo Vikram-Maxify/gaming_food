@@ -1,13 +1,46 @@
-const axios = require("axios");
+// utils/sendOTP.js
+
+const send2Factor = require("./send2Factor");
+const sendFast2SMS = require("./sendFast2SMS");
+const getOtpSettings = require("./getOtpSettings");
 
 const sendOTP = async (mobile, otp) => {
-    const apiKey = process.env.TWO_FACTOR_API_KEY;
+    const settings = await getOtpSettings();
 
-    const url = `https://2factor.in/API/V1/${apiKey}/SMS/${mobile}/${otp}`;
+    try {
+        // 🔥 Priority based
+        if (settings.provider === "2factor" && settings.is2FactorActive) {
+            await send2Factor(mobile, otp);
+            console.log("OTP sent via 2Factor");
+            return;
+        }
 
-    const response = await axios.get(url);
+        if (settings.provider === "fast2sms" && settings.isFast2SMSActive) {
+            await sendFast2SMS(mobile, otp);
+            console.log("OTP sent via Fast2SMS");
+            return;
+        }
 
-    return response.data;
+        throw new Error("No active OTP provider");
+
+    } catch (error) {
+        console.log("Primary failed, trying fallback...");
+
+        // 🔁 fallback logic
+        if (settings.isFast2SMSActive) {
+            await sendFast2SMS(mobile, otp);
+            console.log("Fallback: Fast2SMS success");
+            return;
+        }
+
+        if (settings.is2FactorActive) {
+            await send2Factor(mobile, otp);
+            console.log("Fallback: 2Factor success");
+            return;
+        }
+
+        throw new Error("All OTP providers failed");
+    }
 };
 
 module.exports = sendOTP;
