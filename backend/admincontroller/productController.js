@@ -8,6 +8,8 @@ const createProduct = async (req, res) => {
   try {
     const { name, category, type, price, creditPoints } = req.body;
 
+    console.log(req.body)
+
     if (!name || !category || !creditPoints || !req.file) {
       return res.status(400).json({
         message: "All fields required (name, category, creditPoints, image)",
@@ -25,6 +27,8 @@ const createProduct = async (req, res) => {
       name,
       image: imageUrl,
       category,
+      price,
+      type,
       creditPoints,
     });
 

@@ -2,8 +2,7 @@ const Order = require("../models/orderModel");
 const User = require("../models/authModels");
 const Product = require("../models/productModel");
 
-
-
+// ✅ Select Table
 const selectTable = async (req, res) => {
   try {
     const { tableNumber } = req.body;
@@ -12,7 +11,6 @@ const selectTable = async (req, res) => {
       return res.status(400).json({ message: "Table number required" });
     }
 
-    // ❗ check if table already occupied
     const existingOrder = await Order.findOne({
       tableNumber,
       status: { $in: ["pending", "preparing"] },
@@ -25,9 +23,16 @@ const selectTable = async (req, res) => {
     }
 
     const user = await User.findById(req.user._id);
-
     user.tableNumber = tableNumber;
     await user.save();
+
+    // 🔥 SOCKET EMIT (TABLE SELECTED)
+    const io = req.app.get("io");
+
+    io.to("adminRoom").emit("tableSelected", {
+      userId: user._id,
+      tableNumber,
+    });
 
     res.json({ message: "Table selected", tableNumber });
   } catch (error) {
@@ -35,7 +40,7 @@ const selectTable = async (req, res) => {
   }
 };
 
-
+// ✅ Create Order
 const createOrder = async (req, res) => {
   try {
     const { items } = req.body;
@@ -46,14 +51,12 @@ const createOrder = async (req, res) => {
 
     const user = await User.findById(req.user._id);
 
-    // ❗ check table selected
     if (!user.tableNumber) {
       return res.status(400).json({
         message: "Please select table first",
       });
     }
 
-    // ❗ double check table occupied
     const existingOrder = await Order.findOne({
       tableNumber: user.tableNumber,
       status: { $in: ["pending", "preparing"] },
@@ -85,32 +88,42 @@ const createOrder = async (req, res) => {
       });
     }
 
-    // ❗ check credits
     if (user.credits < totalCredits) {
       return res.status(400).json({
         message: "Not enough credits",
       });
     }
 
-    // deduct credits
     user.credits -= totalCredits;
     await user.save();
 
-    // create order
     const order = await Order.create({
       user: user._id,
       tableNumber: user.tableNumber,
       items: orderItems,
       totalCredits,
+      status: "pending",
     });
 
-    res.status(201).json({ message: "Order placed", order });
+    // 🔥 SOCKET EMIT (NEW ORDER)
+    const io = req.app.get("io");
+
+    const populatedOrder = await Order.findById(order._id)
+      .populate("items.product", "name image")
+      .populate("user", "name");
+
+    io.to("adminRoom").emit("newOrder", populatedOrder);
+
+    res.status(201).json({
+      message: "Order placed",
+      order: populatedOrder,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-
+// ✅ My Orders
 const getMyOrders = async (req, res) => {
   const orders = await Order.find({ user: req.user._id })
     .populate("items.product", "name image")
@@ -118,7 +131,6 @@ const getMyOrders = async (req, res) => {
 
   res.json(orders);
 };
-
 
 module.exports = {
   selectTable,

@@ -13,8 +13,10 @@ import {
 export const createProduct = createAsyncThunk(
     "product/create",
     async (data, { rejectWithValue }) => {
+        console.log(data)
         try {
             const res = await createProductAPI(data);
+
             return res.data.product;
         } catch (err) {
             return rejectWithValue(err.response?.data?.message);
