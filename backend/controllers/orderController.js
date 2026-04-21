@@ -11,6 +11,20 @@ const selectTable = async (req, res) => {
       return res.status(400).json({ message: "Table number required" });
     }
 
+    // ✅ Check table exists
+    const table = await Table.findOne({ tableNumber });
+    if (!table) {
+      return res.status(404).json({ message: "Table not found" });
+    }
+
+    // ✅ Check already occupied (direct table check better)
+    if (table.isOccupied) {
+      return res.status(400).json({
+        message: "Table already occupied",
+      });
+    }
+
+    // ✅ Optional: Order check (extra safety)
     const existingOrder = await Order.findOne({
       tableNumber,
       status: { $in: ["pending", "preparing"] },
@@ -18,15 +32,20 @@ const selectTable = async (req, res) => {
 
     if (existingOrder) {
       return res.status(400).json({
-        message: "Table already occupied",
+        message: "Table already occupied (order exists)",
       });
     }
 
+    // ✅ Assign table to user
     const user = await User.findById(req.user._id);
     user.tableNumber = tableNumber;
     await user.save();
 
-    // 🔥 SOCKET SAFE
+    // 🔥 IMPORTANT: Update table status
+    table.isOccupied = true;
+    await table.save();
+
+    // 🔥 SOCKET
     const io = req.app.get("io");
     if (io) {
       io.to("adminRoom").emit("tableSelected", {
