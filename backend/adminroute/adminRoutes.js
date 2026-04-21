@@ -10,6 +10,7 @@ const {
   getAdminProfile,
   logoutAdmin,
 } = require("../admincontroller/adminAuthController");
+const { updateOtpSettings } = require("../admincontroller/adminOtpController");
 
 
 // 🔓 Public
@@ -21,7 +22,9 @@ router.post("/register", registerAdmin);
 
 // 🔐 Admin Protected
 router.get("/profile", protect, admin, getAdminProfile);
+router.post("/otp-settings",protect,admin, updateOtpSettings);
 router.post("/logout", protect, admin, logoutAdmin);
+
 
 
 module.exports = router;
