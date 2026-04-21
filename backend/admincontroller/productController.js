@@ -6,13 +6,33 @@ const uploadToImageBB = require("../utils/uploadToImageBB");
 // ✅ CREATE (your existing)
 const createProduct = async (req, res) => {
   try {
-    const { name, category, type, price, creditPoints } = req.body;
+    const { name, category, type, creditPoints, variants } = req.body;
 
-    console.log(req.body)
-
-    if (!name || !category || !creditPoints || !req.file) {
+    // 🔍 validate basic fields
+    if (!name || !category || !type || !creditPoints || !req.file) {
       return res.status(400).json({
-        message: "All fields required (name, category, creditPoints, image)",
+        message: "All fields required (name, category, type, creditPoints, image)",
+      });
+    }
+
+    // 🔍 validate variants
+    if (!variants) {
+      return res.status(400).json({
+        message: "Variants are required",
+      });
+    }
+
+    let parsedVariants;
+
+    try {
+      parsedVariants = JSON.parse(variants); // ⚠️ frontend se string aata hai
+    } catch (err) {
+      return res.status(400).json({ message: "Invalid variants format" });
+    }
+
+    if (!Array.isArray(parsedVariants) || parsedVariants.length === 0) {
+      return res.status(400).json({
+        message: "At least one variant required",
       });
     }
 
@@ -27,9 +47,9 @@ const createProduct = async (req, res) => {
       name,
       image: imageUrl,
       category,
-      price,
       type,
       creditPoints,
+      variants: parsedVariants,
     });
 
     res.status(201).json({
@@ -82,7 +102,7 @@ const getProductById = async (req, res) => {
 // ✅ UPDATE PRODUCT
 const updateProduct = async (req, res) => {
   try {
-    const { name, category, creditPoints } = req.body;
+    const { name, category, type, creditPoints, variants } = req.body;
 
     let product = await Product.findById(req.params.id);
 
@@ -90,11 +110,21 @@ const updateProduct = async (req, res) => {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    // update fields if provided
     if (name) product.name = name;
+    if (type) product.type = type;
     if (creditPoints) product.creditPoints = creditPoints;
 
-    // check & update category
+    // ✅ update variants
+    if (variants) {
+      try {
+        const parsedVariants = JSON.parse(variants);
+        product.variants = parsedVariants;
+      } catch (err) {
+        return res.status(400).json({ message: "Invalid variants format" });
+      }
+    }
+
+    // ✅ category update
     if (category) {
       const categoryExists = await Category.findById(category);
       if (!categoryExists) {
@@ -103,7 +133,7 @@ const updateProduct = async (req, res) => {
       product.category = category;
     }
 
-    // update image if new file
+    // ✅ image update
     if (req.file) {
       const imageUrl = await uploadToImageBB(req.file);
       product.image = imageUrl;
