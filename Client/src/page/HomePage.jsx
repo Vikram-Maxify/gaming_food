@@ -13,16 +13,16 @@ import Rice from '../components/Rice'
 const HomePage = () => {
   return (
     <>
-    <Navbar />
-    <SearchBar />
-    <Banner />
-    <Categories />
-    <FoodGrid />
-    <FastFoods />
-    <Starters />
-    <MainCourse />
-    <Breads />
-    <Rice />
+      <Navbar />
+      <SearchBar />
+      <Banner />
+      <Categories />
+      <FoodGrid />
+      <FastFoods />
+      <Starters />
+      <MainCourse />
+      <Breads />
+      <Rice />
     </>
   )
 }
