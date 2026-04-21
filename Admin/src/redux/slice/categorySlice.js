@@ -14,7 +14,9 @@ import {
 export const createCategory = createAsyncThunk(
     "category/create",
     async (data, { rejectWithValue }) => {
-        console.log(data);
+        for (let pair of data.entries()) {
+            console.log(pair);
+        }
         try {
             const res = await createCategoryAPI(data);
             return res.data.category;
