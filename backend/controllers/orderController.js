@@ -26,13 +26,14 @@ const selectTable = async (req, res) => {
     user.tableNumber = tableNumber;
     await user.save();
 
-    // 🔥 SOCKET EMIT (TABLE SELECTED)
+    // 🔥 SOCKET SAFE
     const io = req.app.get("io");
-
-    io.to("adminRoom").emit("tableSelected", {
-      userId: user._id,
-      tableNumber,
-    });
+    if (io) {
+      io.to("adminRoom").emit("tableSelected", {
+        userId: user._id,
+        tableNumber,
+      });
+    }
 
     res.json({ message: "Table selected", tableNumber });
   } catch (error) {
@@ -105,14 +106,15 @@ const createOrder = async (req, res) => {
       status: "pending",
     });
 
-    // 🔥 SOCKET EMIT (NEW ORDER)
-    const io = req.app.get("io");
-
     const populatedOrder = await Order.findById(order._id)
       .populate("items.product", "name image")
       .populate("user", "name");
 
-    io.to("adminRoom").emit("newOrder", populatedOrder);
+    // 🔥 SOCKET SAFE
+    const io = req.app.get("io");
+    if (io) {
+      io.to("adminRoom").emit("newOrder", populatedOrder);
+    }
 
     res.status(201).json({
       message: "Order placed",
@@ -125,11 +127,15 @@ const createOrder = async (req, res) => {
 
 // ✅ My Orders
 const getMyOrders = async (req, res) => {
-  const orders = await Order.find({ user: req.user._id })
-    .populate("items.product", "name image")
-    .sort({ createdAt: -1 });
+  try {
+    const orders = await Order.find({ user: req.user._id })
+      .populate("items.product", "name image")
+      .sort({ createdAt: -1 });
 
-  res.json(orders);
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 module.exports = {

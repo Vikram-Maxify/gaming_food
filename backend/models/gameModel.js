@@ -12,7 +12,7 @@ const gameSchema = new mongoose.Schema(
       {
         user: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "User",
+         ref: "Auth",
         },
         symbol: {
           type: String, // "X" or "O"
