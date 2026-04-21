@@ -1,15 +1,29 @@
 const axios = require("axios");
+const FormData = require("form-data");
 
 const uploadToImageBB = async (file) => {
-  const base64Image = file.buffer.toString("base64");
+  try {
+    const formData = new FormData();
 
-  const url = `https://api.imgbb.com/1/upload?key=${process.env.IMGBB_API_KEY}`;
+    // ✅ convert buffer → base64
+    const base64Image = file.buffer.toString("base64");
 
-  const response = await axios.post(url, {
-    image: base64Image,
-  });
+    formData.append("image", base64Image);
 
-  return response.data.data.url; // return only image URL
+    const res = await axios.post(
+      `https://api.imgbb.com/1/upload?key=478df32b636df51d74ba1b109e81dc67`,
+      formData,
+      {
+        headers: formData.getHeaders(), // ✅ IMPORTANT
+      }
+    );
+
+    return res.data.data.url;
+
+  } catch (error) {
+    console.error("IMGBB ERROR:", error.response?.data || error.message);
+    throw new Error("Image upload failed");
+  }
 };
 
 module.exports = uploadToImageBB;
