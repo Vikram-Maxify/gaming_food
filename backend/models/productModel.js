@@ -1,5 +1,36 @@
 const mongoose = require("mongoose");
 
+// 🍔 Variant Schema (Size-based)
+const variantSchema = new mongoose.Schema({
+  name: {
+    type: String, // e.g. Small / Medium / Large
+    required: true,
+  },
+
+  price: {
+    type: Number,
+    required: true,
+    min: 0,
+  },
+
+  discountPrice: {
+    type: Number,
+    validate: {
+      validator: function (value) {
+        return !value || value < this.price;
+      },
+      message: "Discount price must be less than price",
+    },
+  },
+
+  stock: {
+    type: Number,
+    default: 0,
+  },
+});
+
+
+// 🍕 Product Schema
 const productSchema = new mongoose.Schema(
   {
     name: {
@@ -9,18 +40,26 @@ const productSchema = new mongoose.Schema(
     },
 
     image: {
-      type: String, // ImageBB URL
-      required: true,
-    },
-    type: {
       type: String,
       required: true,
-      trim: true,
     },
-    price: {
-      type: Number,
+
+    // 🍃 Veg / Non-Veg
+    type: {
+      type: String,
+      enum: ["veg", "non-veg"],
       required: true,
-      min: 0,
+    },
+
+    // ❌ REMOVE single price (now using variants)
+    // price: {}
+
+    variants: {
+      type: [variantSchema],
+      validate: [
+        (val) => val.length > 0,
+        "At least one variant is required",
+      ],
     },
 
     category: {
@@ -33,6 +72,17 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
       min: 0,
+    },
+
+    isAvailable: {
+      type: Boolean,
+      default: true,
+    },
+
+    status: {
+      type: String,
+      enum: ["active", "inactive"],
+      default: "active",
     },
   },
   { timestamps: true }
