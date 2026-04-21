@@ -1,11 +1,13 @@
 import React, { useState } from "react";
+import { IoIosStar } from "react-icons/io";
+
 
 const menuItems = [
-    { id: 1, name: "Margherita Pizza", category: "pizza", type: "veg", price: 200, rating: 4.2 , image : "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&auto=format&fit=crop&q=60"},
-    { id: 2, name: "Pepperoni Pizza", category: "pizza", type: "nonveg", price: 350, rating: 4.5 },
-    { id: 3, name: "Veg Burger", category: "burger", type: "veg", price: 120, rating: 4.0 },
-    { id: 4, name: "Chicken Burger", category: "burger", type: "nonveg", price: 180, rating: 4.3 },
-    { id: 5, name: "Pasta Alfredo", category: "pasta", type: "veg", price: 250, rating: 4.1 },
+    { id: 1, name: "Margherita Pizza", category: "pizza", type: "veg", price: 200, discount: 30, rating: 4.2, image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&auto=format&fit=crop&q=60" },
+    { id: 2, name: "Pepperoni Pizza", category: "pizza", type: "nonveg", price: 350, discount: 40, rating: 4.5, image: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=300&auto=format&fit=crop&q=80" },
+    { id: 3, name: "Veg Burger", category: "burger", type: "veg", price: 120, discount: 25, rating: 4.0, image: "https://plus.unsplash.com/premium_photo-1683619761492-639240d29bb5?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
+    { id: 4, name: "Chicken Burger", category: "burger", type: "nonveg", price: 180, discount: 60, rating: 4.3, image: "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
+    { id: 5, name: "Pasta Alfredo", category: "pasta", type: "veg", price: 250, discount: 42, rating: 4.1, image: "https://plus.unsplash.com/premium_photo-1664478288635-b9703a502393?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
 ];
 
 // ✅ Toggle Component (same file)
@@ -119,10 +121,19 @@ export default function MenuPage() {
                 {filteredItems.map((item) => (
                     <div
                         key={item.id}
-                        className="bg-white p-4 rounded-xl shadow hover:shadow-lg transition"
+                        className="bg-white p-4 rounded-xl shadow hover:shadow-xl transition hover:outline outline-gray-200"
                     >
-                       
-                        <h2 className="text-lg font-semibold">{item.name}</h2>
+                        <div className="relative w-full">
+                            <img
+                                src={item.image}
+                                className="w-full h-52 object-cover rounded-lg transition-transform duration-500 hover:scale-105"
+                            />
+
+                            <h3 className="absolute bottom-2 left-2 bg-black/65 text-white px-2 py-1 rounded-md text-sm">
+                                {item.discount}% OFF
+                            </h3>
+                        </div>
+                        <h2 className="text-lg font-semibold mt-2">{item.name}</h2>
 
                         <p className="text-sm text-gray-500 capitalize">
                             {item.type} • {item.category}
@@ -130,9 +141,11 @@ export default function MenuPage() {
 
                         <div className="flex justify-between items-center mt-2">
                             <span className="font-bold">₹{item.price}</span>
-                            <span className="text-yellow-500">
-                                ⭐ {item.rating}
-                            </span>
+
+                            <div className="flex items-center gap-0 text-white bg-[#267E3E] px-[5px] rounded-md">
+                                <span>{item.rating}</span>
+                                <IoIosStar className="text-sm" />
+                            </div>
                         </div>
 
                         <button className="mt-3 w-full bg-red-500 text-white py-2 rounded hover:bg-red-600">
