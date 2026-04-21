@@ -1,55 +1,127 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import API from "./axios";
+
+// 🛒 ADD
+export const addToCartThunk = createAsyncThunk(
+  "cart/add",
+  async (data, { rejectWithValue }) => {
+    try {
+      const res = await API.post("/api/cart/add", data);
+      return res.data.cart;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message);
+    }
+  }
+);
+
+// 📦 GET CART
+export const getCartThunk = createAsyncThunk(
+  "cart/get",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await API.get("/api/cart");
+      return res.data.cart;
+    } catch (err) {
+      return rejectWithValue("Failed to load cart");
+    }
+  }
+);
+
+// ❌ REMOVE ITEM
+export const removeFromCartThunk = createAsyncThunk(
+  "cart/remove",
+  async (data, { rejectWithValue }) => {
+    try {
+      const res = await API.post("/api/cart/remove", data);
+      return res.data.cart;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message);
+    }
+  }
+);
+
+// 🔄 UPDATE QUANTITY
+export const updateQuantityThunk = createAsyncThunk(
+  "cart/update",
+  async (data, { rejectWithValue }) => {
+    try {
+      const res = await API.put("/api/cart/update", data);
+      return res.data.cart;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message);
+    }
+  }
+);
 
 const cartSlice = createSlice({
-    name: "cart",
-    initialState: {
-        cartItems: [],
-    },
+  name: "cart",
+  initialState: {
+    cartItems: [],
+    totalAmount: 0,
+    loading: false,
+    error: null,
+  },
+  reducers: {},
 
-    reducers: {
-        addToCart: (state, action) => {
-            const item = action.payload;
+  extraReducers: (builder) => {
+    builder
 
-            const existItem = state.cartItems.find(
-                (x) =>
-                    x.productId === item.productId &&
-                    x.variantName === item.variantName
-            );
+      // 🛒 ADD
+      .addCase(addToCartThunk.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(addToCartThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.cartItems = action.payload.items;
+        state.totalAmount = action.payload.totalAmount;
+      })
+      .addCase(addToCartThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
 
-            if (existItem) {
-                existItem.quantity += 1;
-            } else {
-                state.cartItems.push(item);
-            }
-        },
+      // 📦 GET
+      .addCase(getCartThunk.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getCartThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.cartItems = action.payload.items;
+        state.totalAmount = action.payload.totalAmount;
+      })
+      .addCase(getCartThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
 
-        removeFromCart: (state, action) => {
-            state.cartItems = state.cartItems.filter(
-                (item) => item.productId !== action.payload
-            );
-        },
+      // ❌ REMOVE
+      .addCase(removeFromCartThunk.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(removeFromCartThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.cartItems = action.payload.items;
+        state.totalAmount = action.payload.totalAmount;
+      })
+      .addCase(removeFromCartThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
 
-        increaseQty: (state, action) => {
-            const item = state.cartItems.find(
-                (i) => i.productId === action.payload
-            );
-            if (item) item.quantity += 1;
-        },
-
-        decreaseQty: (state, action) => {
-            const item = state.cartItems.find(
-                (i) => i.productId === action.payload
-            );
-            if (item && item.quantity > 1) item.quantity -= 1;
-        },
-    },
+      // 🔄 UPDATE
+      .addCase(updateQuantityThunk.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateQuantityThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.cartItems = action.payload.items;
+        state.totalAmount = action.payload.totalAmount;
+      })
+      .addCase(updateQuantityThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+  },
 });
-
-export const {
-    addToCart,
-    removeFromCart,
-    increaseQty,
-    decreaseQty,
-} = cartSlice.actions;
 
 export default cartSlice.reducer;

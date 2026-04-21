@@ -12,7 +12,7 @@ const carGameSchema = new mongoose.Schema(
       {
         user: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "User",
+         ref: "Auth",
         },
         progress: {
           type: Number,
@@ -29,7 +29,7 @@ const carGameSchema = new mongoose.Schema(
 
     winner: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+     ref: "Auth",
       default: null,
     },
 

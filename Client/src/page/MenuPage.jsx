@@ -1,35 +1,48 @@
 import React, { useState, useEffect } from "react";
 import { IoIosStar } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
+
 import { fetchProducts } from "../reducer/slice/productSlice";
-// import { addToCart } from "../redux/slices/cartSlice"; // optional
+import {
+  addToCartThunk,
+  getCartThunk,
+} from "../reducer/slice/cartSlice";
+import { selectTable, createOrder } from "../reducer/slice/orderSlice";
 
 export default function MenuPage() {
   const dispatch = useDispatch();
 
-  const { products, loading, error } = useSelector(
-    (state) => state.products
+  // ✅ Redux state
+  const { products, loading, error } = useSelector((state) => state.products);
+  const {
+    cartItems,
+    loading: cartLoading,
+  } = useSelector((state) => state.cart);
+  const { tableNumber, loading: orderLoading } = useSelector(
+    (state) => state.order
   );
 
+  // ✅ Filters
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedType, setSelectedType] = useState("veg");
   const [priceRange, setPriceRange] = useState(500);
 
-  // ✅ Store selected variant per product
+  // ✅ Variant state
   const [selectedVariants, setSelectedVariants] = useState({});
 
-  // 🔥 Fetch products
+  // 🔥 Fetch products + cart
   useEffect(() => {
     dispatch(fetchProducts());
+    dispatch(getCartThunk()); // ✅ important
   }, [dispatch]);
 
-  // ✅ Get minimum price
+  // ✅ Min price
   const getMinPrice = (variants = []) => {
     if (!variants.length) return 0;
-    return Math.min(...variants?.map((v) => v.price));
+    return Math.min(...variants.map((v) => v.price));
   };
 
-  // ✅ Filter logic
+  // ✅ Filter products
   const filteredItems = products?.filter((item) => {
     const minPrice = getMinPrice(item.variants);
 
@@ -43,7 +56,7 @@ export default function MenuPage() {
     );
   });
 
-  // ✅ Handle variant change
+  // ✅ Select variant
   const handleVariantChange = (productId, index) => {
     setSelectedVariants((prev) => ({
       ...prev,
@@ -51,34 +64,76 @@ export default function MenuPage() {
     }));
   };
 
-  // ✅ Add to cart
+  // 🔥 ✅ FIXED ADD TO CART (THUNK)
   const handleAddToCart = (product) => {
     const variantIndex = selectedVariants[product._id] || 0;
     const variant = product.variants[variantIndex];
 
-    const cartItem = {
-      productId: product._id,
-      name: product.name,
-      image: product.image,
-      variantName: variant.name,
-      price: variant.price,
-      quantity: 1,
-    };
+    dispatch(
+      addToCartThunk({
+        productId: product._id,
+        variantId: variant._id, // ⚠️ IMPORTANT
+        quantity: 1,
+      })
+    );
+  };
 
-    console.log("ADD TO CART 👉", cartItem);
+  // ✅ Select table
+  const handleSelectTable = (table) => {
+    dispatch(selectTable(table));
+  };
 
-    // dispatch(addToCart(cartItem));
+  // 🔥 ✅ FIXED ORDER
+  const handlePlaceOrder = () => {
+    if (!tableNumber) {
+      alert("Please select table first ❗");
+      return;
+    }
+
+    if (cartItems.length === 0) {
+      alert("Cart is empty ❗");
+      return;
+    }
+
+    const items = cartItems.map((item) => ({
+      product: item.product, // 👈 backend se aata hai
+      variantId: item.variantId, // ⚠️ IMPORTANT
+      quantity: item.quantity,
+    }));
+
+    dispatch(createOrder(items));
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
+    <div className="min-h-screen bg-gray-100 p-4 pb-24">
+
       <h1 className="text-xl md:text-2xl font-semibold mb-5">
         Menu Items
       </h1>
 
+      {/* 🪑 TABLE SELECT */}
+      <div className="mb-5">
+        <h2 className="mb-2 font-semibold">Select Table</h2>
+        <div className="flex gap-2 flex-wrap">
+          {[1, 2, 3, 4, 5].map((t) => (
+            <button
+              key={t}
+              onClick={() => handleSelectTable(t)}
+              className={`px-4 py-2 rounded ${
+                tableNumber === t
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200"
+              }`}
+            >
+              Table {t}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* 🔹 Filters */}
       <div className="bg-white p-3 rounded-xl shadow mb-6">
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap gap-2">
 
           {/* Category */}
           {["all", "pizza", "burger", "pasta"].map((cat) => (
@@ -88,7 +143,7 @@ export default function MenuPage() {
               className={`px-3 py-1.5 rounded-full text-sm border ${
                 selectedCategory === cat
                   ? "bg-gray-900 text-white"
-                  : "bg-white text-gray-700"
+                  : "bg-white"
               }`}
             >
               {cat}
@@ -128,11 +183,11 @@ export default function MenuPage() {
         </div>
       </div>
 
-      {/* 🔹 Loading / Error */}
+      {/* 🔹 Loading/Error */}
       {loading && <p>Loading...</p>}
       {error && <p className="text-red-500">{error}</p>}
 
-      {/* 🔹 Products */}
+      {/* 🍔 PRODUCTS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
 
         {filteredItems?.map((item) => {
@@ -141,28 +196,22 @@ export default function MenuPage() {
           const minPrice = getMinPrice(item.variants);
 
           return (
-            <div
-              key={item._id}
-              className="bg-white p-4 rounded-xl shadow hover:shadow-xl transition"
-            >
-              {/* Image */}
+            <div key={item._id} className="bg-white p-4 rounded-xl shadow">
+
               <img
                 src={item.image}
                 className="w-full h-52 object-cover rounded-lg"
               />
 
-              {/* Name */}
               <h2 className="text-lg font-semibold mt-2">
                 {item.name}
               </h2>
 
-              {/* Info */}
               <p className="text-sm text-gray-500 capitalize">
                 {item.type} • {item.category?.name}
               </p>
 
-              {/* Price */}
-              <div className="flex justify-between items-center mt-2">
+              <div className="flex justify-between mt-2">
                 <span className="font-bold">
                   ₹{selectedVariant?.price || minPrice}
                 </span>
@@ -173,7 +222,7 @@ export default function MenuPage() {
                 </div>
               </div>
 
-              {/* Variant Selector */}
+              {/* Variant */}
               <select
                 className="mt-2 w-full border rounded p-1"
                 value={selectedIndex}
@@ -181,23 +230,42 @@ export default function MenuPage() {
                   handleVariantChange(item._id, Number(e.target.value))
                 }
               >
-                {item.variants.map((variant, index) => (
-                  <option key={index} value={index}>
-                    {variant.name} - ₹{variant.price}
+                {item.variants.map((v, i) => (
+                  <option key={i} value={i}>
+                    {v.name} - ₹{v.price}
                   </option>
                 ))}
               </select>
 
-              {/* Button */}
+              {/* 🛒 BUTTON */}
               <button
                 onClick={() => handleAddToCart(item)}
-                className="mt-3 w-full bg-red-500 text-white py-2 rounded hover:bg-red-600"
+                disabled={cartLoading}
+                className="mt-3 w-full bg-red-500 text-white py-2 rounded"
               >
-                Add to Cart
+                {cartLoading ? "Adding..." : "Add to Cart"}
               </button>
             </div>
           );
         })}
+      </div>
+
+      {/* 🛒 BOTTOM BAR */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white shadow p-3 flex justify-between items-center">
+
+        <div>
+          <p className="text-sm">Items: {cartItems.length}</p>
+          <p className="text-xs text-gray-500">
+            Table: {tableNumber || "Not selected"}
+          </p>
+        </div>
+
+        <button
+          onClick={handlePlaceOrder}
+          className="bg-green-600 text-white px-4 py-2 rounded"
+        >
+          {orderLoading ? "Placing..." : "Place Order"}
+        </button>
       </div>
 
       {/* Empty */}
