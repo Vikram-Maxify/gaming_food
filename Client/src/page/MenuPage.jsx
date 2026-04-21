@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { IoIosStar } from "react-icons/io";
-import Navbar from "../components/Navbar";
 
 
 const menuItems = [
@@ -13,8 +12,6 @@ const menuItems = [
 
 // ✅ Toggle Component (same file)
 function ToggleSwitch({ isOn, onToggle }) {
-
-
     return (
         <button
             onClick={onToggle}
@@ -35,7 +32,6 @@ export default function MenuPage() {
     const [selectedType, setSelectedType] = useState("veg"); // ✅ default veg
     const [priceRange, setPriceRange] = useState(500);
     const [minRating, setMinRating] = useState(0);
-    const [selectedItem, setSelectedItem] = useState(null);
 
     const filteredItems = menuItems.filter((item) => {
         return (
@@ -47,124 +43,126 @@ export default function MenuPage() {
     });
 
     return (
-        <>
-            <Navbar />
-            <div className="min-h-screen bg-gray-100 p-4">
 
-                {/* 🔹 Header */}
-                <h1 className="text-xl md:text-2xl font-semibold mb-5">Menu Items</h1>
+        <div className="min-h-screen bg-gray-100 p-4">
 
-                {/* 🔹 Filters Section */}
-                <div className="bg-white p-3 rounded-xl shadow mb-6">
+            {/* 🔹 Header */}
+            <h1 className="text-xl md:text-2xl font-semibold mb-5">Menu Items</h1>
 
-                    <div className="flex flex-wrap items-center gap-2">
+            {/* 🔹 Filters Section */}
+           <div className="bg-white p-3 rounded-xl shadow mb-6">
 
-                        {/* Category */}
-                        {["all", "pizza", "burger", "pasta"].map((cat) => (
-                            <button
-                                key={cat}
-                                onClick={() => setSelectedCategory(cat)}
-                                className={`px-3 py-1.5 rounded-full text-sm border ${selectedCategory === cat
-                                        ? "bg-gray-900 text-white border-gray-900"
-                                        : "bg-white text-gray-700 border-gray-300"
-                                    }`}
-                            >
-                                {cat}
-                            </button>
-                        ))}
+    <div className="flex flex-wrap items-center gap-2">
 
-                        {/* Veg / Non-Veg */}
-                        <button
-                            onClick={() =>
-                                setSelectedType((prev) =>
-                                    prev === "veg" ? "nonveg" : "veg"
-                                )
-                            }
-                            className={`px-3 py-1.5 rounded-full text-sm border ${selectedType === "veg"
-                                    ? "bg-green-100 text-green-700 border-green-400"
-                                    : "bg-red-100 text-red-700 border-red-400"
-                                }`}
-                        >
-                            {selectedType === "veg" ? "Veg 🌱" : "Non-Veg 🍗"}
-                        </button>
+        {/* Category */}
+        {["all", "pizza", "burger", "pasta"].map((cat) => (
+            <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-3 py-1.5 rounded-full text-sm border ${
+                    selectedCategory === cat
+                        ? "bg-gray-900 text-white border-gray-900"
+                        : "bg-white text-gray-700 border-gray-300"
+                }`}
+            >
+                {cat}
+            </button>
+        ))}
 
-                        {/* Price */}
-                        {[100, 200, 300, 500].map((price) => (
-                            <button
-                                key={price}
-                                onClick={() => setPriceRange(price)}
-                                className={`px-3 py-1.5 rounded-full text-sm border ${priceRange === price
-                                        ? "bg-orange-500 text-white border-orange-500"
-                                        : "bg-white text-gray-700 border-gray-300"
-                                    }`}
-                            >
-                                ₹{price}
-                            </button>
-                        ))}
+        {/* Veg / Non-Veg */}
+        <button
+            onClick={() =>
+                setSelectedType((prev) =>
+                    prev === "veg" ? "nonveg" : "veg"
+                )
+            }
+            className={`px-3 py-1.5 rounded-full text-sm border ${
+                selectedType === "veg"
+                    ? "bg-green-100 text-green-700 border-green-400"
+                    : "bg-red-100 text-red-700 border-red-400"
+            }`}
+        >
+            {selectedType === "veg" ? "Veg 🌱" : "Non-Veg 🍗"}
+        </button>
 
-                        {/* Rating */}
-                        {[3, 4, 4.5].map((rate) => (
-                            <button
-                                key={rate}
-                                onClick={() => setMinRating(rate)}
-                                className={`px-3 py-1.5 rounded-full text-sm border flex items-center gap-1 ${minRating === rate
-                                        ? "bg-yellow-400 text-black border-yellow-400"
-                                        : "bg-white text-gray-700 border-gray-300"
-                                    }`}
-                            >
-                                {rate}+ <IoIosStar />
-                            </button>
-                        ))}
+        {/* Price */}
+        {[100, 200, 300, 500].map((price) => (
+            <button
+                key={price}
+                onClick={() => setPriceRange(price)}
+                className={`px-3 py-1.5 rounded-full text-sm border ${
+                    priceRange === price
+                        ? "bg-orange-500 text-white border-orange-500"
+                        : "bg-white text-gray-700 border-gray-300"
+                }`}
+            >
+                ₹{price}
+            </button>
+        ))}
 
-                    </div>
-                </div>
+        {/* Rating */}
+        {[3, 4, 4.5].map((rate) => (
+            <button
+                key={rate}
+                onClick={() => setMinRating(rate)}
+                className={`px-3 py-1.5 rounded-full text-sm border flex items-center gap-1 ${
+                    minRating === rate
+                        ? "bg-yellow-400 text-black border-yellow-400"
+                        : "bg-white text-gray-700 border-gray-300"
+                }`}
+            >
+                {rate}+ <IoIosStar />
+            </button>
+        ))}
 
-                {/* 🔹 Items Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    {filteredItems.map((item) => (
-                        <div
-                            key={item.id}
-                            className="bg-white p-4 rounded-xl shadow hover:shadow-xl transition hover:outline outline-gray-200"
-                        >
-                            <div className="relative w-full">
-                                <img
-                                    src={item.image}
-                                    className="w-full h-52 object-cover rounded-lg transition-transform duration-500 hover:scale-105"
-                                />
+    </div>
+</div>
 
-                                <h3 className="absolute bottom-2 left-2 bg-black/65 text-white px-2 py-1 rounded-md text-sm">
-                                    {item.discount}% OFF
-                                </h3>
-                            </div>
-                            <h2 className="text-lg font-semibold mt-2">{item.name}</h2>
+            {/* 🔹 Items Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {filteredItems.map((item) => (
+                    <div
+                        key={item.id}
+                        className="bg-white p-4 rounded-xl shadow hover:shadow-xl transition hover:outline outline-gray-200"
+                    >
+                        <div className="relative w-full">
+                            <img
+                                src={item.image}
+                                className="w-full h-52 object-cover rounded-lg transition-transform duration-500 hover:scale-105"
+                            />
 
-                            <p className="text-sm text-gray-500 capitalize">
-                                {item.type} • {item.category}
-                            </p>
-
-                            <div className="flex justify-between items-center mt-2">
-                                <span className="font-bold">₹{item.price}</span>
-
-                                <div className="flex items-center gap-0 text-white bg-[#267E3E] px-[5px] rounded-md">
-                                    <span>{item.rating}</span>
-                                    <IoIosStar className="text-sm" />
-                                </div>
-                            </div>
-
-                            <button className="mt-3 w-full bg-red-500 text-white py-2 rounded hover:bg-red-600">
-                                Add to Cart
-                            </button>
+                            <h3 className="absolute bottom-2 left-2 bg-black/65 text-white px-2 py-1 rounded-md text-sm">
+                                {item.discount}% OFF
+                            </h3>
                         </div>
-                    ))}
-                </div>
+                        <h2 className="text-lg font-semibold mt-2">{item.name}</h2>
 
-                {/* Empty State */}
-                {filteredItems.length === 0 && (
-                    <p className="text-center mt-6 text-gray-500">
-                        No items found 😢
-                    </p>
-                )}
+                        <p className="text-sm text-gray-500 capitalize">
+                            {item.type} • {item.category}
+                        </p>
+
+                        <div className="flex justify-between items-center mt-2">
+                            <span className="font-bold">₹{item.price}</span>
+
+                            <div className="flex items-center gap-0 text-white bg-[#267E3E] px-[5px] rounded-md">
+                                <span>{item.rating}</span>
+                                <IoIosStar className="text-sm" />
+                            </div>
+                        </div>
+
+                        <button className="mt-3 w-full bg-red-500 text-white py-2 rounded hover:bg-red-600">
+                            Add to Cart
+                        </button>
+                    </div>
+                ))}
             </div>
-        </>
+
+            {/* Empty State */}
+            {filteredItems.length === 0 && (
+                <p className="text-center mt-6 text-gray-500">
+                    No items found 😢
+                </p>
+            )}
+        </div>
     );
 }
