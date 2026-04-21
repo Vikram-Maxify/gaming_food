@@ -13,6 +13,7 @@ import TicTacToe from './page/ticTacToe'
 import Ludo from './page/Ludo'
 import CarRace from './page/CarRace'
 import MenuPage from './page/MenuPage'
+import AddToCart from './page/AddToCart'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -26,7 +27,7 @@ function App() {
             <HomePage />
           }
         />
-         <Route
+        <Route
           path='/menu'
           element={
             <MenuPage />
@@ -38,11 +39,17 @@ function App() {
             <Login />
           }
         />
-        
+
         <Route
           path='/register'
           element={
             <Register />
+          }
+        />
+        <Route
+          path='/cart'
+          element={
+            <AddToCart />
           }
         />
         <Route
