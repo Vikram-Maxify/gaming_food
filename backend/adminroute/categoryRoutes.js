@@ -6,12 +6,13 @@ const { createCategory, updateCategory, deleteCategory, getCategories, getCatego
 const protect = require("../middleware/authmiddleware");
 const admin = require("../middleware/adminMiddleware");
 
-router.get("/", getCategories);
-router.get("/:id", getCategoryById);
 
 // 🔐 Admin only
 router.post("/create", protect, admin, upload.single("image"), createCategory);
 router.put("/update/:id", protect, admin, upload.single("image"), updateCategory);
 router.delete("/delete/:id", protect, admin, deleteCategory);
+router.get("/", getCategories);
+router.get("/:id", getCategoryById);
+
 
 module.exports = router;

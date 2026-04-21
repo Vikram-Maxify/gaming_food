@@ -26,9 +26,14 @@ const Category = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        if (!name) return alert("Name required");
+
         const data = new FormData();
         data.append("name", name);
-        if (image) data.append("image", image);
+
+        if (image) {
+            data.append("image", image);
+        }
 
         if (editId) {
             dispatch(updateCategory({ id: editId, data }));

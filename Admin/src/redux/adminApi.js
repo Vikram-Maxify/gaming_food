@@ -3,8 +3,8 @@
 import axios from "axios";
 
 const API = axios.create({
-    baseURL: "http://localhost:5002/api/admin",
-    withCredentials: true,
+  baseURL: "http://localhost:5002/api/admin",
+  withCredentials: true,
 });
 
 
@@ -24,36 +24,29 @@ export const logoutAdminAPI = () => API.post("/logout");
 
 // ➕ CREATE PRODUCT
 export const createProductAPI = (data) =>
-    API.post("/product/create", data, {
-        headers: { "Content-Type": "multipart/form-data" },
-    });
+  API.post("/product/create", data,);
 
 // 📦 GET ALL
 export const getProductsAPI = () => API.get("/product");
 
 // 🔍 GET SINGLE
 export const getProductByIdAPI = (id) =>
-    API.get(`/product/${id}`);
+  API.get(`/product/${id}`);
 
 // ✏️ UPDATE
 export const updateProductAPI = (id, data) =>
-    API.put(`/product/update/${id}`, data, {
-        headers: { "Content-Type": "multipart/form-data" },
-    });
+  API.put(`/product/update/${id}`, data,);
 
 // ❌ DELETE
 export const deleteProductAPI = (id) =>
-    API.delete(`/product/delete/${id}`);
+  API.delete(`/product/delete/${id}`);
 
 
 // ================= CATEGORY =================
 
 // ➕ CREATE
 export const createCategoryAPI = (data) =>
-  API.post("/category/create", data, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
-
+  API.post("/category/create", data);
 // 📦 GET ALL
 export const getCategoriesAPI = () => API.get("/category");
 
@@ -63,9 +56,7 @@ export const getCategoryByIdAPI = (id) =>
 
 // ✏️ UPDATE
 export const updateCategoryAPI = (id, data) =>
-  API.put(`/category/update/${id}`, data, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
+  API.put(`/category/update/${id}`, data,);
 
 // ❌ DELETE
 export const deleteCategoryAPI = (id) =>
