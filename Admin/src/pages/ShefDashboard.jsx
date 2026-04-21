@@ -49,7 +49,8 @@ const ChefDashboard = () => {
                 </h3>
 
                 <span className="text-sm font-semibold text-gray-700">
-                  {order.table?.tableNumber || "T"}
+                  <span>Table No:</span>
+                  {order.tableNumber || "T"}
                 </span>
               </div>
 
