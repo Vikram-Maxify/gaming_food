@@ -12,6 +12,7 @@ import AdminLogin from './pages/AdminLogin';
 import ProtectedRoute from './redux/ProtectedRoute';
 import AddProduct from './pages/AddProduct';
 import AdminCategory from './pages/AdminCategory';
+import AdminOrders from './pages/AdminOrders';
 
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
           <Route path="categories" element={<AdminCategory />} />
         </Route>
           <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path='/order' element={<AdminOrders />} />
       </Routes>
     </>
   )
