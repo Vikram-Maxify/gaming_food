@@ -14,6 +14,7 @@ import AddProduct from './pages/AddProduct';
 import AdminCategory from './pages/AdminCategory';
 import AdminOrders from './pages/AdminOrders';
 import AdminOtpSettings from './pages/AdminOtpSettings';
+import TableManage from './pages/TableManage';
 
 
 function App() {
@@ -40,6 +41,7 @@ function App() {
           <Route path="categories" element={<AdminCategory />} />
           <Route path='order' element={<AdminOrders />} />
           <Route path='otpsetting' element={<AdminOtpSettings />} />
+          <Route path="table" element={<TableManage />} />
         </Route>
         <Route path="/admin/login" element={<AdminLogin />} />
       </Routes>

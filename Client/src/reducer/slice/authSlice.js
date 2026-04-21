@@ -1,15 +1,17 @@
 // src/redux/slices/authSlice.js
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import API from "../slice/axios"
+import API from "../slice/axios";
 
-// 🔹 REGISTER
+// ===============================
+// 🔹 REGISTER (Send OTP)
+// ===============================
 export const registerUser = createAsyncThunk(
   "auth/register",
   async (userData, thunkAPI) => {
     try {
       const res = await API.post("/api/auth/register", userData);
-      return res.data;
+      return res.data; // { message, tempUserId }
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || "Register failed"
@@ -18,13 +20,32 @@ export const registerUser = createAsyncThunk(
   }
 );
 
+// ===============================
+// 🔹 VERIFY OTP
+// ===============================
+export const verifyOTP = createAsyncThunk(
+  "auth/verifyOTP",
+  async (data, thunkAPI) => {
+    try {
+      const res = await API.post("/api/auth/verify-otp", data);
+      return res.data; // { message, user }
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "OTP verification failed"
+      );
+    }
+  }
+);
+
+// ===============================
 // 🔹 LOGIN
+// ===============================
 export const loginUser = createAsyncThunk(
   "auth/login",
   async (userData, thunkAPI) => {
     try {
       const res = await API.post("/api/auth/login", userData);
-      return res.data;
+      return res.data; // { token }
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || "Login failed"
@@ -33,12 +54,14 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-// 🔹 GET USER (⚠️ fixed route)
+// ===============================
+// 🔹 GET USER
+// ===============================
 export const getUser = createAsyncThunk(
   "auth/getUser",
   async (_, thunkAPI) => {
     try {
-      const res = await API.get("/api/auth/user"); // ✅ correct
+      const res = await API.get("/api/auth/user");
       return res.data.user;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -48,12 +71,14 @@ export const getUser = createAsyncThunk(
   }
 );
 
-// 🔹 LOGOUT (⚠️ fixed method)
+// ===============================
+// 🔹 LOGOUT
+// ===============================
 export const logoutUser = createAsyncThunk(
   "auth/logout",
   async (_, thunkAPI) => {
     try {
-      await API.get("/api/auth/logout"); // ✅ GET not POST
+      await API.get("/api/auth/logout");
       return true;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -63,41 +88,81 @@ export const logoutUser = createAsyncThunk(
   }
 );
 
+// ===============================
 // 🔥 SLICE
+// ===============================
 const authSlice = createSlice({
   name: "auth",
   initialState: {
     user: null,
     token: null,
+
+    tempUserId: null, // 🔥 OTP ke liye
+    otpSent: false,   // 🔥 UI toggle
+
     loading: false,
     error: null,
     success: false,
   },
+
   reducers: {
     resetState: (state) => {
       state.loading = false;
       state.error = null;
       state.success = false;
     },
+
+    clearAuth: (state) => {
+      state.user = null;
+      state.token = null;
+      state.tempUserId = null;
+      state.otpSent = false;
+    },
   },
+
   extraReducers: (builder) => {
     builder
 
-      // REGISTER
+      // ===============================
+      // 🔹 REGISTER (OTP SEND)
+      // ===============================
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(registerUser.fulfilled, (state) => {
+      .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.success = true;
+        state.otpSent = true; // 🔥 OTP UI show
+        state.tempUserId = action.payload.tempUserId;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      // LOGIN
+      // ===============================
+      // 🔹 VERIFY OTP
+      // ===============================
+      .addCase(verifyOTP.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(verifyOTP.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = true;
+
+        state.user = action.payload.user; // user set
+        state.otpSent = false;
+        state.tempUserId = null;
+      })
+      .addCase(verifyOTP.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // ===============================
+      // 🔹 LOGIN
+      // ===============================
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -112,20 +177,16 @@ const authSlice = createSlice({
         state.error = action.payload;
       })
 
-      // GET USER
-      .addCase(getUser.pending, (state) => {
-        state.loading = true;
-      })
+      // ===============================
+      // 🔹 GET USER
+      // ===============================
       .addCase(getUser.fulfilled, (state, action) => {
-        state.loading = false;
         state.user = action.payload;
       })
-      .addCase(getUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
 
-      // LOGOUT
+      // ===============================
+      // 🔹 LOGOUT
+      // ===============================
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;
         state.token = null;
@@ -134,5 +195,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { resetState } = authSlice.actions;
+export const { resetState, clearAuth } = authSlice.actions;
 export default authSlice.reducer;

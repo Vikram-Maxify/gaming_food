@@ -62,7 +62,7 @@ const FoodGrid = () => {
           >
 
             {/* Image Wrapper */}
-            <div className="w-full h-28 rounded-xl overflow-hidden mb-2">
+            <div className="w-full h-52 rounded-xl overflow-hidden mb-2">
               <img
                 src={item.image}
                 alt={item.name}
