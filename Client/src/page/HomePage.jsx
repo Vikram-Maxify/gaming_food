@@ -9,6 +9,7 @@ import FastFoods from '../components/FastFoods'
 import Starters from '../components/Starters'
 import Breads from '../components/Breads'
 import Rice from '../components/Rice'
+import Footer from '../components/Footer'
 
 const HomePage = () => {
   return (
@@ -23,6 +24,7 @@ const HomePage = () => {
       <MainCourse />
       <Breads />
       <Rice />
+      <Footer/>
     </>
   )
 }

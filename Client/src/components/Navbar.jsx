@@ -1,8 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Search, ShoppingCart } from "lucide-react";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
+
+    const { token, user } = useSelector((state) => state.auth);
+
     return (
         <div className="w-full flex items-center justify-between p-3 md:px-6">
 
@@ -19,10 +23,24 @@ const Navbar = () => {
             </div>
 
             {/* RIGHT */}
+            {/* RIGHT */}
             <div className="flex items-center gap-3 ml-auto">
-                <div className="flex gap-4 text-sm text-text-secondary ">
-                    <Link to="/login" className="shadow-sm hover:bg-gray-300 rounded-sm px-1">Login</Link>
-                    <Link to="/register" className="shadow-sm hover:bg-gray-300 rounded-sm px-1">Register</Link>
+
+                <div className="flex gap-4 text-sm text-text-secondary">
+
+                    {/* show only if NOT logged in */}
+                    {!token && (
+                        <>
+                            <Link to="/login" className="shadow-sm hover:bg-gray-300 rounded-sm px-1">
+                                Login
+                            </Link>
+
+                            <Link to="/register" className="shadow-sm hover:bg-gray-300 rounded-sm px-1">
+                                Register
+                            </Link>
+                        </>
+                    )}
+
                 </div>
 
                 {/* Desktop Icons */}
@@ -44,7 +62,7 @@ const Navbar = () => {
 
                 </div>
 
-                {/* Profile (Unsplash image) */}
+                {/* Profile image */}
                 <img
                     src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100"
                     alt="profile"
