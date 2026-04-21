@@ -16,7 +16,7 @@ const updateOrderStatus = async (req, res) => {
 };
 
 const getAllOrders = async (req, res) => {
-  const orders = await Order.find()
+  const orders = await orderModel.find()
     .populate("user", "name")
     .populate("items.product", "name")
     .sort({ createdAt: -1 });

@@ -15,6 +15,7 @@ import AdminCategory from './pages/AdminCategory';
 import AdminOrders from './pages/AdminOrders';
 import AdminOtpSettings from './pages/AdminOtpSettings';
 import TableManage from './pages/TableManage';
+import AdminProfile from './pages/AdminProfile';
 
 
 function App() {
@@ -32,16 +33,17 @@ function App() {
         >
           <Route index element={<Dashboard />} />
           <Route path="menu" element={<Menu />} />
-          <Route path="orders" element={<Orders />} />
+          <Route path="orders" element={<AdminOrders />} />
           <Route path="users" element={<Users />} />
           <Route path="settings" element={<Settings />} />
           <Route path="schef_Dash" element={<ShefDashboard />} />
           <Route path="coins_mng" element={<CoinManage />} />
           <Route path="add_item" element={<AddProduct />} />
           <Route path="categories" element={<AdminCategory />} />
-          <Route path='order' element={<AdminOrders />} />
+          {/* <Route path='order' element={<AdminOrders />} /> */}
           <Route path='otpsetting' element={<AdminOtpSettings />} />
           <Route path="table" element={<TableManage />} />
+          <Route path="profile" element={<AdminProfile />} />
         </Route>
         <Route path="/admin/login" element={<AdminLogin />} />
       </Routes>
