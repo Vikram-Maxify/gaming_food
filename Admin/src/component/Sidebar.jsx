@@ -15,6 +15,7 @@ const Sidebar = () => {
         { to: "/admin/menu", label: "Menu", icon: Utensils },
         { to: "/admin/categories", label: "Categories", icon: Utensils },
         { to: "/admin/add_item", label: "Add Item", icon: Utensils },
+        { to: "/admin/table", label: "Add Table", icon: Utensils },
         { to: "/admin/orders", label: "Orders", icon: ShoppingCart },
         { to: "/admin/schef_dash", label: "Shef Dashboard", icon: LayoutDashboard },
         { to: "/admin/users", label: "Users", icon: Users },

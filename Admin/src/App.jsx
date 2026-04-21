@@ -13,6 +13,7 @@ import ProtectedRoute from './redux/ProtectedRoute';
 import AddProduct from './pages/AddProduct';
 import AdminCategory from './pages/AdminCategory';
 import AdminOrders from './pages/AdminOrders';
+import TableManage from './pages/TableManage';
 
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
           <Route path="coins_mng" element={<CoinManage />} />
           <Route path="add_item" element={<AddProduct />} />
           <Route path="categories" element={<AdminCategory />} />
+          <Route path="table" element={<TableManage />} />
         </Route>
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path='/order' element={<AdminOrders />} />
