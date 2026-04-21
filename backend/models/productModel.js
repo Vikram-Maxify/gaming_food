@@ -29,7 +29,6 @@ const variantSchema = new mongoose.Schema({
   },
 });
 
-
 // 🍕 Product Schema
 const productSchema = new mongoose.Schema(
   {
@@ -44,15 +43,26 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
 
+    // 📝 Description
+    description: {
+      type: String,
+      trim: true,
+      maxlength: 500,
+    },
+
+    // 🌶️ Spice Level
+    spiceLevel: {
+      type: String,
+      enum: ["low", "medium", "high", "extra-high"],
+      default: "medium",
+    },
+
     // 🍃 Veg / Non-Veg
     type: {
       type: String,
       enum: ["veg", "non-veg"],
       required: true,
     },
-
-    // ❌ REMOVE single price (now using variants)
-    // price: {}
 
     variants: {
       type: [variantSchema],

@@ -4,7 +4,7 @@ const orderSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
-     ref: "Auth",
+      ref: "Auth",
       required: true,
     },
 
@@ -13,17 +13,32 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
 
+    // 🥡 Takeaway Order
+    takeaway: {
+      type: Boolean,
+      default: false,
+    },
+
     items: [
       {
         product: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Product",
         },
+
         quantity: {
           type: Number,
           default: 1,
         },
+
         creditPoints: Number,
+
+        // 🌶️ Spice Level per item
+        spiceLevel: {
+          type: String,
+          enum: ["low", "medium", "high"],
+          default: "medium",
+        },
       },
     ],
 
