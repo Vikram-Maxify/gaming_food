@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { IoIosStar } from "react-icons/io";
+import Navbar from "../components/Navbar";
 
 
 const menuItems = [
@@ -12,6 +13,8 @@ const menuItems = [
 
 // ✅ Toggle Component (same file)
 function ToggleSwitch({ isOn, onToggle }) {
+
+
     return (
         <button
             onClick={onToggle}
@@ -32,6 +35,7 @@ export default function MenuPage() {
     const [selectedType, setSelectedType] = useState("veg"); // ✅ default veg
     const [priceRange, setPriceRange] = useState(500);
     const [minRating, setMinRating] = useState(0);
+    const [selectedItem, setSelectedItem] = useState(null);
 
     const filteredItems = menuItems.filter((item) => {
         return (
@@ -43,124 +47,124 @@ export default function MenuPage() {
     });
 
     return (
+        <>
+            <Navbar />
+            <div className="min-h-screen bg-gray-100 p-4">
 
-        <div className="min-h-screen bg-gray-100 p-4">
+                {/* 🔹 Header */}
+                <h1 className="text-xl md:text-2xl font-semibold mb-5">Menu Items</h1>
 
-            {/* 🔹 Header */}
-            <h1 className="text-xl md:text-2xl font-semibold mb-5">Menu Items</h1>
+                {/* 🔹 Filters Section */}
+                <div className="bg-white p-3 rounded-xl shadow mb-6">
 
-            {/* 🔹 Filters Section */}
-            <div className="bg-white p-5 rounded-xl shadow mb-6">
+                    <div className="flex flex-wrap items-center gap-2">
 
-                {/* Category */}
-                <div className="flex overflow-x-auto gap-3 pb-2">
-                    {["all", "pizza", "burger", "pasta"].map((cat) => (
+                        {/* Category */}
+                        {["all", "pizza", "burger", "pasta"].map((cat) => (
+                            <button
+                                key={cat}
+                                onClick={() => setSelectedCategory(cat)}
+                                className={`px-3 py-1.5 rounded-full text-sm border ${selectedCategory === cat
+                                        ? "bg-gray-900 text-white border-gray-900"
+                                        : "bg-white text-gray-700 border-gray-300"
+                                    }`}
+                            >
+                                {cat}
+                            </button>
+                        ))}
+
+                        {/* Veg / Non-Veg */}
                         <button
-                            key={cat}
-                            onClick={() => setSelectedCategory(cat)}
-                            className={`px-4 py-2 rounded-full whitespace-nowrap ${selectedCategory === cat
-                                ? "bg-red-500 text-white"
-                                : "bg-gray-200"
+                            onClick={() =>
+                                setSelectedType((prev) =>
+                                    prev === "veg" ? "nonveg" : "veg"
+                                )
+                            }
+                            className={`px-3 py-1.5 rounded-full text-sm border ${selectedType === "veg"
+                                    ? "bg-green-100 text-green-700 border-green-400"
+                                    : "bg-red-100 text-red-700 border-red-400"
                                 }`}
                         >
-                            {cat}
+                            {selectedType === "veg" ? "Veg 🌱" : "Non-Veg 🍗"}
                         </button>
-                    ))}
-                </div>
 
-                {/* ✅ Veg / Non-Veg Toggle */}
-                <div className="mt-4 flex items-center gap-3">
-                    <span className="text-sm font-medium">
-                        {selectedType === "veg" ? "Veg 🌱" : "Non-Veg 🍗"}
-                    </span>
+                        {/* Price */}
+                        {[100, 200, 300, 500].map((price) => (
+                            <button
+                                key={price}
+                                onClick={() => setPriceRange(price)}
+                                className={`px-3 py-1.5 rounded-full text-sm border ${priceRange === price
+                                        ? "bg-orange-500 text-white border-orange-500"
+                                        : "bg-white text-gray-700 border-gray-300"
+                                    }`}
+                            >
+                                ₹{price}
+                            </button>
+                        ))}
 
-                    <ToggleSwitch
-                        isOn={selectedType === "veg"}
-                        onToggle={() =>
-                            setSelectedType((prev) =>
-                                prev === "veg" ? "nonveg" : "veg"
-                            )
-                        }
-                    />
-                </div>
+                        {/* Rating */}
+                        {[3, 4, 4.5].map((rate) => (
+                            <button
+                                key={rate}
+                                onClick={() => setMinRating(rate)}
+                                className={`px-3 py-1.5 rounded-full text-sm border flex items-center gap-1 ${minRating === rate
+                                        ? "bg-yellow-400 text-black border-yellow-400"
+                                        : "bg-white text-gray-700 border-gray-300"
+                                    }`}
+                            >
+                                {rate}+ <IoIosStar />
+                            </button>
+                        ))}
 
-                {/* Price Range */}
-                <div className="mt-4">
-                    <p className="text-sm font-medium">
-                        Price up to ₹{priceRange}
-                    </p>
-                    <input
-                        type="range"
-                        min="0"
-                        max="500"
-                        value={priceRange}
-                        onChange={(e) => setPriceRange(Number(e.target.value))}
-                        className="w-full"
-                    />
-                </div>
-
-                {/* Rating */}
-                <div className="mt-4 flex gap-2 flex-wrap">
-                    {[0, 3, 4, 4.5].map((rate) => (
-                        <button
-                            key={rate}
-                            onClick={() => setMinRating(rate)}
-                            className={`px-3 py-1 rounded ${minRating === rate
-                                ? "bg-yellow-400"
-                                : "bg-gray-200"
-                                }`}
-                        >
-                            {rate === 0 ? "All" : `${rate}+ ⭐`}
-                        </button>
-                    ))}
-                </div>
-            </div>
-
-            {/* 🔹 Items Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {filteredItems.map((item) => (
-                    <div
-                        key={item.id}
-                        className="bg-white p-4 rounded-xl shadow hover:shadow-xl transition hover:outline outline-gray-200"
-                    >
-                        <div className="relative w-full">
-                            <img
-                                src={item.image}
-                                className="w-full h-52 object-cover rounded-lg transition-transform duration-500 hover:scale-105"
-                            />
-
-                            <h3 className="absolute bottom-2 left-2 bg-black/65 text-white px-2 py-1 rounded-md text-sm">
-                                {item.discount}% OFF
-                            </h3>
-                        </div>
-                        <h2 className="text-lg font-semibold mt-2">{item.name}</h2>
-
-                        <p className="text-sm text-gray-500 capitalize">
-                            {item.type} • {item.category}
-                        </p>
-
-                        <div className="flex justify-between items-center mt-2">
-                            <span className="font-bold">₹{item.price}</span>
-
-                            <div className="flex items-center gap-0 text-white bg-[#267E3E] px-[5px] rounded-md">
-                                <span>{item.rating}</span>
-                                <IoIosStar className="text-sm" />
-                            </div>
-                        </div>
-
-                        <button className="mt-3 w-full bg-red-500 text-white py-2 rounded hover:bg-red-600">
-                            Add to Cart
-                        </button>
                     </div>
-                ))}
-            </div>
+                </div>
 
-            {/* Empty State */}
-            {filteredItems.length === 0 && (
-                <p className="text-center mt-6 text-gray-500">
-                    No items found 😢
-                </p>
-            )}
-        </div>
+                {/* 🔹 Items Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {filteredItems.map((item) => (
+                        <div
+                            key={item.id}
+                            className="bg-white p-4 rounded-xl shadow hover:shadow-xl transition hover:outline outline-gray-200"
+                        >
+                            <div className="relative w-full">
+                                <img
+                                    src={item.image}
+                                    className="w-full h-52 object-cover rounded-lg transition-transform duration-500 hover:scale-105"
+                                />
+
+                                <h3 className="absolute bottom-2 left-2 bg-black/65 text-white px-2 py-1 rounded-md text-sm">
+                                    {item.discount}% OFF
+                                </h3>
+                            </div>
+                            <h2 className="text-lg font-semibold mt-2">{item.name}</h2>
+
+                            <p className="text-sm text-gray-500 capitalize">
+                                {item.type} • {item.category}
+                            </p>
+
+                            <div className="flex justify-between items-center mt-2">
+                                <span className="font-bold">₹{item.price}</span>
+
+                                <div className="flex items-center gap-0 text-white bg-[#267E3E] px-[5px] rounded-md">
+                                    <span>{item.rating}</span>
+                                    <IoIosStar className="text-sm" />
+                                </div>
+                            </div>
+
+                            <button className="mt-3 w-full bg-red-500 text-white py-2 rounded hover:bg-red-600">
+                                Add to Cart
+                            </button>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Empty State */}
+                {filteredItems.length === 0 && (
+                    <p className="text-center mt-6 text-gray-500">
+                        No items found 😢
+                    </p>
+                )}
+            </div>
+        </>
     );
 }
