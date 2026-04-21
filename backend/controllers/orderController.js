@@ -77,17 +77,6 @@ const createOrder = async (req, res) => {
       });
     }
 
-    const existingOrder = await Order.findOne({
-      tableNumber: user.tableNumber,
-      status: { $in: ["pending", "preparing"] },
-    });
-
-    if (existingOrder) {
-      return res.status(400).json({
-        message: "Table already occupied",
-      });
-    }
-
     let totalCredits = 0;
     let orderItems = [];
 
@@ -125,11 +114,18 @@ const createOrder = async (req, res) => {
       status: "pending",
     });
 
+    // 🔥 Table update (important)
+    const table = await Table.findOne({ tableNumber: user.tableNumber });
+    if (table) {
+      table.isOccupied = true;
+      table.currentOrder = order._id; // latest order
+      await table.save();
+    }
+
     const populatedOrder = await Order.findById(order._id)
       .populate("items.product", "name image")
       .populate("user", "name");
 
-    // 🔥 SOCKET SAFE
     const io = req.app.get("io");
     if (io) {
       io.to("adminRoom").emit("newOrder", populatedOrder);
