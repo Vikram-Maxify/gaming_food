@@ -12,26 +12,34 @@ import { selectTable, createOrder } from "../reducer/slice/orderSlice";
 export default function MenuPage() {
   const dispatch = useDispatch();
 
-  // ✅ Redux
+  // 🔥 Redux
   const { products, loading } = useSelector((state) => state.products);
   const { cartItems, loading: cartLoading } = useSelector((state) => state.cart);
   const { tableNumber, loading: orderLoading } = useSelector((state) => state.order);
 
-  // ✅ UI State
-  const [selectedVariants, setSelectedVariants] = useState({});
+  // 🔥 Filters
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedType, setSelectedType] = useState("veg");
+  const [priceRange, setPriceRange] = useState(500);
+
+  // 🔥 Popup
   const [showDetailPopup, setShowDetailPopup] = useState(false);
   const [activeProduct, setActiveProduct] = useState(null);
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
 
   const popupRef = useRef(null);
 
-  // 🔥 Load data
+  // ================================
+  // 🔥 LOAD DATA
+  // ================================
   useEffect(() => {
     dispatch(fetchProducts());
     dispatch(getCartThunk());
   }, [dispatch]);
 
-  // ✅ Close popup outside
+  // ================================
+  // 🔥 CLOSE POPUP OUTSIDE
+  // ================================
   useEffect(() => {
     const handler = (e) => {
       if (popupRef.current && !popupRef.current.contains(e.target)) {
@@ -42,14 +50,35 @@ export default function MenuPage() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  // ✅ Open popup
+  // ================================
+  // 🔥 FILTER LOGIC
+  // ================================
+  const getMinPrice = (variants = []) => {
+    if (!variants.length) return 0;
+    return Math.min(...variants.map((v) => v.price));
+  };
+
+  const filteredItems = products?.filter((item) => {
+    const minPrice = getMinPrice(item.variants);
+
+    return (
+      (selectedCategory === "all" ||
+        item.category?.name === selectedCategory) &&
+      item.type === selectedType &&
+      minPrice <= priceRange &&
+      item.isAvailable !== false
+    );
+  });
+
+  // ================================
+  // 🔥 HANDLERS
+  // ================================
   const handleCardClick = (item) => {
     setActiveProduct(item);
     setSelectedVariantIndex(0);
     setShowDetailPopup(true);
   };
 
-  // 🔥 ADD TO CART (REAL LOGIC)
   const handleAddToCart = () => {
     const variant = activeProduct.variants[selectedVariantIndex];
 
@@ -64,7 +93,6 @@ export default function MenuPage() {
     setShowDetailPopup(false);
   };
 
-  // 🔥 PLACE ORDER
   const handlePlaceOrder = () => {
     if (!tableNumber) return alert("Select table first");
     if (!cartItems.length) return alert("Cart empty");
@@ -78,11 +106,14 @@ export default function MenuPage() {
     dispatch(createOrder(items));
   };
 
+  // ================================
+  // 🚀 UI
+  // ================================
   return (
     <>
       <div className="min-h-screen bg-gray-100 p-4 pb-24">
 
-        {/* TABLE SELECT */}
+        {/* 🔥 TABLE */}
         <div className="mb-4">
           <h2 className="font-semibold mb-2">Select Table</h2>
           <div className="flex gap-2">
@@ -100,41 +131,97 @@ export default function MenuPage() {
           </div>
         </div>
 
-        {/* PRODUCTS */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {/* 🔥 FILTER BAR */}
+        <div className="bg-white p-3 rounded-xl shadow mb-4 flex flex-wrap gap-2">
 
-          {products.map((item) => (
-            <div
-              key={item._id}
-              onClick={() => handleCardClick(item)}
-              className="bg-white p-3 rounded-xl shadow cursor-pointer"
+          {/* Category */}
+          {["all", "pizza", "burger", "pasta"].map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={`px-3 py-1 rounded-full text-sm border ${
+                selectedCategory === cat
+                  ? "bg-gray-900 text-white"
+                  : "bg-white"
+              }`}
             >
-              <img src={item.image} className="h-40 w-full object-cover rounded" />
+              {cat}
+            </button>
+          ))}
 
-              <h2 className="mt-2 font-semibold">{item.name}</h2>
+          {/* Type */}
+          <button
+            onClick={() =>
+              setSelectedType((prev) =>
+                prev === "veg" ? "non-veg" : "veg"
+              )
+            }
+            className={`px-3 py-1 rounded-full text-sm border ${
+              selectedType === "veg"
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-700"
+            }`}
+          >
+            {selectedType === "veg" ? "Veg 🌱" : "Non-Veg 🍗"}
+          </button>
 
-              <div className="flex justify-between mt-1">
-                <span>₹{item.variants?.[0]?.price}</span>
-                <div className="bg-green-600 text-white px-1 rounded flex items-center">
-                  4 <IoIosStar />
-                </div>
-              </div>
-
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleCardClick(item);
-                }}
-                className="mt-2 w-full bg-red-500 text-white py-1 rounded"
-              >
-                Add
-              </button>
-            </div>
+          {/* Price */}
+          {[100, 200, 300, 500].map((price) => (
+            <button
+              key={price}
+              onClick={() => setPriceRange(price)}
+              className={`px-3 py-1 rounded-full text-sm border ${
+                priceRange === price
+                  ? "bg-orange-500 text-white"
+                  : ""
+              }`}
+            >
+              ₹{price}
+            </button>
           ))}
         </div>
 
-        {/* BOTTOM BAR */}
-        <div className="fixed bottom-0 left-0 right-0 bg-white p-3 flex justify-between">
+        {/* 🔥 PRODUCTS */}
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {filteredItems.map((item) => (
+              <div
+                key={item._id}
+                onClick={() => handleCardClick(item)}
+                className="bg-white p-3 rounded-xl shadow cursor-pointer"
+              >
+                <img
+                  src={item.image}
+                  className="h-40 w-full object-cover rounded"
+                />
+
+                <h2 className="mt-2 font-semibold">{item.name}</h2>
+
+                <div className="flex justify-between mt-1">
+                  <span>₹{item.variants?.[0]?.price}</span>
+                  <div className="bg-green-600 text-white px-1 rounded flex items-center">
+                    4 <IoIosStar />
+                  </div>
+                </div>
+
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleCardClick(item);
+                  }}
+                  className="mt-2 w-full bg-red-500 text-white py-1 rounded"
+                >
+                  Add
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* 🔥 BOTTOM BAR */}
+        <div className="fixed bottom-0 left-0 right-0 bg-white p-3 flex justify-between shadow">
 
           <div>
             Items: {cartItems.length} <br />
@@ -154,13 +241,22 @@ export default function MenuPage() {
       {showDetailPopup && activeProduct && (
         <div className="fixed inset-0 bg-black/60 flex justify-center items-end md:items-center z-50">
 
-          <div ref={popupRef} className="bg-white w-full md:max-w-md rounded-2xl p-4">
+          <div
+            ref={popupRef}
+            className="bg-white w-full md:max-w-md rounded-2xl p-4"
+          >
+            <img
+              src={activeProduct.image}
+              className="w-full h-40 object-cover rounded"
+            />
 
-            <img src={activeProduct.image} className="w-full h-40 object-cover rounded" />
+            <h2 className="mt-2 text-lg font-semibold">
+              {activeProduct.name}
+            </h2>
 
-            <h2 className="mt-2 text-lg font-semibold">{activeProduct.name}</h2>
-
-            <p className="text-gray-500">{activeProduct.category?.name}</p>
+            <p className="text-gray-500">
+              {activeProduct.category?.name}
+            </p>
 
             {/* VARIANTS */}
             <div className="mt-3 flex gap-2 flex-wrap">
