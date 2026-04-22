@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { IoIosStar } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
+import { RxFilter } from "react-icons/rx";
+
+
 
 import { fetchProducts } from "../reducer/slice/productSlice";
 import {
@@ -22,6 +25,8 @@ export default function MenuPage() {
     const [selectedCategory, setSelectedCategory] = useState("all");
     const [selectedType, setSelectedType] = useState("veg");
     const [priceRange, setPriceRange] = useState(500);
+    const [showFilter, setShowFilter] = useState(false);
+    const [rating, setRating] = useState(null);
 
     // 🔥 Popup
     const [showDetailPopup, setShowDetailPopup] = useState(false);
@@ -62,11 +67,22 @@ export default function MenuPage() {
     const filteredItems = products?.filter((item) => {
         const minPrice = getMinPrice(item.variants);
 
+        const categoryMatch =
+            selectedCategory === "all" ||
+            item.category?.name?.toLowerCase() === selectedCategory;
+
+        const typeMatch = item.type === selectedType;
+
+        const priceMatch = minPrice <= priceRange;
+
+        const ratingMatch =
+            rating === null || (item.rating || 4) >= rating;
+
         return (
-            (selectedCategory === "all" ||
-                item.category?.name === selectedCategory) &&
-            item.type === selectedType &&
-            minPrice <= priceRange &&
+            categoryMatch &&
+            typeMatch &&
+            priceMatch &&
+            ratingMatch &&
             item.isAvailable !== false
         );
     });
@@ -116,52 +132,33 @@ export default function MenuPage() {
             <div className="min-h-screen bg-gray-100 p-4 pb-24 mt-10">
 
                 {/* 🔥 FILTER BAR */}
-                <div className="bg-white p-3 rounded-xl shadow mb-4 flex flex-wrap gap-2">
+                <div className="flex justify-between items-center mb-4">
 
-                    {/* Category */}
-                    {["all", "pizza", "burger", "pasta"].map((cat) => (
-                        <button
-                            key={cat}
-                            onClick={() => setSelectedCategory(cat)}
-                            className={`px-3 py-1 rounded-full text-sm border ${selectedCategory === cat
-                                ? "bg-gray-900 text-white"
-                                : "bg-white"
-                                }`}
-                        >
-                            {cat}
-                        </button>
-                    ))}
+                    {/* LEFT: quick filters (optional keep) */}
+                    <div className="flex gap-2 flex-wrap">
+                        {["all", "pizza", "burger", "pasta"].map((cat) => (
+                            <button
+                                key={cat}
+                                onClick={() => setSelectedCategory(cat)}
+                                className={`px-3 py-1 rounded-full text-sm border ${selectedCategory === cat
+                                    ? "bg-gray-900 text-white"
+                                    : "bg-white"
+                                    }`}
+                            >
+                                {cat}
+                            </button>
+                        ))}
+                    </div>
 
-                    {/* Type */}
+                    {/* RIGHT: Filter button */}
                     <button
-                        onClick={() =>
-                            setSelectedType((prev) =>
-                                prev === "veg" ? "non-veg" : "veg"
-                            )
-                        }
-                        className={`px-3 py-1 rounded-full text-sm border ${selectedType === "veg"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-red-100 text-red-700"
-                            }`}
+                        onClick={() => setShowFilter(true)}
+                        className="bg-black text-white px-3 py-1 rounded-md text-sm flex"
                     >
-                        {selectedType === "veg" ? "Veg 🌱" : "Non-Veg 🍗"}
+                        Filters <RxFilter className="text-white text-2xl ps-1 " />
+
                     </button>
-
-                    {/* Price */}
-                    {[100, 200, 300, 500].map((price) => (
-                        <button
-                            key={price}
-                            onClick={() => setPriceRange(price)}
-                            className={`px-3 py-1 rounded-full text-sm border ${priceRange === price
-                                ? "bg-orange-500 text-white"
-                                : ""
-                                }`}
-                        >
-                            ₹{price}
-                        </button>
-                    ))}
                 </div>
-
                 {/* 🔥 PRODUCTS */}
                 {loading ? (
                     <p>Loading...</p>
@@ -259,6 +256,100 @@ export default function MenuPage() {
                         >
                             {cartLoading ? "Adding..." : "Add to Cart"}
                         </button>
+                    </div>
+                </div>
+
+            )}
+            {showFilter && (
+                <div className="fixed inset-0 bottom-60 bg-black/50 z-50 flex items-end md:items-center justify-center">
+                    <div className="bg-white w-full md:max-w-md rounded-t-2xl md:rounded-xl p-4">
+
+                        {/* HEADER */}
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-lg font-semibold">Filters</h2>
+                            <button onClick={() => setShowFilter(false)}>✖</button>
+                        </div>
+
+                        {/* TYPE */}
+                        <div className="mb-4">
+                            <h3 className="text-sm font-medium mb-2">Veg / Non-Veg</h3>
+                            <div className="flex gap-2">
+                                {["veg", "non-veg"].map((type) => (
+                                    <button
+                                        key={type}
+                                        onClick={() => setSelectedType(type)}
+                                        className={`px-3 py-1 rounded-full border ${selectedType === type
+                                            ? type === "veg"
+                                                ? "bg-green-100 text-green-700"
+                                                : "bg-red-100 text-red-700"
+                                            : ""
+                                            }`}
+                                    >
+                                        {type === "veg" ? "Veg 🌱" : "Non-Veg 🍗"}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* PRICE */}
+                        <div className="mb-4">
+                            <h3 className="text-sm font-medium mb-2">Price</h3>
+                            <div className="flex flex-wrap gap-2">
+                                {[100, 200, 300, 500].map((price) => (
+                                    <button
+                                        key={price}
+                                        onClick={() => setPriceRange(price)}
+                                        className={`px-3 py-1 rounded-full border ${priceRange === price
+                                            ? "bg-orange-500 text-white"
+                                            : ""
+                                            }`}
+                                    >
+                                        ₹{price}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* RATING */}
+                        <div className="mb-4">
+                            <h3 className="text-sm font-medium mb-2">Rating</h3>
+                            <div className="flex gap-2">
+                                {[4, 3, 2].map((r) => (
+                                    <button
+                                        key={r}
+                                        onClick={() => setRating(r)}
+                                        className={`px-3 py-1 rounded-full border ${rating === r
+                                            ? "bg-yellow-400 text-white"
+                                            : ""
+                                            }`}
+                                    >
+                                        ⭐ {r}+
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* ACTION */}
+                        <div className="flex gap-2 mt-4">
+                            <button
+                                onClick={() => {
+                                    setSelectedCategory("all");
+                                    setSelectedType("veg");
+                                    setPriceRange(500);
+                                    setRating(null);
+                                }}
+                                className="w-1/2 border py-2 rounded-lg"
+                            >
+                                Clear
+                            </button>
+
+                            <button
+                                onClick={() => setShowFilter(false)}
+                                className="w-1/2 bg-orange-500 text-white py-2 rounded-lg"
+                            >
+                                Apply
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
