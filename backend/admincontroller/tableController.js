@@ -25,6 +25,35 @@ const createTable = async (req, res) => {
   }
 };
 
+const freeTable = async (req, res) => {
+  try {
+    const tableId = req.params.id;
+
+    const table = await Table.findById(tableId);
+
+    if (!table) {
+      return res.status(404).json({ message: "Table not found" });
+    }
+
+    // Already free
+    if (!table.isOccupied) {
+      return res.status(400).json({
+        message: "Table is already free",
+      });
+    }
+
+    table.isOccupied = false;
+    await table.save();
+
+    res.json({
+      message: "Table is now free",
+      table,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const deleteTable = async (req, res) => {
   const table = await Table.findById(req.params.id);
 
@@ -55,5 +84,6 @@ module.exports = {
   createTable,
   deleteTable,
   getTables,
+  freeTable
 
 };

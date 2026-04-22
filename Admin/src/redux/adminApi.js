@@ -96,4 +96,6 @@ export const getAllUsersAPI = () =>
   API.get("/users");
 
 
+export const updatetableApi =()=>API.put(`/table/free/${id}`)
+
 export default API;
