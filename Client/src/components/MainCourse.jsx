@@ -20,6 +20,48 @@ const mainCourse = [
         image:
             "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500&auto=format&fit=crop&q=80",
     },
+    {
+        name: "Paneer Tikka",
+        price: "₹299",
+        image:
+            "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500&auto=format&fit=crop&q=80",
+    },
+    {
+        name: "Paneer Tikka",
+        price: "₹299",
+        image:
+            "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500&auto=format&fit=crop&q=80",
+    },
+    {
+        name: "Paneer Tikka",
+        price: "₹299",
+        image:
+            "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500&auto=format&fit=crop&q=80",
+    },
+    {
+        name: "Paneer Tikka",
+        price: "₹299",
+        image:
+            "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500&auto=format&fit=crop&q=80",
+    },
+    {
+        name: "Paneer Tikka",
+        price: "₹299",
+        image:
+            "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500&auto=format&fit=crop&q=80",
+    },
+    {
+        name: "Paneer Tikka",
+        price: "₹299",
+        image:
+            "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500&auto=format&fit=crop&q=80",
+    },{
+        name: "Paneer Tikka",
+        price: "₹299",
+        image:
+            "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500&auto=format&fit=crop&q=80",
+    },
+    
 ];
 
 const fallback =
@@ -30,7 +72,7 @@ const MainCourse = () => {
         <div className="mb-6">
 
             {/* Heading */}
-            <div className="flex items-center justify-between mb-3 px-5">
+            <div className="flex items-center justify-between mb-3 px-6">
                 <h3 className="text-sm font-semibold text-text-primary">
                     Main Course
                 </h3>
@@ -38,16 +80,16 @@ const MainCourse = () => {
             </div>
 
             {/* Scroll */}
-            <div className="flex gap-3 overflow-x-auto no-scrollbar px-1">
+            <div className="flex gap-2 overflow-x-auto no-scrollbar px-6">
 
                 {mainCourse.map((item, i) => (
                     <div
                         key={i}
-                        className="min-w-[160px] bg-card rounded-2xl shadow-md overflow-hidden px-4"
+                        className="min-w-[160px] bg-white rounded-2xl shadow-md overflow-hidden"
                     >
 
                         {/* Image */}
-                        <div className="rounded-md overflow-hidden w-full h-28 bg-secondary">
+                        <div className="w-full h-28 overflow-hidden">
                             <img
                                 src={item.image}
                                 alt={item.name}
@@ -58,8 +100,8 @@ const MainCourse = () => {
                         </div>
 
                         {/* Content */}
-                        <div className="p-2">
-                            <h4 className="text-sm font-medium text-text-primary">
+                        <div className="p-3">
+                            <h4 className="text-sm font-medium text-gray-800">
                                 {item.name}
                             </h4>
 
@@ -68,7 +110,7 @@ const MainCourse = () => {
                                     {item.price}
                                 </span>
 
-                                <button className="bg-primary text-white p-1.5 rounded-full active:scale-95 transition">
+                                <button className="bg-orange-500 text-white p-1.5 rounded-full active:scale-95 transition">
                                     <Plus size={14} />
                                 </button>
                             </div>

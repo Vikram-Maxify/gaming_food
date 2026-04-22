@@ -21,6 +21,73 @@ const categories = [
         image:
             "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&auto=format&fit=crop&q=60",
     },
+     {
+        name: "Dessert",
+        image:
+            "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&auto=format&fit=crop&q=60",
+    },
+     {
+        name: "Dessert",
+        image:
+            "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&auto=format&fit=crop&q=60",
+    },
+     {
+        name: "Dessert",
+        image:
+            "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&auto=format&fit=crop&q=60",
+    },
+     {
+        name: "Dessert",
+        image:
+            "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&auto=format&fit=crop&q=60",
+    },
+     {
+        name: "Dessert",
+        image:
+            "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&auto=format&fit=crop&q=60",
+    },
+     {
+        name: "Dessert",
+        image:
+            "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&auto=format&fit=crop&q=60",
+    },
+     {
+        name: "Dessert",
+        image:
+            "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&auto=format&fit=crop&q=60",
+    },
+
+     {
+        name: "Dessert",
+        image:
+            "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&auto=format&fit=crop&q=60",
+    },
+     {
+        name: "Dessert",
+        image:
+            "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&auto=format&fit=crop&q=60",
+    },
+     {
+        name: "Dessert",
+        image:
+            "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&auto=format&fit=crop&q=60",
+    },
+     {
+        name: "Dessert",
+        image:
+            "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&auto=format&fit=crop&q=60",
+    },
+     {
+        name: "Dessert",
+        image:
+            "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&auto=format&fit=crop&q=60",
+    },
+     {
+        name: "Dessert",
+        image:
+            "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&auto=format&fit=crop&q=60",
+    },
+
 ];
 
 const Categories = () => {
@@ -28,12 +95,12 @@ const Categories = () => {
         
         <div className="mb-5">
             {/* Heading */}
-            <h3 className="text-base font-semibold text-text-primary mb-3 px-4 pt-3">
+            <h3 className="text-base font-semibold text-text-primary mb-3 px-6 pt-3">
                 Category
             </h3>
 
             {/* Scroll Container */}
-            <div className="flex gap-3 overflow-x-auto no-scrollbar px-1">
+            <div className="flex gap-3 overflow-x-auto no-scrollbar px-4">
 
                 {categories.map((cat, i) => (
                     <div

@@ -30,6 +30,20 @@ const starters = [
     image:
       "https://images.unsplash.com/photo-1600891964599-f61ba0e24092?w=500&auto=format&fit=crop&q=80",
   },
+  {
+    name: "Tandoori Chicken",
+    type: "nonveg",
+    price: "₹299",
+    image:
+      "https://images.unsplash.com/photo-1600891964599-f61ba0e24092?w=500&auto=format&fit=crop&q=80",
+  },
+  {
+    name: "Tandoori Chicken",
+    type: "nonveg",
+    price: "₹299",
+    image:
+      "https://images.unsplash.com/photo-1600891964599-f61ba0e24092?w=500&auto=format&fit=crop&q=80",
+  },
 ];
 
 // const fallback =
@@ -63,7 +77,7 @@ const Starters = () => {
                 alt={item.name}
                 onError={(e) => (e.currentTarget.src = fallback)}
                 loading="lazy"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
               />
             </div>
 

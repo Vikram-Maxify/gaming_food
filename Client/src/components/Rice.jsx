@@ -2,18 +2,7 @@ import React, { useState } from "react";
 import { Plus } from "lucide-react";
 
 const riceItems = [
-    {
-        name: "Steamed Rice",
-        price: "₹120",
-        image:
-            "https://images.unsplash.com/photo-1604909053192-1a6e1b3b2a3c?w=400&auto=format&fit=crop&q=80",
-    },
-    {
-        name: "Veg Fried Rice",
-        price: "₹180",
-        image:
-            "https://images.unsplash.com/photo-1589308078054-8328f7f06c1a?w=400&auto=format&fit=crop&q=80",
-    },
+
     {
         name: "Chicken Fried Rice",
         price: "₹220",
@@ -27,11 +16,30 @@ const riceItems = [
             "https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?w=400&auto=format&fit=crop&q=80",
     },
     {
-        name: "Chicken Biryani",
-        price: "₹260",
+        name: "Veg Biryani",
+        price: "₹200",
         image:
-            "https://images.unsplash.com/photo-1604908176997-431c6f5c8c1d?w=400&auto=format&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?w=400&auto=format&fit=crop&q=80",
     },
+    {
+        name: "Veg Biryani",
+        price: "₹200",
+        image:
+            "https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?w=400&auto=format&fit=crop&q=80",
+    },
+    {
+        name: "Veg Biryani",
+        price: "₹200",
+        image:
+            "https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?w=400&auto=format&fit=crop&q=80",
+    },
+    {
+        name: "Veg Biryani",
+        price: "₹200",
+        image:
+            "https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?w=400&auto=format&fit=crop&q=80",
+    },
+
 ];
 
 // const fallback =
@@ -52,7 +60,7 @@ const Rice = () => {
         <div className="mb-6">
 
             {/* Heading */}
-            <div className="flex items-center justify-between mb-3 px-1">
+            <div className="flex items-center justify-between mb-3 px-6">
                 <h3 className="text-sm font-semibold text-text-primary">
                     Rice
                 </h3>
@@ -62,7 +70,7 @@ const Rice = () => {
             </div>
 
             {/* SAME GRID SYSTEM */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-1 px-4">
 
                 {riceItems.map((item, i) => {
                     const isActive = selected.includes(item.name);
@@ -71,18 +79,18 @@ const Rice = () => {
                         <div
                             key={i}
                             onClick={() => toggle(item.name)}
-                            className={`bg-card rounded-xl2 p-2 shadow-sm transition cursor-pointer ${isActive ? "ring-2 ring-primary" : ""
+                            className={`bg-card rounded-xl p-2 shadow-sm transition cursor-pointer ${isActive ? "ring-2 ring-primary" : ""
                                 }`}
                         >
 
                             {/* Image */}
-                            <div className="w-full h-28 bg-secondary rounded-xl overflow-hidden mb-2">
+                            <div className="w-full h-52 bg-secondary rounded-xl overflow-hidden mb-2">
                                 <img
                                     src={item.image}
                                     alt={item.name}
                                     onError={(e) => (e.currentTarget.src = fallback)}
                                     loading="lazy"
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                                 />
                             </div>
 

@@ -26,6 +26,48 @@ const fastFoods = [
     image:
       "https://images.unsplash.com/photo-1617622141675-d3005b9067c5?w=500&auto=format&fit=crop&q=80",
   },
+  {
+    name: "Pav Bhaji",
+    price: "₹129",
+    image:
+      "https://images.unsplash.com/photo-1617622141675-d3005b9067c5?w=500&auto=format&fit=crop&q=80",
+  },
+  {
+    name: "Pav Bhaji",
+    price: "₹129",
+    image:
+      "https://images.unsplash.com/photo-1617622141675-d3005b9067c5?w=500&auto=format&fit=crop&q=80",
+  },
+  {
+    name: "Pav Bhaji",
+    price: "₹129",
+    image:
+      "https://images.unsplash.com/photo-1617622141675-d3005b9067c5?w=500&auto=format&fit=crop&q=80",
+  },
+  {
+    name: "Pav Bhaji",
+    price: "₹129",
+    image:
+      "https://images.unsplash.com/photo-1617622141675-d3005b9067c5?w=500&auto=format&fit=crop&q=80",
+  },
+  {
+    name: "Pav Bhaji",
+    price: "₹129",
+    image:
+      "https://images.unsplash.com/photo-1617622141675-d3005b9067c5?w=500&auto=format&fit=crop&q=80",
+  },
+  {
+    name: "Pav Bhaji",
+    price: "₹129",
+    image:
+      "https://images.unsplash.com/photo-1617622141675-d3005b9067c5?w=500&auto=format&fit=crop&q=80",
+  },
+  {
+    name: "Pav Bhaji",
+    price: "₹129",
+    image:
+      "https://images.unsplash.com/photo-1617622141675-d3005b9067c5?w=500&auto=format&fit=crop&q=80",
+  },
 ];
 
 // const fallback =
