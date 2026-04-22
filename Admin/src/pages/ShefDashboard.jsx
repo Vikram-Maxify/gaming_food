@@ -103,9 +103,10 @@ const ChefDashboard = () => {
             >
               {/* Top */}
               <div className="flex justify-between items-center mb-3">
-                <h3 className="text-lg font-bold text-gray-900">
-                  #{order._id.slice(-5)}
-                </h3>
+  
+  <h3 className="text-lg font-bold text-gray-900">
+    #{order._id.slice(-5)}
+  </h3>
 
                 <span className="text-sm font-semibold text-gray-700">
                   Table No: {order.tableNumber || "T"}
