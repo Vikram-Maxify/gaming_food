@@ -15,10 +15,10 @@ const Navbar = () => {
                 <Link to="/"><h1 className="text-lg font-semibold">Foodie</h1></Link>
 
                 <nav className="flex gap-4 text-sm text-text-secondary ">
-                    <Link to="/" className="shadow-sm hover:bg-gray-300 rounded-sm px-1">Home</Link>
-                    <Link to="/menu" className="shadow-sm hover:bg-gray-300 rounded-sm px-1">Menu</Link>
-                    <Link to="/offers" className="shadow-sm hover:bg-gray-300 rounded-sm px-1">Offers</Link>
-                    <Link to="/contact" className="shadow-sm hover:bg-gray-300 rounded-sm px-1">Contact</Link>
+                    <Link to="/" className="shadow-sm hover:text-red-500 rounded-sm px-1">Home</Link>
+                    <Link to="/menu" className="shadow-sm hover:text-red-500 rounded-sm px-1">Menu</Link>
+                    <Link to="/offers" className="shadow-sm hover:text-red-500 rounded-sm px-1">Offers</Link>
+                    <Link to="/contact" className="shadow-sm hover:text-red-500 rounded-sm px-1">Contact</Link>
                 </nav>
             </div>
 
