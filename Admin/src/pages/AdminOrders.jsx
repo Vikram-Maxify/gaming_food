@@ -7,21 +7,31 @@ function AdminOrders() {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    // 👨‍💼 join admin room
+    // 👨‍💼 Join admin room
     socket.emit("joinAdmin");
 
-    // 🔥 new order
+    // 🔥 NEW ORDER
     socket.on("newOrder", (order) => {
       setOrders((prev) => [order, ...prev]);
     });
 
-    // 🪑 table selected
+    // 🔥 ORDER STATUS UPDATE (IMPORTANT FIX)
+    socket.on("adminOrderUpdated", (updatedOrder) => {
+      setOrders((prev) =>
+        prev.map((o) =>
+          o._id === updatedOrder._id ? updatedOrder : o
+        )
+      );
+    });
+
+    // 🪑 TABLE SELECTED
     socket.on("tableSelected", (data) => {
       console.log("Table:", data);
     });
 
     return () => {
       socket.off("newOrder");
+      socket.off("adminOrderUpdated");
       socket.off("tableSelected");
     };
   }, []);
@@ -44,6 +54,12 @@ function AdminOrders() {
           <h3>Table: {o.tableNumber}</h3>
           <p>User: {o.user?.name}</p>
           <p>Total Credits: {o.totalCredits}</p>
+
+          {/* ✅ STATUS SHOW */}
+          <p>
+            Status:{" "}
+            <strong style={{ color: "green" }}>{o.status}</strong>
+          </p>
 
           <ul>
             {o.items.map((item, i) => (

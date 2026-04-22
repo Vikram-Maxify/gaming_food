@@ -65,7 +65,8 @@ const AddToCart = () => {
       updateQuantityThunk({
         productId: item.product,
         variantId: item.variantId,
-        spiceLevel,
+        quantity: item.quantity,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+        spiceLevel, // ✅ add spice
       })
     );
   };
@@ -146,7 +147,7 @@ const AddToCart = () => {
 
                       {/* 🌶️ Spice Selector */}
                       <select
-                        value={item.spiceLevel || "medium"}
+                        // value={item.spiceLevel || "medium"}
                         onChange={(e) =>
                           updateSpice(item, e.target.value)
                         }
@@ -155,6 +156,7 @@ const AddToCart = () => {
                         <option value="low">🌶️ Low</option>
                         <option value="medium">🌶️ Medium</option>
                         <option value="high">🌶️ High</option>
+                        <option value="extra-high">🔥 Extra High</option>
                       </select>
                     </div>
 
@@ -243,13 +245,12 @@ const AddToCart = () => {
                     key={table._id}
                     disabled={table.isOccupied}
                     onClick={() => setSelectedTable(table.tableNumber)}
-                    className={`p-3 border rounded ${
-                      selectedTable === table.tableNumber
-                        ? "bg-black text-white"
-                        : table.isOccupied
+                    className={`p-3 border rounded ${selectedTable === table.tableNumber
+                      ? "bg-black text-white"
+                      : table.isOccupied
                         ? "bg-gray-300 cursor-not-allowed"
                         : "bg-gray-100"
-                    }`}
+                      }`}
                   >
                     {table.tableNumber}
                     {table.isOccupied && (

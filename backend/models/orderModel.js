@@ -36,7 +36,7 @@ const orderSchema = new mongoose.Schema(
         // 🌶️ Spice Level per item
         spiceLevel: {
           type: String,
-          enum: ["low", "medium", "high"],
+          enum: ["low", "medium", "high", "extra-high"],
           default: "medium",
         },
       },
@@ -49,7 +49,7 @@ const orderSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["pending", "preparing", "completed", "cancelled"],
+      enum: ["pending", "preparing", "ready", "cancelled"],
       default: "pending",
     },
   },

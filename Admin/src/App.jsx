@@ -36,7 +36,7 @@ function App() {
         >
           <Route index element={<Dashboard />} />
           <Route path="menu" element={<Menu />} />
-          <Route path="orders" element={<AdminOrders />} />
+          <Route path="orders" element={<Orders />} />
           <Route path="users" element={<Users />} />
           <Route path="settings" element={<Settings />} />
           <Route path="schef_Dash" element={<ShefDashboard />} />
