@@ -63,11 +63,13 @@ const Navbar = () => {
                 </div>
 
                 {/* Profile image */}
-                <img
-                    src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100"
-                    alt="profile"
-                    className="w-9 h-9 md:w-10 md:h-10 rounded-full object-cover border border-secondary-dark"
-                />
+                <Link to="/profile">
+                    <img
+                        src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100"
+                        alt="profile"
+                        className="w-9 h-9 md:w-10 md:h-10 rounded-full object-cover border border-secondary-dark hidden md:block"
+                    />
+                </Link>
             </div>
         </div>
     );

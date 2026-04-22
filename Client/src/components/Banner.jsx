@@ -4,7 +4,7 @@ import Pizza from "../assets/Images/pizzaBottomNavbar.jpg"
 
 const Banner = () => {
   return (
-    <div className="w-full bg-gradient-to-r from-primary to-accent-yellow rounded-xl2 p-4 flex items-center justify-between overflow-hidden ">
+    <div className="w-full bg-gradient-to-r from-primary to-accent-yellow rounded-xl2 p-6 flex items-center justify-between overflow-hidden px-4">
 
       {/* LEFT CONTENT */}
       <div className="z-10">
