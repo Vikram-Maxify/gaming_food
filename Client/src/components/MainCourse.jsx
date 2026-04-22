@@ -30,7 +30,7 @@ const MainCourse = () => {
         <div className="mb-6">
 
             {/* Heading */}
-            <div className="flex items-center justify-between mb-3 px-1">
+            <div className="flex items-center justify-between mb-3 px-4">
                 <h3 className="text-sm font-semibold text-text-primary">
                     Main Course
                 </h3>
@@ -43,17 +43,17 @@ const MainCourse = () => {
                 {mainCourse.map((item, i) => (
                     <div
                         key={i}
-                        className="min-w-[160px] bg-card rounded-xl2 shadow-sm overflow-hidden"
+                        className="min-w-[160px] bg-card rounded-xl2 shadow-sm overflow-hidden px-4"
                     >
 
                         {/* Image */}
-                        <div className="w-full h-28 bg-secondary">
+                        <div className="rounded-md overflow-hidden w-full h-28 bg-secondary">
                             <img
                                 src={item.image}
                                 alt={item.name}
                                 onError={(e) => (e.currentTarget.src = fallback)}
                                 loading="lazy"
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                             />
                         </div>
 

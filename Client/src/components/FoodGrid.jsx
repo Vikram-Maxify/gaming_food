@@ -52,7 +52,7 @@ const FoodGrid = () => {
     <div className="mb-6">
 
       {/* Heading */}
-      <div className="flex items-center justify-between mb-3 px-1">
+      <div className="flex items-center justify-between mb-3 px-4">
         <h3 className="text-sm font-semibold text-text-primary">
           Popular Food
         </h3>
@@ -60,16 +60,16 @@ const FoodGrid = () => {
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-1 px-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 px-4">
 
         {foods.map((item, i) => (
           <div
             key={i}
-            className="bg-card rounded-xl2 p-2 shadow-sm hover:shadow-md transition duration-200"
+            className="bg-card rounded-xl2 p-2 hover:shadow-md transition duration-200 shadow-md"
           >
 
             {/* Image Wrapper */}
-            <div className="w-full h-52 rounded-xl overflow-hidden mb-2">
+            <div className="w-full h-52 rounded-xl overflow-hidden mb-3">
               <img
                 src={item.image}
                 alt={item.name}

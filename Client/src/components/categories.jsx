@@ -28,7 +28,7 @@ const Categories = () => {
         
         <div className="mb-5">
             {/* Heading */}
-            <h3 className="text-sm font-semibold text-text-primary mb-3 px-1 pt-3">
+            <h3 className="text-base font-semibold text-text-primary mb-3 px-4 pt-3">
                 Category
             </h3>
 
