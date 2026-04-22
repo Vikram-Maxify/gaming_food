@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import {
+import API, {
     createTableAPI,
     deleteTableAPI,
     getTablesAPI,
@@ -14,6 +14,20 @@ export const createTable = createAsyncThunk(
             return res.data;
         } catch (err) {
             return rejectWithValue(err.response?.data?.message);
+        }
+    }
+);
+
+export const freeTableThunk = createAsyncThunk(
+    "table/freeTable",
+    async (tableId, { rejectWithValue }) => {
+        try {
+            const { data } = await API.put(`/table/free/${tableId}`);
+            return data.table;
+        } catch (error) {
+            return rejectWithValue(
+                error.response?.data?.message || error.message
+            );
         }
     }
 );
@@ -92,6 +106,24 @@ const tableSlice = createSlice({
                     (table) => table._id !== action.payload
                 );
                 state.count -= 1;
+            })
+            .addCase(freeTableThunk.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(freeTableThunk.fulfilled, (state, action) => {
+                state.loading = false;
+
+                const index = state.tables.findIndex(
+                    (t) => t._id === action.payload._id
+                );
+
+                if (index !== -1) {
+                    state.tables[index] = action.payload;
+                }
+            })
+            .addCase(freeTableThunk.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
             });
     },
 });

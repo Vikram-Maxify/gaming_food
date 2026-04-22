@@ -4,7 +4,8 @@ import {
     createTable,
     deleteTable,
     getTables,
-} from "../redux/slice/adminTableSlice"
+    freeTableThunk, // ✅ add this
+} from "../redux/slice/adminTableSlice";
 
 const TableManage = () => {
     const dispatch = useDispatch();
@@ -32,6 +33,13 @@ const TableManage = () => {
     const handleDelete = (id) => {
         if (window.confirm("Delete this table?")) {
             dispatch(deleteTable(id));
+        }
+    };
+
+    // ✅ FREE TABLE
+    const handleFree = (id) => {
+        if (window.confirm("Mark this table as free?")) {
+            dispatch(freeTableThunk(id));
         }
     };
 
@@ -95,10 +103,21 @@ const TableManage = () => {
                                 )}
                             </p>
 
+                            {/* ✅ FREE BUTTON (only if occupied) */}
+                            {table.isOccupied && (
+                                <button
+                                    onClick={() => handleFree(table._id)}
+                                    className="mt-3 px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
+                                >
+                                    Free Table
+                                </button>
+                            )}
+
+                            {/* DELETE */}
                             <button
                                 onClick={() => handleDelete(table._id)}
                                 disabled={table.isOccupied}
-                                className="mt-3 px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 disabled:bg-gray-300"
+                                className="mt-2 px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 disabled:bg-gray-300"
                             >
                                 Delete
                             </button>
