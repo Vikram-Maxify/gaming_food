@@ -13,9 +13,9 @@ const Footer = () => {
         <>
             <div className='bg-black'>
 
-                <div className="w-full md:w-[60%] mx-auto flex flex-col px-4">
+                <div className="w-full md:w-[60%] mx-auto flex-col px-4 mb-[86px] md:mb-0 hidden md:block">
 
-                    <h1 className="text-white text-4xl font-semibold mb-6 mt-16 md:mt-32 text-center md:text-left">
+                    <h1 className="text-white text-4xl font-semibold mb-6 mt-5 md:mt-20 text-center md:text-left">
                         Foodie
                     </h1>
                     <div className="flex flex-wrap justify-between gap-6 w-full mt-10">
