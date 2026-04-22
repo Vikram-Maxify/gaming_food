@@ -93,7 +93,7 @@ const removeFromCart = async (req, res) => {
 const updateQuantity = async (req, res) => {
   try {
     const userId = req.user._id;
-    const { productId, variantId, quantity } = req.body;
+    const { productId, variantId, quantity, spiceLevel } = req.body; // ✅ add spice
 
     let cart = await Cart.findOne({ user: userId });
 
@@ -111,8 +111,15 @@ const updateQuantity = async (req, res) => {
       return res.status(404).json({ message: "Item not found" });
     }
 
-    // 🔥 update quantity
-    item.quantity = quantity;
+    // ✅ UPDATE QUANTITY
+    if (quantity !== undefined) {
+      item.quantity = quantity;
+    }
+
+    // 🔥 FIX: UPDATE SPICE LEVEL
+    if (spiceLevel) {
+      item.spiceLevel = spiceLevel;
+    }
 
     // 🔢 recalc total
     cart.totalAmount = cart.items.reduce(
@@ -122,7 +129,14 @@ const updateQuantity = async (req, res) => {
 
     await cart.save();
 
-    res.json({ cart });
+    // 🔥 IMPORTANT: return updated item data
+    res.json({
+      productId,
+      variantId,
+      quantity: item.quantity,
+      spiceLevel: item.spiceLevel, // ✅ THIS FIXES YOUR ISSUE
+    });
+
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
