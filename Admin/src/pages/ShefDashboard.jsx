@@ -44,27 +44,46 @@ const ChefDashboard = () => {
 
               {/* Top */}
               <div className="flex justify-between items-center mb-3">
-                <h3 className="text-lg font-bold text-gray-900">
-                  #{order._id.slice(-5)}
-                </h3>
+  
+  <h3 className="text-lg font-bold text-gray-900">
+    #{order._id.slice(-5)}
+  </h3>
 
-                <span className="text-sm font-semibold text-gray-700">
-                  <span>Table No:</span>
-                  {order.tableNumber || "T"}
-                </span>
-              </div>
+  {/* 👇 Created Time */}
+  <span className="text-xs text-gray-500">
+    {new Date(order.createdAt).toLocaleTimeString()}
+  </span>
+
+  <span className="text-sm font-semibold text-gray-700">
+    Table: {order.tableNumber || "T"}
+  </span>
+
+</div>
 
               {/* Items (BIG + CLEAR) */}
               <div className="mb-4">
-                {order.items?.map((item, idx) => (
-                  <p
-                    key={idx}
-                    className="text-base font-semibold text-gray-900"
-                  >
-                    • {item.product?.name}
-                  </p>
-                ))}
-              </div>
+  {order.items?.map((item, idx) => (
+    <div key={idx} className="flex items-center justify-between mb-2">
+      
+      <p className="text-base font-semibold text-gray-900">
+        • {item.product?.name}
+      </p>
+
+      <span
+        className={`text-xs px-2 py-1 rounded font-semibold ${
+          item.spiceLevel === "low"
+            ? "bg-green-100 text-green-700"
+            : item.spiceLevel === "medium"
+            ? "bg-yellow-100 text-yellow-800"
+            : "bg-red-100 text-red-700"
+        }`}
+      >
+        {item.spiceLevel}
+      </span>
+
+    </div>
+  ))}
+</div>
 
               {/* Status */}
               <div className="flex items-center justify-between">
