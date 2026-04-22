@@ -89,7 +89,7 @@ export const getOrdersAPI = () =>
 
 // 🔹 UPDATE STATUS
 export const updateOrderStatusAPI = (id, data) =>
-  API.put(`/order/${id}`, data);
+  API.put(`/order/status/${id}`, data);
 
 // 🔹 GET ALL USERS
 export const getAllUsersAPI = () =>

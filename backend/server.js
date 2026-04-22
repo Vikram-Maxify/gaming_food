@@ -54,21 +54,27 @@ const io = new Server(server, {
   },
 });
 
-// 🔥 VERY IMPORTANT (FIX)
+// 🔥 Make io globally accessible
 app.set("io", io);
 
-// ✅ Global Socket Connection
+// ✅ Socket Connection
 io.on("connection", (socket) => {
   console.log("🔌 User connected:", socket.id);
 
-  // 👑 Admin joins room
+  // 👤 USER ROOM
+  socket.on("joinUser", (userId) => {
+    socket.join(userId);
+    console.log("✅ User joined:", userId);
+  });
+
+  // 👑 ADMIN ROOM
   socket.on("joinAdmin", () => {
     socket.join("adminRoom");
-    console.log("✅ Admin joined room");
+    console.log("✅ Admin joined");
   });
 
   socket.on("disconnect", () => {
-    console.log("❌ User disconnected:", socket.id);
+    console.log("❌ Disconnected:", socket.id);
   });
 });
 
@@ -77,7 +83,7 @@ gameSocket(io);
 ludoSocket(io);
 carSocket(io);
 
-// ✅ DB + Server start
+// ✅ DB + Server
 const port = process.env.PORT || 3000;
 
 connectdb();

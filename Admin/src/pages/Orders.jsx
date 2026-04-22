@@ -1,117 +1,131 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { io } from "socket.io-client";
+
 import {
-    getOrders,
-    updateOrderStatus,
-} from "../redux/slice/adminOrderSlice"
+  getOrders,
+  updateOrderStatus,
+  addOrder,
+  updateOrderInState,
+} from "../redux/slice/adminOrderSlice";
+
+const socket = io("http://localhost:5002");
 
 const Orders = () => {
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
+  const { orders, loading } = useSelector((state) => state.order);
 
-    const { orders, loading } = useSelector((state) => state.order);
+  // 🔥 Initial fetch + socket setup
+  useEffect(() => {
+    dispatch(getOrders());
 
-    // 🔥 Fetch orders
-    useEffect(() => {
-        dispatch(getOrders());
-    }, [dispatch]);
+    // 👑 join admin room
+    socket.emit("joinAdmin");
 
-    // 🔥 Status update
-    const handleStatus = (id, status) => {
-        dispatch(updateOrderStatus({ id, status }));
+    // 🆕 NEW ORDER
+    socket.on("newOrder", (order) => {
+      dispatch(addOrder(order));
+    });
+
+    // 🔄 ORDER UPDATE
+    socket.on("adminOrderUpdated", (order) => {
+      dispatch(updateOrderInState(order));
+    });
+
+    return () => {
+      socket.off("newOrder");
+      socket.off("adminOrderUpdated");
     };
+  }, [dispatch]);
 
-    return (
-        <div>
+  // 🔥 Status update
+  const handleStatus = (id, status) => {
+    dispatch(updateOrderStatus({ id, status }));
+  };
 
-            {/* Heading */}
-            <h2 className="text-lg font-semibold mb-4 text-gray-900">
-                Orders
-            </h2>
+  return (
+    <div>
+      <h2 className="text-lg font-semibold mb-4 text-gray-900">
+        Orders
+      </h2>
 
-            {/* Loading */}
-            {loading ? (
-                <p>Loading...</p>
-            ) : orders.length === 0 ? (
-                <p>No orders found</p>
-            ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {loading ? (
+        <p>Loading...</p>
+      ) : orders.length === 0 ? (
+        <p>No orders found</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {orders.map((order) => (
+            <div
+              key={order._id}
+              className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm"
+            >
+              {/* Top */}
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="text-sm font-semibold text-gray-900">
+                  #{order._id.slice(-5)}
+                </h3>
 
-                    {orders.map((order) => (
-                        <div
-                            key={order._id}
-                            className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm"
-                        >
+                <span className="text-xs text-gray-500">
+                  {order.table?.tableNumber || "T"}
+                </span>
+              </div>
 
-                            {/* Top */}
-                            <div className="flex justify-between items-center mb-2">
-                                <h3 className="text-sm font-semibold text-gray-900">
-                                    #{order._id.slice(-5)}
-                                </h3>
+              {/* Items */}
+              <div className="text-sm text-gray-700 mb-2">
+                {order.items?.map((item, idx) => (
+                  <p key={idx}>
+                    • {item.product?.name}
+                  </p>
+                ))}
+              </div>
 
-                                <span className="text-xs text-gray-500">
-                                    {order.table?.tableNumber || "T"}
-                                </span>
-                            </div>
+              {/* Total */}
+              <p className="text-sm font-medium text-gray-900 mb-3">
+                Total: ₹{order.totalAmount}
+              </p>
 
-                            {/* Items */}
-                            <div className="text-sm text-gray-700 mb-2">
-                                {order.items?.map((item, idx) => (
-                                    <p key={idx}>
-                                        • {item.product?.name}
-                                    </p>
-                                ))}
-                            </div>
+              {/* Status */}
+              <div className="flex items-center justify-between">
+                <span
+                  className={`text-xs px-2 py-1 rounded-full ${
+                    order.status === "pending"
+                      ? "bg-gray-100 text-gray-600"
+                      : order.status === "preparing"
+                      ? "bg-yellow-100 text-yellow-700"
+                      : "bg-green-100 text-green-700"
+                  }`}
+                >
+                  {order.status}
+                </span>
 
-                            {/* Total */}
-                            <p className="text-sm font-medium text-gray-900 mb-3">
-                                Total: ₹{order.totalAmount}
-                            </p>
+                {/* Actions */}
+                <div className="flex gap-2">
+                  <button
+                    onClick={() =>
+                      handleStatus(order._id, "preparing")
+                    }
+                    className="text-xs px-2 py-1 bg-gray-100 rounded hover:bg-gray-200"
+                  >
+                    Preparing
+                  </button>
 
-                            {/* Status */}
-                            <div className="flex items-center justify-between">
-
-                                <span
-                                    className={`text-xs px-2 py-1 rounded-full ${order.status === "pending"
-                                            ? "bg-gray-100 text-gray-600"
-                                            : order.status === "preparing"
-                                                ? "bg-yellow-100 text-yellow-700"
-                                                : "bg-green-100 text-green-700"
-                                        }`}
-                                >
-                                    {order.status}
-                                </span>
-
-                                {/* Actions */}
-                                <div className="flex gap-2">
-                                    <button
-                                        onClick={() =>
-                                            handleStatus(order._id, "preparing")
-                                        }
-                                        className="text-xs px-2 py-1 bg-gray-100 rounded hover:bg-gray-200"
-                                    >
-                                        Preparing
-                                    </button>
-
-                                    <button
-                                        onClick={() =>
-                                            handleStatus(order._id, "ready")
-                                        }
-                                        className="text-xs px-2 py-1 bg-gray-100 rounded hover:bg-gray-200"
-                                    >
-                                        Ready
-                                    </button>
-                                </div>
-
-                            </div>
-
-                        </div>
-                    ))}
-
+                  <button
+                    onClick={() =>
+                      handleStatus(order._id, "ready")
+                    }
+                    className="text-xs px-2 py-1 bg-gray-100 rounded hover:bg-gray-200"
+                  >
+                    Ready
+                  </button>
                 </div>
-            )}
-
+              </div>
+            </div>
+          ))}
         </div>
-    );
+      )}
+    </div>
+  );
 };
 
 export default Orders;

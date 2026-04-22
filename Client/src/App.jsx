@@ -3,7 +3,7 @@ import './App.css'
 import { Route, Routes } from 'react-router-dom'
 
 import HomePage from './page/HomePage'
-import BottomNav from './components/BottomNav'
+// import BottomNav from './components/BottomNav'
 import Login from './page/Login'
 import Register from './page/Register'
 import Profile from './page/Profile'
@@ -12,9 +12,8 @@ import Ludo from './page/Ludo'
 import CarRace from './page/CarRace'
 import MenuPage from './page/MenuPage'
 import AddToCart from './page/AddToCart'
-
-import PrivateRoute from './page/PrivateRoute'
-import TabStyle3 from './components/TabStyle3'
+import PrivateRoute from './page/PrivateRoute' // 🔥 ADD
+import TabStyle1 from './components/BottomNav'
 
 function App() {
   return (
@@ -41,9 +40,8 @@ function App() {
         </Route>
 
       </Routes>
+        <TabStyle1 />
 
-      {/* <BottomNav /> */}
-      <TabStyle3 />
     </>
   )
 }

@@ -60,7 +60,7 @@ const productSchema = new mongoose.Schema(
     // 🍃 Veg / Non-Veg
     type: {
       type: String,
-      enum: ["veg", "non-veg"],
+      enum: ["veg", "non-veg", "sweets", "drinks", "snacks"],
       required: true,
     },
 
