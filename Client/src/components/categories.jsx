@@ -21,68 +21,68 @@ const categories = [
         image:
             "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&auto=format&fit=crop&q=60",
     },
-     {
+    {
         name: "Dessert",
         image:
             "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&auto=format&fit=crop&q=60",
     },
-     {
+    {
         name: "Dessert",
         image:
             "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&auto=format&fit=crop&q=60",
     },
-     {
+    {
         name: "Dessert",
         image:
             "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&auto=format&fit=crop&q=60",
     },
-     {
+    {
         name: "Dessert",
         image:
             "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&auto=format&fit=crop&q=60",
     },
-     {
+    {
         name: "Dessert",
         image:
             "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&auto=format&fit=crop&q=60",
     },
-     {
+    {
         name: "Dessert",
         image:
             "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&auto=format&fit=crop&q=60",
     },
-     {
+    {
         name: "Dessert",
         image:
             "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&auto=format&fit=crop&q=60",
     },
 
-     {
+    {
         name: "Dessert",
         image:
             "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&auto=format&fit=crop&q=60",
     },
-     {
+    {
         name: "Dessert",
         image:
             "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&auto=format&fit=crop&q=60",
     },
-     {
+    {
         name: "Dessert",
         image:
             "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&auto=format&fit=crop&q=60",
     },
-     {
+    {
         name: "Dessert",
         image:
             "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&auto=format&fit=crop&q=60",
     },
-     {
+    {
         name: "Dessert",
         image:
             "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&auto=format&fit=crop&q=60",
     },
-     {
+    {
         name: "Dessert",
         image:
             "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&auto=format&fit=crop&q=60",
@@ -92,7 +92,7 @@ const categories = [
 
 const Categories = () => {
     return (
-        
+
         <div className="mb-5">
             {/* Heading */}
             <h3 className="text-base font-semibold text-text-primary mb-3 px-6 pt-3">
@@ -105,7 +105,7 @@ const Categories = () => {
                 {categories.map((cat, i) => (
                     <div
                         key={i}
-                        className="min-w-[90px] bg-card rounded-xl2 p-2 flex flex-col items-center shadow-sm hover:scale-105 transition"
+                        className="min-w-[90px] bg-card rounded-lg p-2 flex flex-col items-center shadow-sm"
                     >
                         {/* Image */}
                         <img
