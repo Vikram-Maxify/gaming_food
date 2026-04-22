@@ -34,7 +34,7 @@ const AddToCart = () => {
       updateQuantityThunk({
         productId: item.product,
         variantId: item.variantId,
-        quantity: item.quantity + 1,
+        quantity: item.quantity,
       })
     );
   };
