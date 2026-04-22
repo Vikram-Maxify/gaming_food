@@ -12,7 +12,7 @@ const SearchBar = () => {
                     type="text"
                     placeholder="Search burger, pizza..."
                     className="bg-transparent outline-none text-sm w-full focus-within:ring-2 focus-within:ring-primary"
-                    className="border-2 border-[#CDDE9B] w-full outline-none ps-1 rounded-md" />
+                    className="border-2 w-full outline-none ps-1 py-2 rounded-md" />
             </div>
 
             {/* Filter Button */}
