@@ -1,4 +1,6 @@
 const Table = require("../models/tableModel");
+const Auth = require("../models/authModels"); // ✅ import user model
+
 
 const createTable = async (req, res) => {
   try {
@@ -25,6 +27,7 @@ const createTable = async (req, res) => {
   }
 };
 
+
 const freeTable = async (req, res) => {
   try {
     const tableId = req.params.id;
@@ -42,13 +45,21 @@ const freeTable = async (req, res) => {
       });
     }
 
+    // ✅ Step 1: free table
     table.isOccupied = false;
     await table.save();
 
+    // ✅ Step 2: remove table from user
+    await Auth.updateMany(
+      { tableNumber: table.tableNumber }, // ya table._id agar use kar rahe ho
+      { $set: { tableNumber: null } }
+    );
+
     res.json({
-      message: "Table is now free",
+      message: "Table is now free and users unlinked",
       table,
     });
+
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

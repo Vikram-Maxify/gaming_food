@@ -90,17 +90,33 @@ const createOrder = async (req, res) => {
         return res.status(400).json({ message: "Invalid product" });
       }
 
+      // ✅ Variant find karo
+      const variant = product.variants.find(
+        (v) => v.name === item.variantName
+      );
+
+      if (!variant) {
+        return res.status(400).json({
+          message: `Variant not found for ${product.name}`,
+        });
+      }
+
       const quantity = item.quantity || 1;
-      const spiceLevel = item.spiceLevel || "medium"; // 🌶️ default
+      const spiceLevel = item.spiceLevel || "medium";
+
+      // ✅ Final price (discount ya normal)
+      const finalPrice = variant.discountPrice || variant.price;
 
       const credits = product.creditPoints * quantity;
       totalCredits += credits;
 
       orderItems.push({
         product: product._id,
+        variantName: variant.name,   // ✅ NEW
+        price: finalPrice,           // ✅ NEW
         quantity,
         creditPoints: product.creditPoints,
-        spiceLevel, // ✅ added
+        spiceLevel,
       });
     }
 
@@ -110,7 +126,7 @@ const createOrder = async (req, res) => {
     const order = await Order.create({
       user: user._id,
       tableNumber: takeaway ? "TAKEAWAY" : user.tableNumber,
-      takeaway: takeaway || false, // ✅ added
+      takeaway: takeaway || false,
       items: orderItems,
       totalCredits,
       status: "pending",

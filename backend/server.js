@@ -34,6 +34,10 @@ app.use("/api/product", require("./route/productRoutes"));
 app.use("/api/order", require("./route/orderRoutes"));
 app.use("/api/table", require("./route/tableRoutes"));
 app.use("/api/cart", require("./route/cart"));
+app.use("/api/notification", require("./route/userNotificationRoutes"));
+app.use("/api/promo", require("./route/userPromoRoutes"));
+
+
 
 // ✅ Admin Routes
 app.use("/api/admin", require("./adminroute/adminRoutes"));
@@ -42,6 +46,8 @@ app.use("/api/admin/product", require("./adminroute/productRoutes"));
 app.use("/api/admin/order", require("./adminroute/orderRoutes"));
 app.use("/api/admin/table", require("./adminroute/tableRoutes"));
 app.use("/api/admin/settings", require("./adminroute/adminSettingsRoutes"));
+app.use("/api/admin/notification", require("./adminroute/adminNotificationRoutes"));
+app.use("/api/admin/promo", require("./adminroute/adminPromoRoutes"));
 
 // ✅ Create HTTP server
 const server = http.createServer(app);

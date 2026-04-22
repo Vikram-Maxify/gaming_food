@@ -26,6 +26,16 @@ const orderSchema = new mongoose.Schema(
           ref: "Product",
         },
 
+        variantName: {
+          type: String, // ✅ konsa variant (Small / Medium)
+          required: true,
+        },
+
+        price: {
+          type: Number, // ✅ final price (discount wala)
+          required: true,
+        },
+
         quantity: {
           type: Number,
           default: 1,
@@ -33,7 +43,6 @@ const orderSchema = new mongoose.Schema(
 
         creditPoints: Number,
 
-        // 🌶️ Spice Level per item
         spiceLevel: {
           type: String,
           enum: ["low", "medium", "high", "extra-high"],
