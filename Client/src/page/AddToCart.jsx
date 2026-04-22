@@ -20,59 +20,57 @@ const AddToCart = () => {
   const [showTableModal, setShowTableModal] = useState(false);
   const [takeaway, setTakeaway] = useState(false);
 
-  // ✅ LOCAL SPICE STATE
-  const [spiceMap, setSpiceMap] = useState({});
-
-  // 🔥 Fetch tables
   useEffect(() => {
     dispatch(getTablesThunk());
   }, [dispatch]);
 
-  // ➕ Increase Qty
+  // ✅ Increase
   const increaseQty = (item) => {
     dispatch(
       updateQuantityThunk({
         productId: item.product,
         variantId: item.variantId,
-        quantity: item.quantity,
+        quantity: Number(item.quantity) + 1,
+        spiceLevel: item.spiceLevel || "medium",
       })
     );
   };
 
-  // ➖ Decrease Qty
+  // ✅ Decrease + auto remove
   const decreaseQty = (item) => {
-    if (item.quantity <= 1) return;
+    if (Number(item.quantity) === 1) {
+      dispatch(
+        removeFromCartThunk({
+          productId: item.product,
+          variantId: item.variantId,
+        })
+      );
+      return;
+    }
 
     dispatch(
       updateQuantityThunk({
         productId: item.product,
         variantId: item.variantId,
-        quantity: item.quantity - 1,
+        quantity: Number(item.quantity) - 1,
+        spiceLevel: item.spiceLevel || "medium",
       })
     );
   };
 
-  // ❌ Remove Item
-  const removeItem = (item) => {
+  // 🌶️ Spice update
+  const updateSpice = (item, spiceLevel) => {
     dispatch(
-      removeFromCartThunk({
+      updateQuantityThunk({
         productId: item.product,
         variantId: item.variantId,
+        quantity: item.quantity,
+        spiceLevel,
       })
     );
   };
 
-  // 🌶️ UPDATE SPICE (LOCAL ONLY)
-  const updateSpice = (item, spiceLevel) => {
-    const key = `${item.product}_${item.variantId}`;
-
-    setSpiceMap((prev) => ({
-      ...prev,
-      [key]: spiceLevel,
-    }));
-  };
-
-  // ✅ PLACE ORDER
+  // ✅ Place Order
   const handlePlaceOrder = async () => {
     try {
       if (!takeaway) {
@@ -87,15 +85,11 @@ const AddToCart = () => {
         createOrder({
           takeaway,
           tableNumber: takeaway ? null : selectedTable,
-          items: cartItems.map((item) => {
-            const key = `${item.product}_${item.variantId}`;
-
-            return {
-              product: item.product,
-              quantity: item.quantity,
-              spiceLevel: spiceMap[key] || "medium",
-            };
-          }),
+          items: cartItems.map((item) => ({
+            product: item.product,
+            quantity: item.quantity,
+            spiceLevel: item.spiceLevel || "medium",
+          })),
         })
       ).unwrap();
 
@@ -104,8 +98,6 @@ const AddToCart = () => {
       setShowTableModal(false);
       setSelectedTable(null);
       setTakeaway(false);
-      setSpiceMap({}); // reset spice
-
     } catch (err) {
       alert(err);
     }
@@ -115,98 +107,100 @@ const AddToCart = () => {
     <>
       <Navbar />
 
-      <div className="mt-10">
-        <div className="min-h-screen bg-gray-100 p-4 md:p-8">
-          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="mt-16 px-3 md:px-6">
+        <div className="min-h-screen bg-gray-100 py-4">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-4">
 
             {/* 🛒 CART */}
-            <div className="lg:col-span-2 bg-white p-4 rounded-2xl shadow">
-              <h2 className="text-xl font-semibold mb-8">Shopping Cart</h2>
+            <div className="lg:col-span-2 bg-white p-4 rounded-xl shadow">
+              <h2 className="text-lg md:text-xl font-semibold mb-4">
+                Shopping Cart
+              </h2>
 
               {cartItems.length === 0 ? (
-                <p className="text-gray-500">Cart is empty 😢</p>
+                <p className="text-gray-500 text-sm">Cart is empty 😢</p>
               ) : (
-                cartItems.map((item, index) => {
-                  const key = `${item.product}_${item.variantId}`;
+                cartItems.map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between gap-3 border-b pb-4 mb-3"
+                  >
+                    {/* LEFT */}
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-medium text-sm truncate">
+                        {item.name}
+                      </h3>
 
-                  return (
-                    <div key={index} className="flex items-center gap-3 pb-4">
+                      <p className="text-xs text-gray-500">
+                        {item.variantName}
+                      </p>
 
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="w-20 h-20 object-cover rounded-lg"
-                      />
+                      <p className="text-green-600 font-semibold text-sm">
+                        ₹{item.price * item.quantity}
+                      </p>
 
-                      <div className="flex-1">
-                        <h3 className="font-medium">{item.name}</h3>
-
-                        <p className="text-sm text-gray-500">
-                          {item.variantName}
-                        </p>
-
-                        <p className="text-green-600 font-semibold">
-                          ₹{item.price * item.quantity}
-                        </p>
-
-                        {/* 🌶️ Spice Selector */}
-                        <select
-                          value={spiceMap[key] || "medium"}
-                          onChange={(e) =>
-                            updateSpice(item, e.target.value)
-                          }
-                          className="mt-1 border rounded px-2 py-1 text-sm"
-                        >
-                          <option value="low">🌶️ Low</option>
-                          <option value="medium">🌶️ Medium</option>
-                          <option value="high">🌶️ High</option>
-                          <option value="extra-high">🔥 Extra High</option>
-                        </select>
-                      </div>
-
-                      {/* Quantity */}
-                      <div className="flex items-center border rounded-lg">
-                        <button onClick={() => decreaseQty(item)} className="px-2">−</button>
-                        <span className="px-3">{item.quantity}</span>
-                        <button onClick={() => increaseQty(item)} className="px-2">+</button>
-                      </div>
-
-                      {/* Remove */}
-                      <button
-                        onClick={() => removeItem(item)}
-                        className="bg-red-500 text-white px-3 py-1 rounded"
+                      <select
+                        value={item.spiceLevel || "medium"}
+                        onChange={(e) =>
+                          updateSpice(item, e.target.value)
+                        }
+                        className="mt-1 border rounded px-2 py-1 text-xs"
                       >
-                        Remove
+                        <option value="low">🌶️ Low</option>
+                        <option value="medium">🌶️ Medium</option>
+                        <option value="high">🌶️ High</option>
+                      </select>
+                    </div>
+
+                    {/* RIGHT (FIXED) */}
+                    <div className="flex items-center gap-2 shrink-0 border rounded-lg px-2 py-1">
+                      <button
+                        onClick={() => decreaseQty(item)}
+                        className="w-7 h-7 flex items-center justify-center bg-gray-100 rounded text-lg"
+                      >
+                        −
+                      </button>
+
+                      <span className="min-w-[20px] text-center text-sm font-medium">
+                        {item.quantity}
+                      </span>
+
+                      <button
+                        onClick={() => increaseQty(item)}
+                        className="w-7 h-7 flex items-center justify-center bg-gray-100 rounded text-lg"
+                      >
+                        +
                       </button>
                     </div>
-                  );
-                })
+                  </div>
+                ))
               )}
             </div>
 
             {/* 💰 SUMMARY */}
-            <div className="bg-white p-4 rounded-2xl shadow h-fit">
-              <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
+            <div className="bg-white p-4 rounded-xl shadow h-fit sticky top-20">
+              <h2 className="text-lg md:text-xl font-semibold mb-3">
+                Order Summary
+              </h2>
 
-              <div className="flex justify-between mb-2">
+              <div className="flex justify-between text-sm mb-1">
                 <span>Subtotal</span>
                 <span>₹{totalAmount}</span>
               </div>
 
-              <div className="flex justify-between mb-2">
+              <div className="flex justify-between text-sm mb-1">
                 <span>Shipping</span>
                 <span>₹{cartItems.length ? 50 : 0}</span>
               </div>
 
-              <div className="flex justify-between font-semibold text-lg pt-3">
+              <div className="flex justify-between font-semibold text-base pt-2">
                 <span>Total</span>
                 <span>
                   ₹{totalAmount + (cartItems.length ? 50 : 0)}
                 </span>
               </div>
 
-              {/* 🥡 Takeaway */}
-              <div className="flex items-center justify-between mt-3">
+              <div className="flex items-center justify-between mt-3 text-sm">
                 <span>Takeaway</span>
                 <input
                   type="checkbox"
@@ -216,15 +210,11 @@ const AddToCart = () => {
               </div>
 
               <button
-                onClick={() => {
-                  if (takeaway) {
-                    handlePlaceOrder();
-                  } else {
-                    setShowTableModal(true);
-                  }
-                }}
+                onClick={() =>
+                  takeaway ? handlePlaceOrder() : setShowTableModal(true)
+                }
                 disabled={!cartItems.length}
-                className="w-full mt-4 bg-black text-white py-2 rounded disabled:bg-gray-400"
+                className="w-full mt-4 bg-orange-500 text-white py-2 rounded disabled:bg-gray-400"
               >
                 Checkout
               </button>
@@ -234,23 +224,25 @@ const AddToCart = () => {
         </div>
       </div>
 
-      {/* ✅ TABLE MODAL */}
+      {/* TABLE MODAL */}
       {showTableModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-xl w-80">
+        <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50 px-3">
+          <div className="bg-white p-4 rounded-xl w-full max-w-sm">
 
-            <h2 className="text-lg font-semibold mb-4">Select Table</h2>
+            <h2 className="text-base font-semibold mb-3">
+              Select Table
+            </h2>
 
             {tableLoading ? (
-              <p>Loading tables...</p>
+              <p>Loading...</p>
             ) : (
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-3 gap-2">
                 {tables.map((table) => (
                   <button
                     key={table._id}
                     disabled={table.isOccupied}
                     onClick={() => setSelectedTable(table.tableNumber)}
-                    className={`p-3 border rounded ${
+                    className={`p-2 text-sm border rounded ${
                       selectedTable === table.tableNumber
                         ? "bg-black text-white"
                         : table.isOccupied
@@ -259,9 +251,6 @@ const AddToCart = () => {
                     }`}
                   >
                     {table.tableNumber}
-                    {table.isOccupied && (
-                      <p className="text-xs text-red-500">Occupied</p>
-                    )}
                   </button>
                 ))}
               </div>
@@ -277,7 +266,7 @@ const AddToCart = () => {
 
             <button
               onClick={() => setShowTableModal(false)}
-              className="w-full mt-2 text-gray-500"
+              className="w-full mt-2 text-gray-500 text-sm"
             >
               Cancel
             </button>
