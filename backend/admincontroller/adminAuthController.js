@@ -63,10 +63,10 @@ const loginAdmin = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const token = generateToken(admin._id ,admin.role);
+    const admintoken = generateToken(admin._id ,admin.role);
 
     // 🍪 send cookie
-    res.cookie("token", token, {
+    res.cookie("admintoken", admintoken, {
       httpOnly: true,
       secure: false, // true in production (https)
       sameSite: "lax",

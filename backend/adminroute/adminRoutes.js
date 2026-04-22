@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 
-const protect = require("../middleware/authmiddleware");
 const admin = require("../middleware/adminMiddleware");
 
 const {
@@ -11,6 +10,7 @@ const {
   logoutAdmin,
 } = require("../admincontroller/adminAuthController");
 const { updateOtpSettings } = require("../admincontroller/adminOtpController");
+const protectAdmin = require("../middleware/Adminauthmiddleware");
 
 
 // 🔓 Public
@@ -21,9 +21,9 @@ router.post("/register", registerAdmin);
 
 
 // 🔐 Admin Protected
-router.get("/profile", protect, admin, getAdminProfile);
-router.post("/otp-settings",protect,admin, updateOtpSettings);
-router.post("/logout", protect, admin, logoutAdmin);
+router.get("/profile", protectAdmin, admin, getAdminProfile);
+router.post("/otp-settings",protectAdmin,admin, updateOtpSettings);
+router.post("/logout", protectAdmin, admin, logoutAdmin);
 
 
 
