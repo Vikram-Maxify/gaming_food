@@ -45,7 +45,7 @@ const ChefDashboard = () => {
 
       // 🔔 sound
       const audio = new Audio("/notification.mp3");
-      audio.play().catch(() => {});
+      audio.play().catch(() => { });
     };
 
     const handleUpdate = (order) => {
@@ -100,10 +100,10 @@ const ChefDashboard = () => {
             >
               {/* Top */}
               <div className="flex justify-between items-center mb-3">
-  
-  <h3 className="text-lg font-bold text-gray-900">
-    #{order._id.slice(-5)}
-  </h3>
+
+                <h3 className="text-lg font-bold text-gray-900">
+                  #{order._id.slice(-5)}
+                </h3>
 
                 <span className="text-sm font-semibold text-gray-700">
                   Table No: {order.tableNumber || "T"}
@@ -115,9 +115,9 @@ const ChefDashboard = () => {
                 {order.items?.map((item, idx) => (
                   <p
                     key={idx}
-                    className="text-base font-semibold text-gray-900"
+                    className="text-base font-semibold text-gray-900 flex flex-col"
                   >
-                    • {item.product?.name}
+                    • {item.product?.name} x{item.quantity}
                     <span className="ml-2 text-sm text-gray-600">
                       ({getSpiceIcon(item.spiceLevel)}{" "}
                       {item.spiceLevel || "medium"})
@@ -129,13 +129,12 @@ const ChefDashboard = () => {
               {/* Status */}
               <div className="flex items-center justify-between">
                 <span
-                  className={`text-sm px-3 py-1 rounded-full font-semibold ${
-                    order.status === "pending"
+                  className={`text-sm px-3 py-1 rounded-full font-semibold ${order.status === "pending"
                       ? "bg-gray-200 text-gray-800"
                       : order.status === "preparing"
-                      ? "bg-yellow-200 text-yellow-900"
-                      : "bg-green-200 text-green-900"
-                  }`}
+                        ? "bg-yellow-200 text-yellow-900"
+                        : "bg-green-200 text-green-900"
+                    }`}
                 >
                   {order.status}
                 </span>
@@ -147,11 +146,10 @@ const ChefDashboard = () => {
                     onClick={() =>
                       handleStatus(order._id, "preparing")
                     }
-                    className={`text-sm px-3 py-1 rounded ${
-                      order.status !== "pending"
+                    className={`text-sm px-3 py-1 rounded ${order.status !== "pending"
                         ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                         : "bg-black text-white"
-                    }`}
+                      }`}
                   >
                     Preparing
                   </button>
@@ -161,11 +159,10 @@ const ChefDashboard = () => {
                     onClick={() =>
                       handleStatus(order._id, "ready")
                     }
-                    className={`text-sm px-3 py-1 rounded ${
-                      order.status !== "preparing"
+                    className={`text-sm px-3 py-1 rounded ${order.status !== "preparing"
                         ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                         : "bg-green-600 text-white"
-                    }`}
+                      }`}
                   >
                     Ready
                   </button>

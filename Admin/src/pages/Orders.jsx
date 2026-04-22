@@ -62,20 +62,32 @@ const Orders = () => {
             >
               {/* Top */}
               <div className="flex justify-between items-center mb-2">
-                <h3 className="text-sm font-semibold text-gray-900">
-                  #{order._id.slice(-5)}
-                </h3>
+  <h3 className="text-sm font-semibold text-gray-900">
+    #{order._id.slice(-5)}
+  </h3>
 
-                <span className="text-xs text-gray-500">
-                  {order.table?.tableNumber || "T"}
-                </span>
-              </div>
+  <span className="text-xs text-gray-500">
+    {new Date(order.createdAt).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    })}
+  </span>
+
+  <span className="text-xs text-gray-500">
+    T{order.tableNumber || "T"}
+  </span>
+</div>
 
               {/* Items */}
               <div className="text-sm text-gray-700 mb-2">
                 {order.items?.map((item, idx) => (
                   <p key={idx}>
-                    • {item.product?.name}
+                    • {item.product?.name} x{item.quantity}
+                    {item.spiceLevel && (
+                      <span className="ml-2 text-xs text-gray-500">
+                        ({item.spiceLevel})
+                      </span>
+                    )}
                   </p>
                 ))}
               </div>
