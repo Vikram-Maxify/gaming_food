@@ -112,11 +112,24 @@ const cartSlice = createSlice({
       .addCase(updateQuantityThunk.pending, (state) => {
         state.loading = true;
       })
-      .addCase(updateQuantityThunk.fulfilled, (state, action) => {
-        state.loading = false;
-        state.cartItems = action.payload.items;
-        state.totalAmount = action.payload.totalAmount;
-      })
+    builder.addCase(updateQuantityThunk.fulfilled, (state, action) => {
+      const { productId, variantId, quantity, spiceLevel } = action.payload;
+
+      const item = state.cartItems.find(
+        (i) =>
+          i.product === productId &&
+          i.variantId === variantId
+      );
+
+      if (item) {
+        item.quantity = quantity;
+
+        // ✅ ADD THIS
+        if (spiceLevel) {
+          item.spiceLevel = spiceLevel;
+        }
+      }
+    })
       .addCase(updateQuantityThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;

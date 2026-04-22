@@ -18,7 +18,10 @@ const AddToCart = () => {
 
   const [selectedTable, setSelectedTable] = useState(null);
   const [showTableModal, setShowTableModal] = useState(false);
-  const [takeaway, setTakeaway] = useState(false); // 🥡
+  const [takeaway, setTakeaway] = useState(false);
+
+  // ✅ LOCAL SPICE STATE
+  const [spiceMap, setSpiceMap] = useState({});
 
   // 🔥 Fetch tables
   useEffect(() => {
@@ -59,22 +62,19 @@ const AddToCart = () => {
     );
   };
 
-  // 🌶️ Spice Update
+  // 🌶️ UPDATE SPICE (LOCAL ONLY)
   const updateSpice = (item, spiceLevel) => {
-    dispatch(
-      updateQuantityThunk({
-        productId: item.product,
-        variantId: item.variantId,
-        quantity: item.quantity,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
-        spiceLevel, // ✅ add spice
-      })
-    );
+    const key = `${item.product}_${item.variantId}`;
+
+    setSpiceMap((prev) => ({
+      ...prev,
+      [key]: spiceLevel,
+    }));
   };
 
   // ✅ PLACE ORDER
   const handlePlaceOrder = async () => {
     try {
-      // 👉 Only for dine-in
       if (!takeaway) {
         if (!selectedTable) {
           alert("Please select a table");
@@ -83,16 +83,19 @@ const AddToCart = () => {
         await dispatch(selectTable(selectedTable)).unwrap();
       }
 
-      // ✅ Create Order
       await dispatch(
         createOrder({
           takeaway,
           tableNumber: takeaway ? null : selectedTable,
-          items: cartItems.map((item) => ({
-            product: item.product,
-            quantity: item.quantity,
-            spiceLevel: item.spiceLevel || "medium",
-          })),
+          items: cartItems.map((item) => {
+            const key = `${item.product}_${item.variantId}`;
+
+            return {
+              product: item.product,
+              quantity: item.quantity,
+              spiceLevel: spiceMap[key] || "medium",
+            };
+          }),
         })
       ).unwrap();
 
@@ -101,9 +104,7 @@ const AddToCart = () => {
       setShowTableModal(false);
       setSelectedTable(null);
       setTakeaway(false);
-
-      // 👉 optional: clear cart
-      // dispatch(clearCart());
+      setSpiceMap({}); // reset spice
 
     } catch (err) {
       alert(err);
@@ -125,57 +126,61 @@ const AddToCart = () => {
               {cartItems.length === 0 ? (
                 <p className="text-gray-500">Cart is empty 😢</p>
               ) : (
-                cartItems.map((item, index) => (
-                  <div key={index} className="flex items-center gap-3 pb-4">
+                cartItems.map((item, index) => {
+                  const key = `${item.product}_${item.variantId}`;
 
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-20 h-20 object-cover rounded-lg"
-                    />
+                  return (
+                    <div key={index} className="flex items-center gap-3 pb-4">
 
-                    <div className="flex-1">
-                      <h3 className="font-medium">{item.name}</h3>
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-20 h-20 object-cover rounded-lg"
+                      />
 
-                      <p className="text-sm text-gray-500">
-                        {item.variantName}
-                      </p>
+                      <div className="flex-1">
+                        <h3 className="font-medium">{item.name}</h3>
 
-                      <p className="text-green-600 font-semibold">
-                        ₹{item.price * item.quantity}
-                      </p>
+                        <p className="text-sm text-gray-500">
+                          {item.variantName}
+                        </p>
 
-                      {/* 🌶️ Spice Selector */}
-                      <select
-                        // value={item.spiceLevel || "medium"}
-                        onChange={(e) =>
-                          updateSpice(item, e.target.value)
-                        }
-                        className="mt-1 border rounded px-2 py-1 text-sm"
+                        <p className="text-green-600 font-semibold">
+                          ₹{item.price * item.quantity}
+                        </p>
+
+                        {/* 🌶️ Spice Selector */}
+                        <select
+                          value={spiceMap[key] || "medium"}
+                          onChange={(e) =>
+                            updateSpice(item, e.target.value)
+                          }
+                          className="mt-1 border rounded px-2 py-1 text-sm"
+                        >
+                          <option value="low">🌶️ Low</option>
+                          <option value="medium">🌶️ Medium</option>
+                          <option value="high">🌶️ High</option>
+                          <option value="extra-high">🔥 Extra High</option>
+                        </select>
+                      </div>
+
+                      {/* Quantity */}
+                      <div className="flex items-center border rounded-lg">
+                        <button onClick={() => decreaseQty(item)} className="px-2">−</button>
+                        <span className="px-3">{item.quantity}</span>
+                        <button onClick={() => increaseQty(item)} className="px-2">+</button>
+                      </div>
+
+                      {/* Remove */}
+                      <button
+                        onClick={() => removeItem(item)}
+                        className="bg-red-500 text-white px-3 py-1 rounded"
                       >
-                        <option value="low">🌶️ Low</option>
-                        <option value="medium">🌶️ Medium</option>
-                        <option value="high">🌶️ High</option>
-                        <option value="extra-high">🔥 Extra High</option>
-                      </select>
+                        Remove
+                      </button>
                     </div>
-
-                    {/* Quantity */}
-                    <div className="flex items-center border rounded-lg">
-                      <button onClick={() => decreaseQty(item)} className="px-2">−</button>
-                      <span className="px-3">{item.quantity}</span>
-                      <button onClick={() => increaseQty(item)} className="px-2">+</button>
-                    </div>
-
-                    {/* Remove */}
-                    <button
-                      onClick={() => removeItem(item)}
-                      className="bg-red-500 text-white px-3 py-1 rounded"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
 
@@ -200,7 +205,7 @@ const AddToCart = () => {
                 </span>
               </div>
 
-              {/* 🥡 Takeaway Toggle */}
+              {/* 🥡 Takeaway */}
               <div className="flex items-center justify-between mt-3">
                 <span>Takeaway</span>
                 <input
@@ -245,12 +250,13 @@ const AddToCart = () => {
                     key={table._id}
                     disabled={table.isOccupied}
                     onClick={() => setSelectedTable(table.tableNumber)}
-                    className={`p-3 border rounded ${selectedTable === table.tableNumber
-                      ? "bg-black text-white"
-                      : table.isOccupied
+                    className={`p-3 border rounded ${
+                      selectedTable === table.tableNumber
+                        ? "bg-black text-white"
+                        : table.isOccupied
                         ? "bg-gray-300 cursor-not-allowed"
                         : "bg-gray-100"
-                      }`}
+                    }`}
                   >
                     {table.tableNumber}
                     {table.isOccupied && (

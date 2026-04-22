@@ -18,6 +18,9 @@ const ChefDashboard = () => {
   const dispatch = useDispatch();
   const { orders, loading } = useSelector((state) => state.order);
 
+  console.log(orders);
+
+
   // 🔥 Spice Icon Function
   const getSpiceIcon = (level) => {
     switch (level) {
