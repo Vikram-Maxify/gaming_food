@@ -53,7 +53,7 @@ const FoodGrid = () => {
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 px-4">
 
         {foods.map((item, i) => (
           <div
