@@ -18,8 +18,6 @@ const ChefDashboard = () => {
   const dispatch = useDispatch();
   const { orders, loading } = useSelector((state) => state.order);
 
-
-
   // 🔥 Spice Icon Function
   const getSpiceIcon = (level) => {
     switch (level) {
@@ -45,9 +43,11 @@ const ChefDashboard = () => {
     const handleNewOrder = (order) => {
       dispatch(addOrder(order));
 
-      // 🔔 sound
-      const audio = new Audio("/notification.mp3");
-      audio.play().catch(() => { });
+      // 🔔 sound only for new pending order
+      if (order.status === "pending") {
+        const audio = new Audio("/notification.mp3");
+        audio.play().catch(() => {});
+      }
     };
 
     const handleUpdate = (order) => {
@@ -95,83 +95,115 @@ const ChefDashboard = () => {
         <p>No orders found</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {sortedOrders.map((order) => (
-            <div
-              key={order._id}
-              className="bg-white border-2 border-gray-300 rounded-xl p-5 shadow-sm"
-            >
-              {/* Top */}
-              <div className="flex justify-between items-center mb-3">
+          {sortedOrders.map((order) => {
+            const totalAmount = order.items.reduce(
+              (sum, item) => sum + item.price * item.quantity,
+              0
+            );
 
-                <h3 className="text-lg font-bold text-gray-900">
-                  #{order._id.slice(-5)}
-                </h3>
+            return (
+              <div
+                key={order._id}
+                className={`bg-white border-2 rounded-xl p-5 shadow-sm ${
+                  order.status === "pending"
+                    ? "border-red-400"
+                    : "border-gray-300"
+                }`}
+              >
+                {/* Top */}
+                <div className="flex justify-between items-center mb-3">
+                  <h3 className="text-lg font-bold text-gray-900">
+                    #{order._id.slice(-5)}
+                  </h3>
 
-                <span className="text-sm font-semibold text-gray-700">
-                  Table No: {order.tableNumber || "T"}
-                </span>
-              </div>
+                  <span className="text-sm font-semibold text-gray-700">
+                    Table: {order.tableNumber || "T"}
+                  </span>
+                </div>
 
-              {/* Items with SPICE 🔥 */}
-              <div className="mb-4">
-                {order.items?.map((item, idx) => (
-                  <p
-                    key={idx}
-                    className="text-base font-semibold text-gray-900 flex flex-col"
-                  >
-                    • {item.product?.name} x{item.quantity}
-                    <span className="ml-2 text-sm text-gray-600">
-                      ({getSpiceIcon(item.spiceLevel)}{" "}
-                      {item.spiceLevel || "medium"})
-                    </span>
-                  </p>
-                ))}
-              </div>
+                {/* ⏱️ Time */}
+                <p className="text-xs text-gray-500 mb-2">
+                  {new Date(order.createdAt).toLocaleTimeString()}
+                </p>
 
-              {/* Status */}
-              <div className="flex items-center justify-between">
-                <span
-                  className={`text-sm px-3 py-1 rounded-full font-semibold ${order.status === "pending"
-                      ? "bg-gray-200 text-gray-800"
-                      : order.status === "preparing"
+                {/* Items */}
+                <div className="mb-4">
+                  {order.items?.map((item, idx) => (
+                    <div key={idx} className="mb-2 text-gray-900">
+                      <p className="font-semibold">
+                        • {item.product?.name}
+                        {item.variantName && ` (${item.variantName})`} x
+                        {item.quantity}
+                      </p>
+
+                      <div className="flex justify-between text-sm text-gray-600">
+                        <span>
+                          {getSpiceIcon(item.spiceLevel)}{" "}
+                          {item.spiceLevel || "medium"}
+                        </span>
+
+                        <span>
+                          ₹{item.price} × {item.quantity} = ₹
+                          {item.price * item.quantity}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Total */}
+                <div className="mt-3 border-t pt-2 text-right font-bold text-gray-900">
+                  Total: ₹{totalAmount}
+                </div>
+
+                {/* Status */}
+                <div className="flex items-center justify-between mt-3">
+                  <span
+                    className={`text-sm px-3 py-1 rounded-full font-semibold ${
+                      order.status === "pending"
+                        ? "bg-gray-200 text-gray-800"
+                        : order.status === "preparing"
                         ? "bg-yellow-200 text-yellow-900"
                         : "bg-green-200 text-green-900"
                     }`}
-                >
-                  {order.status}
-                </span>
-
-                {/* Actions */}
-                <div className="flex gap-2">
-                  <button
-                    disabled={order.status !== "pending"}
-                    onClick={() =>
-                      handleStatus(order._id, "preparing")
-                    }
-                    className={`text-sm px-3 py-1 rounded ${order.status !== "pending"
-                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                        : "bg-black text-white"
-                      }`}
                   >
-                    Preparing
-                  </button>
+                    {order.status}
+                  </span>
 
-                  <button
-                    disabled={order.status !== "preparing"}
-                    onClick={() =>
-                      handleStatus(order._id, "ready")
-                    }
-                    className={`text-sm px-3 py-1 rounded ${order.status !== "preparing"
-                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                        : "bg-green-600 text-white"
+                  {/* Actions */}
+                  <div className="flex gap-2">
+                    <button
+                      disabled={order.status !== "pending"}
+                      onClick={() =>
+                        handleStatus(order._id, "preparing")
+                      }
+                      className={`text-sm px-3 py-1 rounded ${
+                        order.status !== "pending"
+                          ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                          : "bg-black text-white"
                       }`}
-                  >
-                    Ready
-                  </button>
+                    >
+                      Preparing
+                    </button>
+
+                    <button
+                      disabled={order.status !== "preparing"}
+                      onClick={() =>
+                        handleStatus(order._id, "ready")
+                      }
+                      className={`text-sm px-3 py-1 rounded ${
+                        order.status !== "preparing"
+                          ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                          : "bg-green-600 text-white"
+                      }`}
+                    >
+                      Ready
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

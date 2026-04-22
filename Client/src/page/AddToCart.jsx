@@ -5,6 +5,7 @@ import {
   updateQuantityThunk,
   removeFromCartThunk,
   updateQuantityLocal,
+  getCartThunk,
 } from "../reducer/slice/cartSlice";
 import { getTablesThunk } from "../reducer/slice/tableSlice";
 import { selectTable, createOrder } from "../reducer/slice/orderSlice";
@@ -24,6 +25,7 @@ const AddToCart = () => {
 
   useEffect(() => {
     dispatch(getTablesThunk());
+    dispatch(getCartThunk())
   }, [dispatch]);
 
   // ✅ Auto select user's table
@@ -116,7 +118,6 @@ const AddToCart = () => {
   const handlePlaceOrder = async () => {
     try {
       if (!takeaway) {
-        // ✅ If user already has table → skip selection API
         if (!user?.tableNumber) {
           if (!selectedTable) {
             alert("Please select a table");
@@ -132,10 +133,14 @@ const AddToCart = () => {
           tableNumber: takeaway
             ? null
             : user?.tableNumber || selectedTable,
+
           items: cartItems.map((item) => ({
             product: item.product,
             quantity: item.quantity,
             spiceLevel: item.spiceLevel || "medium",
+
+            // ✅ FIXED
+            variantName: item.variantName || item.variant?.name,
           })),
         })
       ).unwrap();
@@ -252,8 +257,8 @@ const AddToCart = () => {
                   takeaway
                     ? handlePlaceOrder()
                     : user?.tableNumber
-                    ? handlePlaceOrder() // ✅ Direct if already table
-                    : setShowTableModal(true)
+                      ? handlePlaceOrder() // ✅ Direct if already table
+                      : setShowTableModal(true)
                 }
                 disabled={!cartItems.length}
                 className="w-full mt-4 bg-orange-500 text-white py-2 rounded"
@@ -287,15 +292,14 @@ const AddToCart = () => {
                       onClick={() =>
                         setSelectedTable(table.tableNumber)
                       }
-                      className={`p-2 border rounded ${
-                        selectedTable === table.tableNumber
+                      className={`p-2 border rounded ${selectedTable === table.tableNumber
                           ? "bg-black text-white"
                           : isUserTable
-                          ? "bg-green-500 text-white"
-                          : table.isOccupied
-                          ? "bg-gray-300"
-                          : "bg-gray-100"
-                      }`}
+                            ? "bg-green-500 text-white"
+                            : table.isOccupied
+                              ? "bg-gray-300"
+                              : "bg-gray-100"
+                        }`}
                     >
                       {table.tableNumber}
 
