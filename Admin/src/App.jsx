@@ -1,7 +1,7 @@
 import './App.css'
 import AdminLayout from './layout/AdminLayout'
 import Dashboard from './pages/Dashboard'
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Menu from './pages/Menu';
 import Orders from './pages/Orders';
 import Users from './pages/Users';
@@ -19,10 +19,13 @@ import AdminProfile from './pages/AdminProfile';
 
 
 function App() {
-
   return (
     <>
       <Routes>
+
+        {/* ✅ Root pe redirect */}
+        <Route path="/" element={<Navigate to="/admin/login" replace />} />
+
         <Route
           path="/admin"
           element={
@@ -40,15 +43,16 @@ function App() {
           <Route path="coins_mng" element={<CoinManage />} />
           <Route path="add_item" element={<AddProduct />} />
           <Route path="categories" element={<AdminCategory />} />
-          {/* <Route path='order' element={<AdminOrders />} /> */}
-          <Route path='otpsetting' element={<AdminOtpSettings />} />
+          <Route path="otpsetting" element={<AdminOtpSettings />} />
           <Route path="table" element={<TableManage />} />
           <Route path="profile" element={<AdminProfile />} />
         </Route>
+
         <Route path="/admin/login" element={<AdminLogin />} />
+
       </Routes>
     </>
-  )
+  );
 }
 
 export default App
