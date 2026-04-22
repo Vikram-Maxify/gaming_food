@@ -6,7 +6,24 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>client</title>
+
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: sans-serif;
+        background: #ffffff; /* desktop default */
+      }
+
+      /* MOBILE ONLY */
+      @media (max-width: 768px) {
+        body {
+          background: linear-gradient(135deg, #ff7a18, #af002d, #319197);
+        }
+      }
+    </style>
   </head>
+
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
