@@ -4,6 +4,21 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import API from "../slice/axios";
 
 // ===============================
+// 🔹 HELPERS (LOCAL STORAGE)
+// ===============================
+const getStoredUser = () => {
+  try {
+    return JSON.parse(localStorage.getItem("user")) || null;
+  } catch {
+    return null;
+  }
+};
+
+const getStoredToken = () => {
+  return localStorage.getItem("token") || null;
+};
+
+// ===============================
 // 🔹 REGISTER (Send OTP)
 // ===============================
 export const registerUser = createAsyncThunk(
@@ -11,7 +26,7 @@ export const registerUser = createAsyncThunk(
   async (userData, thunkAPI) => {
     try {
       const res = await API.post("/api/auth/register", userData);
-      return res.data; // { message, tempUserId }
+      return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || "Register failed"
@@ -28,7 +43,7 @@ export const verifyOTP = createAsyncThunk(
   async (data, thunkAPI) => {
     try {
       const res = await API.post("/api/auth/verify-otp", data);
-      return res.data; // { message, user }
+      return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || "OTP verification failed"
@@ -89,21 +104,26 @@ export const logoutUser = createAsyncThunk(
 );
 
 // ===============================
+// 🔥 INITIAL STATE (PERSISTED)
+// ===============================
+const initialState = {
+  user: getStoredUser(),
+  token: getStoredToken(),
+
+  tempUserId: null,
+  otpSent: false,
+
+  loading: false,
+  error: null,
+  success: false,
+};
+
+// ===============================
 // 🔥 SLICE
 // ===============================
 const authSlice = createSlice({
   name: "auth",
-  initialState: {
-    user: null,
-    token: null,
-
-    tempUserId: null, // 🔥 OTP ke liye
-    otpSent: false,   // 🔥 UI toggle
-
-    loading: false,
-    error: null,
-    success: false,
-  },
+  initialState,
 
   reducers: {
     resetState: (state) => {
@@ -117,6 +137,10 @@ const authSlice = createSlice({
       state.token = null;
       state.tempUserId = null;
       state.otpSent = false;
+
+      // ✅ clear storage
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
     },
   },
 
@@ -124,7 +148,7 @@ const authSlice = createSlice({
     builder
 
       // ===============================
-      // 🔹 REGISTER (OTP SEND)
+      // REGISTER
       // ===============================
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
@@ -132,7 +156,7 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.otpSent = true; // 🔥 OTP UI show
+        state.otpSent = true;
         state.tempUserId = action.payload.tempUserId;
       })
       .addCase(registerUser.rejected, (state, action) => {
@@ -141,7 +165,7 @@ const authSlice = createSlice({
       })
 
       // ===============================
-      // 🔹 VERIFY OTP
+      // VERIFY OTP
       // ===============================
       .addCase(verifyOTP.pending, (state) => {
         state.loading = true;
@@ -151,9 +175,12 @@ const authSlice = createSlice({
         state.loading = false;
         state.success = true;
 
-        state.user = action.payload.user; // user set
+        state.user = action.payload.user;
         state.otpSent = false;
         state.tempUserId = null;
+
+        // ✅ SAVE USER
+        localStorage.setItem("user", JSON.stringify(action.payload.user));
       })
       .addCase(verifyOTP.rejected, (state, action) => {
         state.loading = false;
@@ -161,7 +188,7 @@ const authSlice = createSlice({
       })
 
       // ===============================
-      // 🔹 LOGIN
+      // LOGIN
       // ===============================
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
@@ -171,6 +198,9 @@ const authSlice = createSlice({
         state.loading = false;
         state.token = action.payload.token;
         state.success = true;
+
+        // ✅ SAVE TOKEN
+        localStorage.setItem("token", action.payload.token);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -178,19 +208,26 @@ const authSlice = createSlice({
       })
 
       // ===============================
-      // 🔹 GET USER
+      // GET USER
       // ===============================
       .addCase(getUser.fulfilled, (state, action) => {
         state.user = action.payload;
+
+        // ✅ SAVE USER
+        localStorage.setItem("user", JSON.stringify(action.payload));
       })
 
       // ===============================
-      // 🔹 LOGOUT
+      // LOGOUT
       // ===============================
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;
         state.token = null;
         state.success = false;
+
+        // ✅ CLEAR STORAGE
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
       });
   },
 });
