@@ -14,33 +14,32 @@ const selectTable = async (req, res) => {
 
     const user = await User.findById(req.user._id);
 
-    // ✅ Check table exists
+    // ✅ STEP 1: User already has table
+    if (user.tableNumber) {
+      return res.status(200).json({
+        message: "Table already assigned to you",
+        tableNumber: user.tableNumber, // 🔥 IMPORTANT
+      });
+    }
+
+    // ✅ STEP 2: Check table exists
     const table = await Table.findOne({ tableNumber });
     if (!table) {
       return res.status(404).json({ message: "Table not found" });
     }
 
-    // ✅ NEW LOGIC
+    // ✅ STEP 3: Check occupied
     if (table.isOccupied) {
-      // 👉 Agar same user ki table hai → allow
-      if (user.tableNumber === tableNumber) {
-        return res.json({
-          message: "Table already selected by you",
-          tableNumber,
-        });
-      }
-
-      // 👉 Kisi aur ki hai → block
       return res.status(400).json({
         message: "Table already occupied",
+        tableNumber: tableNumber, // 🔥 optional but useful for UI
       });
     }
 
-    // ✅ Assign table to user
+    // ✅ STEP 4: Assign table
     user.tableNumber = tableNumber;
     await user.save();
 
-    // ✅ Update table status
     table.isOccupied = true;
     await table.save();
 
@@ -53,7 +52,10 @@ const selectTable = async (req, res) => {
       });
     }
 
-    res.json({ message: "Table selected", tableNumber });
+    res.status(200).json({
+      message: "Table selected successfully",
+      tableNumber: tableNumber, // 🔥 ALWAYS SEND
+    });
 
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -102,14 +104,7 @@ const createOrder = async (req, res) => {
       });
     }
 
-    // ⚠️ spelling fix: credits (not credit)
-    if (user.credits < totalCredits) {
-      return res.status(400).json({
-        message: "Not enough credits",
-      });
-    }
-
-    user.credits -= totalCredits;
+    user.credit += totalCredits;
     await user.save();
 
     const order = await Order.create({

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   updateQuantityThunk,
   removeFromCartThunk,
+  updateQuantityLocal,
 } from "../reducer/slice/cartSlice";
 import { getTablesThunk } from "../reducer/slice/tableSlice";
 import { selectTable, createOrder } from "../reducer/slice/orderSlice";
@@ -15,9 +16,7 @@ const AddToCart = () => {
   const { tables, loading: tableLoading } = useSelector(
     (state) => state.table
   );
-
-  // 🔥 LOCAL STATE FOR INSTANT UI UPDATE
-  const [localCart, setLocalCart] = useState([]);
+  const { user } = useSelector((state) => state.auth); // ✅ USER
 
   const [selectedTable, setSelectedTable] = useState(null);
   const [showTableModal, setShowTableModal] = useState(false);
@@ -27,75 +26,86 @@ const AddToCart = () => {
     dispatch(getTablesThunk());
   }, [dispatch]);
 
-  // 🔥 Sync Redux → Local
+  // ✅ Auto select user's table
   useEffect(() => {
-    setLocalCart(cartItems);
-  }, [cartItems]);
+    if (user?.tableNumber) {
+      setSelectedTable(user.tableNumber);
+    }
+  }, [user]);
 
-  // ✅ Increase
+  const getVariantId = (item) => item.variantId || item.variant;
+
+  // ➕ Increase
   const increaseQty = (item) => {
-    const updatedCart = localCart.map((i) =>
-      i._id === item._id
-        ? { ...i, quantity: Number(i.quantity) + 1 }
-        : i
-    );
+    const newQty = Number(item.quantity) + 1;
 
-    setLocalCart(updatedCart); // 🔥 instant UI update
+    dispatch(
+      updateQuantityLocal({
+        productId: item.product,
+        variantId: getVariantId(item),
+        quantity: newQty,
+        spiceLevel: item.spiceLevel || "medium",
+      })
+    );
 
     dispatch(
       updateQuantityThunk({
         productId: item.product,
-        variantId: item.variant || item.variantId,
-        quantity: Number(item.quantity) + 1,
+        variantId: getVariantId(item),
+        quantity: newQty,
         spiceLevel: item.spiceLevel || "medium",
       })
     );
   };
 
-  // ✅ Decrease
+  // ➖ Decrease
   const decreaseQty = (item) => {
     if (Number(item.quantity) === 1) {
-      setLocalCart(localCart.filter((i) => i._id !== item._id));
-
       dispatch(
         removeFromCartThunk({
           productId: item.product,
-          variantId: item.variant || item.variantId,
+          variantId: getVariantId(item),
         })
       );
       return;
     }
 
-    const updatedCart = localCart.map((i) =>
-      i._id === item._id
-        ? { ...i, quantity: Number(i.quantity) - 1 }
-        : i
-    );
+    const newQty = Number(item.quantity) - 1;
 
-    setLocalCart(updatedCart); // 🔥 instant UI update
+    dispatch(
+      updateQuantityLocal({
+        productId: item.product,
+        variantId: getVariantId(item),
+        quantity: newQty,
+        spiceLevel: item.spiceLevel || "medium",
+      })
+    );
 
     dispatch(
       updateQuantityThunk({
         productId: item.product,
-        variantId: item.variant || item.variantId,
-        quantity: Number(item.quantity) - 1,
+        variantId: getVariantId(item),
+        quantity: newQty,
         spiceLevel: item.spiceLevel || "medium",
       })
     );
   };
 
-  // 🌶️ Spice update (FIXED)
+  // 🌶️ Spice
   const updateSpice = (item, spiceLevel) => {
-    const updatedCart = localCart.map((i) =>
-      i._id === item._id ? { ...i, spiceLevel } : i
+    dispatch(
+      updateQuantityLocal({
+        productId: item.product,
+        variantId: getVariantId(item),
+        quantity: item.quantity,
+        spiceLevel,
+      })
     );
-
-    setLocalCart(updatedCart);
 
     dispatch(
       updateQuantityThunk({
         productId: item.product,
-        variantId: item.variant || item.variantId, // ✅ FIX
+        variantId: getVariantId(item),
         quantity: item.quantity,
         spiceLevel,
       })
@@ -106,18 +116,23 @@ const AddToCart = () => {
   const handlePlaceOrder = async () => {
     try {
       if (!takeaway) {
-        if (!selectedTable) {
-          alert("Please select a table");
-          return;
+        // ✅ If user already has table → skip selection API
+        if (!user?.tableNumber) {
+          if (!selectedTable) {
+            alert("Please select a table");
+            return;
+          }
+          await dispatch(selectTable(selectedTable)).unwrap();
         }
-        await dispatch(selectTable(selectedTable)).unwrap();
       }
 
       await dispatch(
         createOrder({
           takeaway,
-          tableNumber: takeaway ? null : selectedTable,
-          items: localCart.map((item) => ({
+          tableNumber: takeaway
+            ? null
+            : user?.tableNumber || selectedTable,
+          items: cartItems.map((item) => ({
             product: item.product,
             quantity: item.quantity,
             spiceLevel: item.spiceLevel || "medium",
@@ -130,7 +145,6 @@ const AddToCart = () => {
       setShowTableModal(false);
       setSelectedTable(null);
       setTakeaway(false);
-      setLocalCart([]);
     } catch (err) {
       alert(err);
     }
@@ -140,7 +154,7 @@ const AddToCart = () => {
     <>
       <Navbar />
 
-      <div className="mt-8 px-3 md:px-6">
+      <div className="mt-16 px-3 md:px-6">
         <div className="min-h-screen bg-gray-100 py-4">
           <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-4">
 
@@ -148,17 +162,17 @@ const AddToCart = () => {
             <div className="lg:col-span-2 bg-white p-4 rounded-xl shadow">
               <h2 className="text-lg font-semibold mb-4">Shopping Cart</h2>
 
-              {localCart.length === 0 ? (
+              {cartItems.length === 0 ? (
                 <p className="text-gray-500">Cart is empty 😢</p>
               ) : (
-                localCart.map((item) => (
+                cartItems.map((item) => (
                   <div
-                    key={item._id}
-                    className="flex justify-between border-b pb-4 mb-3"
+                    key={`${item.product}-${getVariantId(item)}`}
+                    className="flex items-center justify-between gap-3 border-b pb-4 mb-3"
                   >
-                    <div>
+                    <div className="flex-1">
                       <h3 className="font-medium">{item.name}</h3>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-sm text-gray-500">
                         {item.variantName}
                       </p>
 
@@ -171,27 +185,29 @@ const AddToCart = () => {
                         onChange={(e) =>
                           updateSpice(item, e.target.value)
                         }
-                        className="mt-1 border px-2 py-1 text-xs"
+                        className="mt-1 border rounded px-2 py-1 text-sm"
                       >
-                        <option value="low">Low</option>
-                        <option value="medium">Medium</option>
-                        <option value="high">High</option>
+                        <option value="low">🌶️ Low</option>
+                        <option value="medium">🌶️ Medium</option>
+                        <option value="high">🌶️ High</option>
                       </select>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 border rounded-lg px-2 py-1">
                       <button
                         onClick={() => decreaseQty(item)}
-                        className="px-2 bg-gray-200"
+                        className="w-7 h-7 bg-gray-200 rounded"
                       >
-                        -
+                        −
                       </button>
 
-                      <span>{item.quantity}</span>
+                      <span className="min-w-[20px] text-center">
+                        {item.quantity}
+                      </span>
 
                       <button
                         onClick={() => increaseQty(item)}
-                        className="px-2 bg-gray-200"
+                        className="w-7 h-7 bg-gray-200 rounded"
                       >
                         +
                       </button>
@@ -202,30 +218,115 @@ const AddToCart = () => {
             </div>
 
             {/* 💰 SUMMARY */}
-            <div className="bg-white p-4 rounded-xl shadow">
-              <h2 className="text-lg font-semibold mb-3">
-                Order Summary
-              </h2>
+            <div className="bg-white p-4 rounded-xl shadow h-fit sticky top-20">
+              <h2 className="text-lg font-semibold mb-3">Order Summary</h2>
 
-              <p>Subtotal: ₹{totalAmount}</p>
-              <p>Shipping: ₹{localCart.length ? 50 : 0}</p>
+              <div className="flex justify-between mb-1">
+                <span>Subtotal</span>
+                <span>₹{totalAmount}</span>
+              </div>
 
-              <h3 className="font-bold">
-                Total: ₹{totalAmount + (localCart.length ? 50 : 0)}
-              </h3>
+              <div className="flex justify-between mb-1">
+                <span>Shipping</span>
+                <span>₹{cartItems.length ? 50 : 0}</span>
+              </div>
+
+              <div className="flex justify-between font-semibold pt-2">
+                <span>Total</span>
+                <span>
+                  ₹{totalAmount + (cartItems.length ? 50 : 0)}
+                </span>
+              </div>
+
+              <div className="flex justify-between mt-3">
+                <span>Takeaway</span>
+                <input
+                  type="checkbox"
+                  checked={takeaway}
+                  onChange={(e) => setTakeaway(e.target.checked)}
+                />
+              </div>
 
               <button
                 onClick={() =>
-                  takeaway ? handlePlaceOrder() : setShowTableModal(true)
+                  takeaway
+                    ? handlePlaceOrder()
+                    : user?.tableNumber
+                    ? handlePlaceOrder() // ✅ Direct if already table
+                    : setShowTableModal(true)
                 }
-                className="w-full mt-4 bg-orange-500 text-white py-2"
+                disabled={!cartItems.length}
+                className="w-full mt-4 bg-orange-500 text-white py-2 rounded"
               >
                 Checkout
               </button>
             </div>
+
           </div>
         </div>
       </div>
+
+      {/* TABLE MODAL */}
+      {showTableModal && (
+        <div className="fixed inset-0 bg-black/40 flex justify-center items-center">
+          <div className="bg-white p-4 rounded-xl w-full max-w-sm">
+            <h2 className="font-semibold mb-3">Select Table</h2>
+
+            {tableLoading ? (
+              <p>Loading...</p>
+            ) : (
+              <div className="grid grid-cols-3 gap-2">
+                {tables.map((table) => {
+                  const isUserTable =
+                    user?.tableNumber === table.tableNumber;
+
+                  return (
+                    <button
+                      key={table._id}
+                      disabled={table.isOccupied && !isUserTable}
+                      onClick={() =>
+                        setSelectedTable(table.tableNumber)
+                      }
+                      className={`p-2 border rounded ${
+                        selectedTable === table.tableNumber
+                          ? "bg-black text-white"
+                          : isUserTable
+                          ? "bg-green-500 text-white"
+                          : table.isOccupied
+                          ? "bg-gray-300"
+                          : "bg-gray-100"
+                      }`}
+                    >
+                      {table.tableNumber}
+
+                      {isUserTable && (
+                        <span className="block text-xs mt-1">
+                          Your Table
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            <button
+              onClick={handlePlaceOrder}
+              disabled={!selectedTable}
+              className="w-full mt-4 bg-green-600 text-white py-2 rounded"
+            >
+              Confirm Order
+            </button>
+
+            <button
+              onClick={() => setShowTableModal(false)}
+              className="w-full mt-2 text-gray-500"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 };

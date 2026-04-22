@@ -14,7 +14,7 @@ export const addToCartThunk = createAsyncThunk(
   }
 );
 
-// 📦 GET CART
+// 📦 GET
 export const getCartThunk = createAsyncThunk(
   "cart/get",
   async (_, { rejectWithValue }) => {
@@ -27,7 +27,7 @@ export const getCartThunk = createAsyncThunk(
   }
 );
 
-// ❌ REMOVE ITEM
+// ❌ REMOVE
 export const removeFromCartThunk = createAsyncThunk(
   "cart/remove",
   async (data, { rejectWithValue }) => {
@@ -40,13 +40,13 @@ export const removeFromCartThunk = createAsyncThunk(
   }
 );
 
-// 🔄 UPDATE QUANTITY
+// 🔄 UPDATE
 export const updateQuantityThunk = createAsyncThunk(
   "cart/update",
   async (data, { rejectWithValue }) => {
     try {
       const res = await API.put("/api/cart/update", data);
-      return res.data.cart;
+      return res.data.cart; // ✅ full cart
     } catch (err) {
       return rejectWithValue(err.response?.data?.message);
     }
@@ -61,80 +61,81 @@ const cartSlice = createSlice({
     loading: false,
     error: null,
   },
-  reducers: {},
+
+  reducers: {
+    // ⚡ OPTIMISTIC UI UPDATE
+    updateQuantityLocal: (state, action) => {
+      const { productId, variantId, quantity, spiceLevel } = action.payload;
+
+      state.cartItems = state.cartItems.map((item) =>
+        item.product === productId &&
+        (item.variantId || item.variant) === variantId
+          ? {
+              ...item,
+              quantity,
+              spiceLevel: spiceLevel || item.spiceLevel,
+            }
+          : item
+      );
+
+      state.totalAmount = state.cartItems.reduce(
+        (acc, item) => acc + item.price * item.quantity,
+        0
+      );
+    },
+  },
 
   extraReducers: (builder) => {
     builder
 
       // 🛒 ADD
-      .addCase(addToCartThunk.pending, (state) => {
-        state.loading = true;
-      })
       .addCase(addToCartThunk.fulfilled, (state, action) => {
-        state.loading = false;
         state.cartItems = action.payload.items;
         state.totalAmount = action.payload.totalAmount;
-      })
-      .addCase(addToCartThunk.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
       })
 
       // 📦 GET
-      .addCase(getCartThunk.pending, (state) => {
-        state.loading = true;
-      })
       .addCase(getCartThunk.fulfilled, (state, action) => {
-        state.loading = false;
         state.cartItems = action.payload.items;
         state.totalAmount = action.payload.totalAmount;
-      })
-      .addCase(getCartThunk.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
       })
 
       // ❌ REMOVE
-      .addCase(removeFromCartThunk.pending, (state) => {
-        state.loading = true;
-      })
       .addCase(removeFromCartThunk.fulfilled, (state, action) => {
-        state.loading = false;
         state.cartItems = action.payload.items;
         state.totalAmount = action.payload.totalAmount;
       })
-      .addCase(removeFromCartThunk.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
+
+      // 🔄 UPDATE (FINAL FIX)
+      .addCase(updateQuantityThunk.fulfilled, (state, action) => {
+        // ✅ ALWAYS replace full cart from backend
+        state.cartItems = action.payload.items;
+        state.totalAmount = action.payload.totalAmount;
       })
 
-      // 🔄 UPDATE
-      .addCase(updateQuantityThunk.pending, (state) => {
-        state.loading = true;
-      })
-    builder.addCase(updateQuantityThunk.fulfilled, (state, action) => {
-      const { productId, variantId, quantity, spiceLevel } = action.payload;
-
-      const item = state.cartItems.find(
-        (i) =>
-          i.product === productId &&
-          i.variantId === variantId
-      );
-
-      if (item) {
-        item.quantity = quantity;
-
-        // ✅ ADD THIS
-        if (spiceLevel) {
-          item.spiceLevel = spiceLevel;
+      .addMatcher(
+        (action) => action.type.endsWith("/pending"),
+        (state) => {
+          state.loading = true;
         }
-      }
-    })
-      .addCase(updateQuantityThunk.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      });
+      )
+
+      .addMatcher(
+        (action) => action.type.endsWith("/rejected"),
+        (state, action) => {
+          state.loading = false;
+          state.error = action.payload;
+        }
+      )
+
+      .addMatcher(
+        (action) => action.type.endsWith("/fulfilled"),
+        (state) => {
+          state.loading = false;
+        }
+      );
   },
 });
 
+export const { updateQuantityLocal } = cartSlice.actions;
 export default cartSlice.reducer;
