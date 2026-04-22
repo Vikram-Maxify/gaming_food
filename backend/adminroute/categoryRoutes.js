@@ -5,12 +5,13 @@ const upload = require("../middleware/upload");
 const { createCategory, updateCategory, deleteCategory, getCategories, getCategoryById } = require("../admincontroller/categoryController");
 const protect = require("../middleware/authmiddleware");
 const admin = require("../middleware/adminMiddleware");
+const protectAdmin = require("../middleware/Adminauthmiddleware");
 
 
 // 🔐 Admin only
-router.post("/create", protect, admin, upload.single("image"), createCategory);
-router.put("/update/:id", protect, admin, upload.single("image"), updateCategory);
-router.delete("/delete/:id", protect, admin, deleteCategory);
+router.post("/create", protectAdmin, admin, upload.single("image"), createCategory);
+router.put("/update/:id", protectAdmin, admin, upload.single("image"), updateCategory);
+router.delete("/delete/:id", protectAdmin, admin, deleteCategory);
 router.get("/", getCategories);
 router.get("/:id", getCategoryById);
 
