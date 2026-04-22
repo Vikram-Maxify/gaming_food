@@ -13,7 +13,8 @@ import CarRace from './page/CarRace'
 import MenuPage from './page/MenuPage'
 import AddToCart from './page/AddToCart'
 
-import PrivateRoute from './page/PrivateRoute' // 🔥 ADD
+import PrivateRoute from './page/PrivateRoute'
+import TabStyle3 from './components/TabStyle3'
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
       </Routes>
 
       {/* <BottomNav /> */}
+      <TabStyle3 />
     </>
   )
 }
