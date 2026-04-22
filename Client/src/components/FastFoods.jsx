@@ -55,7 +55,7 @@ const FastFoods = () => {
           >
 
             {/* Image */}
-            <div className=" rounded-md overflow-hidden w-full h-28 bg-secondary">
+            <div className="rounded-md overflow-hidden w-full h-28 bg-secondary">
               <img
                 src={item.image}
                 alt={item.name}

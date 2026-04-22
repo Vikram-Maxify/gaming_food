@@ -52,7 +52,7 @@ const FoodGrid = () => {
     <div className="mb-6">
 
       {/* Heading */}
-      <div className="flex items-center justify-between mb-3 px-4">
+      <div className="flex items-center justify-between mb-3 px-6">
         <h3 className="text-sm font-semibold text-text-primary">
           Popular Food
         </h3>

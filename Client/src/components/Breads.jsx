@@ -50,7 +50,7 @@ const Breads = () => {
     <div className="mb-6">
 
       {/* Heading */}
-      <div className="flex items-center justify-between mb-3 px-1">
+      <div className="flex items-center justify-between mb-3 px-4">
         <h3 className="text-sm font-semibold text-text-primary">
           Breads
         </h3>
@@ -82,7 +82,7 @@ const Breads = () => {
                   src={item.image}
                   alt={item.name}
                   onError={(e) => (e.currentTarget.src = fallback)}
-                  className="w-full h-full object-cover"
+                  className=" w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                 />
               </div>
 

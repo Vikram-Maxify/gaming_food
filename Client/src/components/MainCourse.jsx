@@ -30,7 +30,7 @@ const MainCourse = () => {
         <div className="mb-6">
 
             {/* Heading */}
-            <div className="flex items-center justify-between mb-3 px-4">
+            <div className="flex items-center justify-between mb-3 px-5">
                 <h3 className="text-sm font-semibold text-text-primary">
                     Main Course
                 </h3>
@@ -43,7 +43,7 @@ const MainCourse = () => {
                 {mainCourse.map((item, i) => (
                     <div
                         key={i}
-                        className="min-w-[160px] bg-card rounded-xl2 shadow-sm overflow-hidden px-4"
+                        className="min-w-[160px] bg-card rounded-2xl shadow-md overflow-hidden px-4"
                     >
 
                         {/* Image */}
