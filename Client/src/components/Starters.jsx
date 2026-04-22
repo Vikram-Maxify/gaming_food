@@ -21,7 +21,7 @@ const starters = [
     type: "veg",
     price: "₹179",
     image:
-      "https://images.unsplash.com/photo-1604908177522-429e5c1d2d8d?w=500&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1601050690597-df0568f70950?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
     name: "Tandoori Chicken",
@@ -40,7 +40,7 @@ const Starters = () => {
     <div className="mb-6">
 
       {/* Heading */}
-      <div className="flex items-center justify-between mb-3 px-1">
+      <div className="flex items-center justify-between mb-3 px-6">
         <h3 className="text-sm font-semibold text-text-primary">
           Starters
         </h3>
@@ -48,16 +48,16 @@ const Starters = () => {
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 px-4">
 
         {starters.map((item, i) => (
           <div
             key={i}
-            className="bg-card rounded-xl2 p-2 shadow-sm overflow-hidden"
+            className="bg-card rounded-xl p-2 shadow-sm overflow-hidden"
           >
 
             {/* Image */}
-            <div className="w-full h-28 bg-secondary rounded-xl overflow-hidden mb-2">
+            <div className="w-full h-52 bg-secondary rounded-xl overflow-hidden mb-2">
               <img
                 src={item.image}
                 alt={item.name}

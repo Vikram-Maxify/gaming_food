@@ -18,7 +18,7 @@ const fastFoods = [
     name: "Samosa Chaat",
     price: "₹99",
     image:
-      "https://images.unsplash.com/photo-1604908177522-429e5c1d2d8d?w=500&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1601050690597-df0568f70950?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
     name: "Pav Bhaji",
@@ -33,7 +33,9 @@ const fastFoods = [
 
 const FastFoods = () => {
   return (
-    <div className="mb-6">
+
+
+    <div className="mb-6 px-4">
 
       {/* Heading */}
       <div className="flex items-center justify-between mb-3 px-1">
@@ -49,17 +51,17 @@ const FastFoods = () => {
         {fastFoods.map((item, i) => (
           <div
             key={i}
-            className="min-w-[160px] bg-card rounded-xl2 shadow-sm overflow-hidden"
+            className="min-w-[160px] bg-card overflow-hidden shadow-md"
           >
 
             {/* Image */}
-            <div className="w-full h-28 bg-secondary">
+            <div className="rounded-md overflow-hidden w-full h-28 bg-secondary">
               <img
                 src={item.image}
                 alt={item.name}
                 onError={(e) => (e.currentTarget.src = fallback)}
                 loading="lazy"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
               />
             </div>
 
