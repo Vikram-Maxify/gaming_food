@@ -80,7 +80,6 @@ const loginAdmin = async (req, res) => {
         email: admin.email,
         role: admin.role,
       },
-      token, // optional (if using frontend storage)
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
