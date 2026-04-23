@@ -72,79 +72,84 @@ const Users = () => {
       </div>
 
       {/* Table */}
-      <div className="bg-cardGradient border border-borderSubtle rounded-xl2 shadow-soft overflow-hidden">
+<div className="bg-cardGradient border border-borderSubtle rounded-xl2 shadow-soft overflow-hidden">
 
-        {loading ? (
-          <p className="text-center py-6 text-textSecondary">
-            Loading users...
-          </p>
-        ) : error ? (
-          <p className="text-center text-danger py-6">{error}</p>
-        ) : users.length === 0 ? (
-          <p className="text-center py-6 text-textSecondary">
-            No users found
-          </p>
-        ) : (
+  {loading ? (
+    <p className="text-center py-6 text-textSecondary">
+      Loading users...
+    </p>
+  ) : error ? (
+    <p className="text-center text-danger py-6">{error}</p>
+  ) : users.length === 0 ? (
+    <p className="text-center py-6 text-textSecondary">
+      No users found
+    </p>
+  ) : (
 
-          <table className="w-full text-left border-collapse">
+    <table className="w-full text-left border-collapse">
 
-            {/* Header */}
-            <thead>
-              <tr className="text-textSecondary text-xs border-b border-borderSubtle">
-                <th className="p-4">#</th>
-                <th className="p-4">User</th>
-                <th className="p-4">Email</th>
-                <th className="p-4">Mobile</th>
-                <th className="p-4">Role</th>
-              </tr>
-            </thead>
+      {/* Header */}
+      <thead>
+        <tr className="text-textSecondary text-xs border-b border-borderSubtle">
+          <th className="p-4">#</th>
+          <th className="p-4">User</th>
+          <th className="p-4">Joined</th> {/* 🔥 changed */}
+          <th className="p-4">Mobile</th>
+          <th className="p-4">Role</th>
+        </tr>
+      </thead>
 
-            {/* Body */}
-            <tbody>
-              {users.map((user, index) => (
-                <tr
-                  key={user._id}
-                  className="border-b border-borderSubtle hover:bg-[#1A1A1A] transition"
-                >
+      {/* Body */}
+      <tbody>
+        {users.map((user, index) => (
+          <tr
+            key={user._id}
+            className="border-b border-borderSubtle hover:bg-[#1A1A1A] transition"
+          >
 
-                  <td className="p-4 text-sm text-textSecondary">
-                    {index + 1}
-                  </td>
+            <td className="p-4 text-sm text-textSecondary">
+              {index + 1}
+            </td>
 
-                  <td className="p-4">
-                    <div className="text-textPrimary font-medium">
-                      {user.name}
-                    </div>
-                  </td>
+            <td className="p-4">
+              <div className="text-textPrimary font-medium">
+                {user.name}
+              </div>
+            </td>
 
-                  <td className="p-4 text-textSecondary text-sm">
-                    {user.email}
-                  </td>
+            {/* 🔥 JOINED DATE */}
+            <td className="p-4 text-textSecondary text-sm">
+              {new Date(user.createdAt).toLocaleDateString("en-US", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+              })}
+            </td>
 
-                  <td className="p-4 text-textSecondary text-sm">
-                    {user.mobile}
-                  </td>
+            <td className="p-4 text-textSecondary text-sm">
+              {user.mobile}
+            </td>
 
-                  <td className="p-4">
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium border ${
-                        user.role === "admin"
-                          ? "bg-primary/20 text-primary border-primary/30"
-                          : "bg-success/20 text-success border-success/30"
-                      }`}
-                    >
-                      {user.role}
-                    </span>
-                  </td>
+            <td className="p-4">
+              <span
+                className={`px-3 py-1 rounded-full text-xs font-medium border ${
+                  user.role === "admin"
+                    ? "bg-primary/20 text-primary border-primary/30"
+                    : "bg-success/20 text-success border-success/30"
+                }`}
+              >
+                {user.role}
+              </span>
+            </td>
 
-                </tr>
-              ))}
-            </tbody>
+          </tr>
+        ))}
+      </tbody>
 
-          </table>
-        )}
+    </table>
+  )}
 
-      </div>
+</div>
     </div>
   );
 };
