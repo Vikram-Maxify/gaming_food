@@ -1,5 +1,6 @@
 import React from "react";
 import { Plus } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const starters = [
   {
@@ -58,7 +59,7 @@ const Starters = () => {
         <h3 className="text-base md:text-lg font-semibold text-white md:text-black">
           Starters
         </h3>
-        <span className="text-xs text-text-secondary">See all</span>
+        <span className="text-sm md:text-base text-white md:text-black">See all</span>
       </div>
 
       {/* Grid */}
@@ -99,13 +100,13 @@ const Starters = () => {
               </span>
 
               {/* Price + Add */}
-              <div className="flex items-center justify-between mt-1">
-                <span className="text-sm font-semibold text-black">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-semibold text-gray-500">
                   {item.price}
                 </span>
 
-                <button className="bg-primary text-white p-1.5 rounded-full active:scale-95 transition">
-                  <Plus size={14} />
+                <button className="bg-green-600 text-white p-1.5 rounded-full active:scale-95 transition text-xl -translate-y-2 -translate-x-1 hover:bg-green-800">
+                  <Plus size={16} />
                 </button>
               </div>
             </div>

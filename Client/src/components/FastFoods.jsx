@@ -1,5 +1,6 @@
 import React from "react";
 import { Plus } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const fastFoods = [
   {
@@ -84,7 +85,7 @@ const FastFoods = () => {
         <h3 className="text-base md:text-lg font-semibold text-white md:text-black">
           Fast Foods
         </h3>
-        <span className="text-xs text-white md:text-black">See all</span>
+        <Link to = "/menu"><span className="text-sm md:text-base text-white md:text-black">See all</span></Link>
       </div>
 
       {/* Scroll */}
@@ -111,17 +112,17 @@ const FastFoods = () => {
 
               {/* Content */}
               <div className="p-2">
-                <h4 className="text-sm font-medium text-black leading-tight">
+                <h4 className="text-sm font-semibold text-black leading-tight">
                   {item.name}
                 </h4>
 
                 <div className="flex items-center justify-between mt-1">
-                  <span className="text-sm font-semibold text-black">
+                  <span className="text-sm font-semibold text-gray-500">
                     {item.price}
                   </span>
 
-                  <button className="bg-primary text-white p-1.5 rounded-full active:scale-95 transition">
-                    <Plus size={14} />
+                  <button className="bg-green-600 text-white p-1.5 rounded-full active:scale-95 transition text-xl hover:bg-green-800">
+                    <Plus size={16} />
                   </button>
                 </div>
               </div>

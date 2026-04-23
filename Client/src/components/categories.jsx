@@ -117,7 +117,7 @@ const Categories = () => {
                         />
 
                         {/* Text */}
-                        <p className="text-xs font-medium md:text-white text-black">
+                        <p className="text-xs font-semibold text-black">
                             {cat.name}
                         </p>
                     </div>

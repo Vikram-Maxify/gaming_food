@@ -1,6 +1,7 @@
 import React from "react";
 import { Plus } from "lucide-react";
 import { FaStar } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const foods = [
   {
@@ -56,7 +57,7 @@ const FoodGrid = () => {
         <h3 className="text-base md:text-lg font-semibold text-white md:text-black">
           Popular Food
         </h3>
-        <span className="text-xs text-white md:text-black">See all</span>
+        <Link to = "/menu"><span className="text-sm md:text-base text-white md:text-black">See all</span></Link>
       </div>
 
       {/* Grid */}
@@ -82,7 +83,7 @@ const FoodGrid = () => {
 
               {/* Top Row: Name + Rating */}
               <div className="flex items-start justify-between">
-                <h4 className="text-sm font-medium md:text-black leading-tight mt-2">
+                <h4 className="text-base font-semibold md:text-black leading-tight mt-2">
                   {item.name}
                 </h4>
                 <div className="bg-green-600 text-white px-1 rounded flex items-center mt-3">
@@ -94,13 +95,13 @@ const FoodGrid = () => {
               </div>
 
               {/* Price (just below name) */}
-              <span className="text-sm font-semibold text-black mt-1 block">
+              <span className="text-sm font-semibold text-gray-500 mt-1 block ">
                 {item.price}
               </span>
               {/* Add Button */}
               <div className="flex justify-end">
-                <button className="bg-primary text-white p-1.5 rounded-full hover:scale-105 active:scale-95 transition">
-                  <Plus size={14} />
+                <button className="bg-green-500 text-white p-1.5 rounded-full hover:scale-105 active:scale-95 transition -translate-y-2 hover:bg-green-800">
+                  <Plus size={16} />
                 </button>
               </div>
             </div>

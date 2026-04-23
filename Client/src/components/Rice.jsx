@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Plus } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const riceItems = [
 
@@ -64,13 +65,11 @@ const Rice = () => {
                 <h3 className="text-base md:text-lg  font-semibold text-white md:text-black">
                     Rice
                 </h3>
-                <span className="text-base md:text-lg text-text-secondary">
-                    Add-on
-                </span>
+               <Link to = "/menu"><span className="text-sm md:text-base text-white md:text-black">Add on</span></Link>
             </div>
 
             {/* SAME GRID SYSTEM */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 px-4 md:px-24">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 px-4 md:px-24">
 
                 {riceItems.map((item, i) => {
                     const isActive = selected.includes(item.name);
@@ -101,12 +100,12 @@ const Rice = () => {
                                 </h4>
 
                                 <div className="flex items-center justify-between mt-1">
-                                    <span className="text-sm font-semibold">
+                                    <span className="text-sm font-semibold text-gray-500">
                                         {item.price}
                                     </span>
 
-                                    <div className="bg-primary text-white p-1.5 rounded-full">
-                                        <Plus size={14} />
+                                    <div className="bg-green-600 text-white p-1.5 rounded-full -translate-y-2 hover:bg-green-800">
+                                        <Plus size={16} />
                                     </div>
                                 </div>
                             </div>

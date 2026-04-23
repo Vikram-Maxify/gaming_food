@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const breadsList = [
   {
@@ -75,12 +76,10 @@ const Breads = () => {
 
       {/* Heading */}
       <div className="flex items-center justify-between mb-3 px-4 md:px-24">
-        <h3 className="text-base md:text-lg font-semibold text-text-primary">
+        <h3 className="text-base md:text-lg font-semibold text-white md:text-black">
           Breads
         </h3>
-        <span className="text-sm md:text-lg text-text-secondary">
-          Choose
-        </span>
+      <Link to = "/menu"><span className="text-sm md:text-base text-white md:text-black">Choose</span></Link>
       </div>
 
       {/* Scroll */}
@@ -100,7 +99,7 @@ const Breads = () => {
             >
 
               {/* Image */}
-              <div className="w-full h-16 md:w-full md:h-28 rounded-lg overflow-hidden  bg-secondary">
+              <div className="w-full h-16 md:w-full md:h-28 rounded-lg overflow-hidden bg-secondary">
                 <img
                   src={item.image}
                   alt={item.name}
@@ -110,11 +109,11 @@ const Breads = () => {
               </div>
 
               {/* Text */}
-              <p className="text-sm font-medium text-black leading-tight mt-1">
+              <p className="text-xs font-semibold text-black leading-tight mt-1 px-1">
                 {item.name}
               </p>
 
-              <p className="text-[11px] font-medium text-text-secondary">
+              <p className="text-[11px] font-medium text-gray-500 px-1">
                 {item.price}
               </p>
 
