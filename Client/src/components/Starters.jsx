@@ -55,14 +55,14 @@ const Starters = () => {
 
       {/* Heading */}
       <div className="flex items-center justify-between mb-3 px-7 md:px-24 mt-3">
-        <h3 className="text-sm font-semibold text-text-primary">
+        <h3 className="text-base md:text-lg font-semibold text-text-primary">
           Starters
         </h3>
         <span className="text-xs text-text-secondary">See all</span>
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 px-4 md:px-24">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 px-4 md:px-24">
 
         {starters.map((item, i) => (
           <div
@@ -82,14 +82,14 @@ const Starters = () => {
             </div>
 
             {/* Info */}
-            <div className="">
-              <h4 className="text-sm font-medium text-text-primary leading-tight">
+            <div className="px-2">
+              <h4 className="text-sm font-semibold text-text-primary leading-tight">
                 {item.name}
               </h4>
 
               {/* Veg / Non-Veg Tag */}
               <span
-                className={`text-[10px] font-medium ${
+                className={`text-[12px] font-medium ${
                   item.type === "veg"
                     ? "text-green-600"
                     : "text-red-500"

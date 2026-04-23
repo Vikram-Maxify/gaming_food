@@ -13,7 +13,7 @@ const Footer = () => {
         <>
             <div className="bg-black pt-16">
 
-                <div className="w-full md:w-[60%] mx-auto px-4 mb-[86px] md:mb-0 hidden md:block">
+                <div className="w-full md:w-[80%] mx-auto px-4 mb-[86px] md:mb-0 hidden md:block">
 
                     {/* Title */}
                     <h1 className="text-white text-4xl font-semibold mb-6 text-center md:text-left">

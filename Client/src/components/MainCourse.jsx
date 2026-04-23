@@ -73,7 +73,7 @@ const MainCourse = () => {
 
             {/* Heading */}
             <div className="flex items-center justify-between mb-3 px-4 md:px-24">
-                <h3 className="text-sm font-semibold text-text-primary">
+                <h3 className="text-base md:text-lg font-semibold text-text-primary">
                     Main Course
                 </h3>
                 <span className="text-xs text-text-secondary">See all</span>
@@ -100,7 +100,7 @@ const MainCourse = () => {
                         </div>
 
                         {/* Content */}
-                        <div className="p-3">
+                        <div className="p-2">
                             <h4 className="text-sm font-medium text-gray-800">
                                 {item.name}
                             </h4>
