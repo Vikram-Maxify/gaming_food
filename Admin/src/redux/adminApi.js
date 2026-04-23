@@ -95,6 +95,9 @@ export const updateOrderStatusAPI = (id, data) =>
 export const getAllUsersAPI = () =>
   API.get("/users");
 
+// Get Users
+export const getUsersAPI = () => API.get("/users");
+
 
 export const updatetableApi =()=>API.put(`/table/free/${id}`)
 

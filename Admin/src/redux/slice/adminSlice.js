@@ -3,6 +3,7 @@ import {
     loginAdminAPI,
     getAdminProfileAPI,
     logoutAdminAPI,
+    getUsersAPI, // ✅ ADD THIS
 } from "../adminApi";
 
 // 🔐 LOGIN
@@ -44,10 +45,24 @@ export const logoutAdmin = createAsyncThunk(
     }
 );
 
+// 👥 GET USERS (NEW)
+export const getUsers = createAsyncThunk(
+    "admin/getUsers",
+    async (_, { rejectWithValue }) => {
+        try {
+            const res = await getUsersAPI();
+            return res.data; // 👈 direct array aa raha hai backend se
+        } catch (err) {
+            return rejectWithValue(err.response?.data?.message);
+        }
+    }
+);
+
 const adminSlice = createSlice({
     name: "admin",
     initialState: {
         admin: null,
+        users: [], // ✅ NEW
         loading: false,
         error: null,
         isAuthenticated: false,
@@ -62,6 +77,7 @@ const adminSlice = createSlice({
             // 🔐 LOGIN
             .addCase(loginAdmin.pending, (state) => {
                 state.loading = true;
+                state.error = null;
             })
             .addCase(loginAdmin.fulfilled, (state, action) => {
                 state.loading = false;
@@ -69,13 +85,14 @@ const adminSlice = createSlice({
                 state.isAuthenticated = true;
                 state.checked = true;
             })
-            .addCase(loginAdmin.rejected, (state) => {
+            .addCase(loginAdmin.rejected, (state, action) => {
                 state.loading = false;
+                state.error = action.payload;
                 state.isAuthenticated = false;
                 state.checked = true;
             })
 
-            // 👤 PROFILE (refresh case)
+            // 👤 PROFILE
             .addCase(getAdminProfile.pending, (state) => {
                 state.loading = true;
             })
@@ -98,12 +115,27 @@ const adminSlice = createSlice({
                 state.loading = false;
                 state.admin = null;
                 state.isAuthenticated = false;
-                state.checked = true; // 🔥 VERY IMPORTANT
+                state.checked = true;
+            })
+
+            // 👥 GET USERS
+            .addCase(getUsers.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(getUsers.fulfilled, (state, action) => {
+                state.loading = false;
+                state.users = action.payload; // 👈 users store ho rahe hain
+            })
+            .addCase(getUsers.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
             })
 
             // 🚪 LOGOUT
             .addCase(logoutAdmin.fulfilled, (state) => {
                 state.admin = null;
+                state.users = []; // ✅ clear users also
                 state.isAuthenticated = false;
                 state.checked = true;
             });

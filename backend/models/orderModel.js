@@ -19,37 +19,41 @@ const orderSchema = new mongoose.Schema(
       default: false,
     },
 
-    items: [
-      {
-        product: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Product",
-        },
+items: [
+  {
+    product: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Product",
+    },
 
-        variantName: {
-          type: String, // ✅ konsa variant (Small / Medium)
-          required: true,
-        },
+    productName: String, // ✅ snapshot name
 
-        price: {
-          type: Number, // ✅ final price (discount wala)
-          required: true,
-        },
+    image: String, // ✅ ADD THIS
 
-        quantity: {
-          type: Number,
-          default: 1,
-        },
+    variantName: {
+      type: String,
+      required: true,
+    },
 
-        creditPoints: Number,
+    price: {
+      type: Number,
+      required: true,
+    },
 
-        spiceLevel: {
-          type: String,
-          enum: ["low", "medium", "high", "extra-high"],
-          default: "medium",
-        },
-      },
-    ],
+    quantity: {
+      type: Number,
+      default: 1,
+    },
+
+    creditPoints: Number,
+
+    spiceLevel: {
+      type: String,
+      enum: ["low", "medium", "high", "extra-high"],
+      default: "medium",
+    },
+  },
+],
 
     totalCredits: {
       type: Number,

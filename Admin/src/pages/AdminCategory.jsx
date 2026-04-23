@@ -1,5 +1,3 @@
-// src/pages/admin/Category.jsx
-
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -7,7 +5,7 @@ import {
     createCategory,
     deleteCategory,
     updateCategory,
-} from "../redux/slice/categorySlice"
+} from "../redux/slice/categorySlice";
 import { getProducts } from "../redux/slice/AdminProductSlice";
 import { ImBin } from "react-icons/im";
 import { FaRegEdit } from "react-icons/fa";
@@ -19,7 +17,6 @@ const Category = () => {
 
     const [name, setName] = useState("");
     const [image, setImage] = useState(null);
-
     const [editId, setEditId] = useState(null);
 
     useEffect(() => {
@@ -27,7 +24,6 @@ const Category = () => {
         dispatch(getProducts());
     }, [dispatch]);
 
-    // ➕ ADD / UPDATE
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -51,18 +47,15 @@ const Category = () => {
         setImage(null);
     };
 
-    // ✏️ EDIT
     const handleEdit = (cat) => {
         setName(cat.name);
         setEditId(cat._id);
     };
 
-    // ❌ DELETE
     const handleDelete = (id) => {
         dispatch(deleteCategory(id));
     };
 
-    // 🔥 Count products per category
     const getProductCount = (categoryId) => {
         return products.filter(
             (p) => p.category?._id === categoryId || p.category === categoryId
@@ -70,46 +63,48 @@ const Category = () => {
     };
 
     return (
-        <div className="p-4">
+        <div className="p-6">
 
             {/* Heading */}
-            <h2 className="text-xl font-semibold mb-4">
+            <h2 className="text-xl font-semibold mb-6 text-textPrimary">
                 📂 Category Management
             </h2>
 
             {/* ➕ FORM */}
             <form
                 onSubmit={handleSubmit}
-                className="bg-white p-4 rounded-xl shadow mb-6 flex flex-col gap-3"
+                className="bg-cardGradient border border-borderSubtle p-5 rounded-xl2 shadow-soft mb-6 flex flex-col gap-3"
             >
                 <input
                     type="text"
                     placeholder="Category Name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="p-2 border rounded"
+                    className="p-2 bg-[#1A1A1A] border border-borderSubtle rounded-lg text-textPrimary outline-none focus:shadow-glow"
                 />
 
                 <input
                     type="file"
                     onChange={(e) => setImage(e.target.files[0])}
+                    className="text-textSecondary"
                 />
 
-                <button className="bg-blue-500 text-white p-2 rounded">
+                <button className="bg-primaryGradient text-white p-2 rounded-xl2 shadow-glow hover:shadow-glowHover transition">
                     {editId ? "Update Category" : "Add Category"}
                 </button>
             </form>
 
             {/* 📊 STATS */}
-            <div className="mb-4">
-                Total Categories: <b>{categories.length}</b>
+            <div className="mb-6 text-textSecondary">
+                Total Categories:{" "}
+                <b className="text-textPrimary">{categories.length}</b>
             </div>
 
             {/* 📦 TABLE */}
-            <div className="bg-white rounded-xl shadow overflow-hidden">
+            <div className="bg-cardGradient border border-borderSubtle rounded-xl2 shadow-soft overflow-hidden">
 
                 {/* Header */}
-                <div className="grid grid-cols-5 bg-gray-100 p-3 text-sm font-semibold">
+                <div className="grid grid-cols-5 px-4 py-3 text-xs font-medium text-textSecondary border-b border-borderSubtle">
                     <span>Image</span>
                     <span>Name</span>
                     <span>Products</span>
@@ -119,32 +114,34 @@ const Category = () => {
 
                 {/* Rows */}
                 {loading ? (
-                    <p className="p-4">Loading...</p>
+                    <p className="p-4 text-textSecondary">Loading...</p>
                 ) : categories.length === 0 ? (
-                    <p className="p-4">No categories found</p>
+                    <p className="p-4 text-textSecondary">No categories found</p>
                 ) : (
                     categories.map((cat) => (
                         <div
                             key={cat._id}
-                            className="grid grid-cols-5 p-3 border-t items-center text-sm"
+                            className="grid grid-cols-5 px-4 py-3 items-center text-sm border-b border-borderSubtle hover:bg-[#1A1A1A] transition"
                         >
                             {/* Image */}
                             <img
                                 src={cat.image}
                                 alt={cat.name}
-                                className="w-12 h-12 object-cover rounded"
+                                className="w-12 h-12 object-cover rounded-lg border border-borderSubtle"
                             />
 
                             {/* Name */}
-                            <span className="font-medium">{cat.name}</span>
+                            <span className="font-medium text-textPrimary">
+                                {cat.name}
+                            </span>
 
                             {/* Product Count */}
-                            <span className="text-orange-600 font-semibold">
+                            <span className="text-primary font-semibold">
                                 {getProductCount(cat._id)} items
                             </span>
 
                             {/* Date */}
-                            <span className="text-gray-500">
+                            <span className="text-textSecondary">
                                 {new Date(cat.createdAt).toLocaleDateString()}
                             </span>
 
@@ -152,14 +149,14 @@ const Category = () => {
                             <div className="flex gap-2">
                                 <button
                                     onClick={() => handleEdit(cat)}
-                                    className="px-2 py-1 bg-gray-200 rounded text-xl"
+                                    className="p-2 rounded-lg bg-[#1A1A1A] border border-borderSubtle hover:shadow-glow transition text-primary"
                                 >
-                                     <FaRegEdit />
+                                    <FaRegEdit />
                                 </button>
 
                                 <button
                                     onClick={() => handleDelete(cat._id)}
-                                    className="px-2 py-1 bg-red-200 text-red-600 rounded text-xl"
+                                    className="p-2 rounded-lg bg-[#1A1A1A] border border-borderSubtle hover:shadow-glow transition text-danger"
                                 >
                                     <ImBin />
                                 </button>

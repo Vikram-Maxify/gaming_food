@@ -23,10 +23,11 @@ router.post("/register", registerAdmin);
 
 
 // 🔐 Admin Protected
+router.get("/users",protectAdmin,admin,getusers);
+
 router.get("/profile", protectAdmin, admin, getAdminProfile);
 router.post("/otp-settings",protectAdmin,admin, updateOtpSettings);
 router.post("/logout", protectAdmin, admin, logoutAdmin);
-router.get("/users",protectAdmin,admin,getusers);
 
 
 

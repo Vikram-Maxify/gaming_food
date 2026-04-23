@@ -170,55 +170,66 @@ const AddToCart = () => {
               {cartItems.length === 0 ? (
                 <p className="text-gray-500">Cart is empty 😢</p>
               ) : (
-                cartItems.map((item) => (
-                  <div
-                    key={`${item.product}-${getVariantId(item)}`}
-                    className="flex items-center justify-between gap-3 border-b pb-4 mb-3"
-                  >
-                    <div className="flex-1">
-                      <h3 className="font-medium">{item.name}</h3>
-                      <p className="text-sm text-gray-500">
-                        {item.variantName}
-                      </p>
+cartItems.map((item) => (
+  <div
+    key={`${item.product}-${getVariantId(item)}`}
+    className="flex items-center justify-between gap-3 border-b pb-4 mb-3"
+  >
 
-                      <p className="text-green-600 font-semibold">
-                        ₹{item.price * item.quantity}
-                      </p>
+    {/* ✅ LEFT SIDE (IMAGE + DETAILS) */}
+    <div className="flex items-center gap-3 flex-1">
+      <img
+        src={item.image}
+        alt={item.name}
+        className="w-16 h-16 object-cover rounded"
+      />
 
-                      <select
-                        value={item.spiceLevel || "medium"}
-                        onChange={(e) =>
-                          updateSpice(item, e.target.value)
-                        }
-                        className="mt-1 border rounded px-2 py-1 text-sm"
-                      >
-                        <option value="low">🌶️ Low</option>
-                        <option value="medium">🌶️ Medium</option>
-                        <option value="high">🌶️ High</option>
-                      </select>
-                    </div>
+      <div>
+        <h3 className="font-medium">{item.name}</h3>
+        <p className="text-sm text-gray-500">
+          {item.variantName}
+        </p>
 
-                    <div className="flex items-center gap-2 border rounded-lg px-2 py-1">
-                      <button
-                        onClick={() => decreaseQty(item)}
-                        className="w-7 h-7 bg-gray-200 rounded"
-                      >
-                        −
-                      </button>
+        <p className="text-green-600 font-semibold">
+          ₹{item.price * item.quantity}
+        </p>
 
-                      <span className="min-w-[20px] text-center">
-                        {item.quantity}
-                      </span>
+        <select
+          value={item.spiceLevel || "medium"}
+          onChange={(e) =>
+            updateSpice(item, e.target.value)
+          }
+          className="mt-1 border rounded px-2 py-1 text-sm"
+        >
+          <option value="low">🌶️ Low</option>
+          <option value="medium">🌶️ Medium</option>
+          <option value="high">🌶️ High</option>
+        </select>
+      </div>
+    </div>
 
-                      <button
-                        onClick={() => increaseQty(item)}
-                        className="w-7 h-7 bg-gray-200 rounded"
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-                ))
+    {/* ✅ RIGHT SIDE (QUANTITY CONTROL) */}
+    <div className="flex items-center gap-2 border rounded-lg px-2 py-1">
+      <button
+        onClick={() => decreaseQty(item)}
+        className="w-7 h-7 bg-gray-200 rounded"
+      >
+        −
+      </button>
+
+      <span className="min-w-[20px] text-center">
+        {item.quantity}
+      </span>
+
+      <button
+        onClick={() => increaseQty(item)}
+        className="w-7 h-7 bg-gray-200 rounded"
+      >
+        +
+      </button>
+    </div>
+  </div>
+))
               )}
             </div>
 
