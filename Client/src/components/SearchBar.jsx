@@ -11,10 +11,10 @@ const SearchBar = () => {
 
     return (
         <>
-            <div className="flex items-center justify-center gap-3 px-2 mt-4 mb-4">
+            <div className="flex items-center justify-center gap-3 px-2 mt-4 md:mt-3 mb-4">
 
                 {/* Search Input */}
-                <div className="relative w-full md:w-1/2 px-3">
+                <div className="relative w-full md:w-[30%] px-3">
 
                     {/* Search Icon */}
                     <Search
@@ -25,7 +25,7 @@ const SearchBar = () => {
                     <input
                         type="text"
                         placeholder="Search burger, pizza..."
-                        className="w-full pl-12 pr-4 py-2 rounded-full border border-gray-300 
+                        className="w-full pl-12 pr-4 py-2 md:py-3 rounded-full border border-gray-300 
                         focus:ring-2 focus:ring-orange-200 outline-none text-sm"
                     />
                 </div>

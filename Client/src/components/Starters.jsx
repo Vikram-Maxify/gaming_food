@@ -54,7 +54,7 @@ const Starters = () => {
     <div className="mb-6">
 
       {/* Heading */}
-      <div className="flex items-center justify-between mb-3 px-6">
+      <div className="flex items-center justify-between mb-3 px-7 md:px-24 mt-3">
         <h3 className="text-sm font-semibold text-text-primary">
           Starters
         </h3>
@@ -62,12 +62,12 @@ const Starters = () => {
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 px-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 px-4 md:px-24">
 
         {starters.map((item, i) => (
           <div
             key={i}
-            className="bg-card rounded-xl p-2 shadow-sm overflow-hidden"
+            className="bg-card rounded-xl shadow-sm overflow-hidden"
           >
 
             {/* Image */}
@@ -82,7 +82,7 @@ const Starters = () => {
             </div>
 
             {/* Info */}
-            <div className="px-1">
+            <div className="">
               <h4 className="text-sm font-medium text-text-primary leading-tight">
                 {item.name}
               </h4>
