@@ -43,8 +43,7 @@ const riceItems = [
 
 ];
 
-// const fallback =
-//     "https://via.placeholder.com/300x200?text=Rice";
+
 
 const Rice = () => {
     const [selected, setSelected] = useState([]);
@@ -65,7 +64,7 @@ const Rice = () => {
                 <h3 className="text-base md:text-lg  font-semibold text-white md:text-black">
                     Rice
                 </h3>
-               <Link to = "/menu"><span className="text-sm md:text-base text-white md:text-black">Add on</span></Link>
+                <Link to="/menu"><span className="text-sm md:text-base text-white md:text-black">Add on</span></Link>
             </div>
 
             {/* SAME GRID SYSTEM */}
@@ -75,10 +74,11 @@ const Rice = () => {
                     const isActive = selected.includes(item.name);
 
                     return (
+
                         <div
                             key={i}
                             onClick={() => toggle(item.name)}
-                            className={`bg-card rounded-xl shadow-sm transition cursor-pointer ${isActive ? "ring-2 ring-primary" : ""
+                            className={`bg-card rounded-xl shadow-sm transition cursor-pointer ${isActive ? "" : ""
                                 }`}
                         >
 

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { Plus } from "lucide-react";
+
 
 const breadsList = [
   {
@@ -72,6 +74,7 @@ const Breads = () => {
   };
 
   return (
+
     <div className="mb-6">
 
       {/* Heading */}
@@ -79,7 +82,11 @@ const Breads = () => {
         <h3 className="text-base md:text-lg font-semibold text-white md:text-black">
           Breads
         </h3>
-      <Link to = "/menu"><span className="text-sm md:text-base text-white md:text-black">Choose</span></Link>
+        <Link to="/menu">
+          <span className="text-sm md:text-base text-white md:text-black">
+            Choose
+          </span>
+        </Link>
       </div>
 
       {/* Scroll */}
@@ -92,9 +99,9 @@ const Breads = () => {
             <div
               key={i}
               onClick={() => toggleBread(item.name)}
-              className={`min-w-[110px] cursor-pointer rounded-lg  transition border ${isActive
-                  ? "bg-primary/10 border-primary"
-                  : "bg-card border-secondary-dark"
+              className={`relative min-w-[110px] cursor-pointer rounded-lg transition ${isActive
+                ? "bg-primary/10"
+                : "bg-card"
                 }`}
             >
 
@@ -104,18 +111,23 @@ const Breads = () => {
                   src={item.image}
                   alt={item.name}
                   onError={(e) => (e.currentTarget.src = fallback)}
-                  className=" w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                 />
               </div>
 
               {/* Text */}
-              <p className="text-xs font-semibold text-black leading-tight mt-1 px-1">
+              <p className="text-xs font-semibold text-black leading-tight mt-1 px-2">
                 {item.name}
               </p>
 
-              <p className="text-[11px] font-medium text-gray-500 px-1">
+              <p className="text-[11px] font-medium text-gray-500 px-2">
                 {item.price}
               </p>
+
+              {/* Plus Button (Right Side) */}
+              {/* <div className="absolute right-2 bottom-2 bg-green-600 text-white p-1.5 rounded-full hover:bg-green-800">
+                <Plus size={16} />
+              </div> */}
 
             </div>
           );
