@@ -8,7 +8,9 @@ const Navbar = () => {
     const { token, user } = useSelector((state) => state.auth);
 
     return (
-        <div className="w-full flex items-center justify-between p-3 md:px-6">
+
+       <div className="hidden md:block">
+         <div className="w-full flex items-center justify-between p-3 md:px-6">
 
             {/* LEFT (Desktop only) */}
             <div className="hidden md:flex items-center gap-6">
@@ -72,6 +74,7 @@ const Navbar = () => {
                 </Link>
             </div>
         </div>
+       </div>
     );
 };
 

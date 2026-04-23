@@ -11,7 +11,7 @@ const SearchBar = () => {
 
     return (
         <>
-            <div className="flex items-center justify-center gap-4 px-2 mt-5">
+            <div className="flex items-center justify-center gap-3 px-2 mt-4 mb-4">
 
                 {/* Search Input */}
                 <div className="relative w-full md:w-1/2 px-3">
