@@ -110,7 +110,7 @@ const Breads = () => {
               </div>
 
               {/* Text */}
-              <p className="text-sm font-semibold text-text-primary leading-tight mt-1">
+              <p className="text-sm font-medium text-black leading-tight mt-1">
                 {item.name}
               </p>
 

@@ -53,10 +53,10 @@ const FoodGrid = () => {
 
       {/* Heading */}
       <div className="flex items-center justify-between mb-3 px-6 md:px-24">
-        <h3 className="text-base md:text-lg font-semibold text-text-primary">
+        <h3 className="text-base md:text-lg font-semibold text-white md:text-black">
           Popular Food
         </h3>
-        <span className="text-xs text-text-secondary">See all</span>
+        <span className="text-xs text-white md:text-black">See all</span>
       </div>
 
       {/* Grid */}
@@ -82,7 +82,7 @@ const FoodGrid = () => {
 
               {/* Top Row: Name + Rating */}
               <div className="flex items-start justify-between">
-                <h4 className="text-sm font-medium text-text-primary leading-tight mt-2">
+                <h4 className="text-sm font-medium md:text-black leading-tight mt-2">
                   {item.name}
                 </h4>
                 <div className="bg-green-600 text-white px-1 rounded flex items-center mt-3">
@@ -94,7 +94,7 @@ const FoodGrid = () => {
               </div>
 
               {/* Price (just below name) */}
-              <span className="text-sm font-semibold text-text-primary mt-1 block">
+              <span className="text-sm font-semibold text-black mt-1 block">
                 {item.price}
               </span>
               {/* Add Button */}

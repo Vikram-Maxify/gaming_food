@@ -95,7 +95,7 @@ const Categories = () => {
 
         <div className="mb-5">
             {/* Heading */}
-            <h3 className="text-base md:text-lg font-semibold text-text-primary mb-3 px-6 md:px-24 pt-3">
+            <h3 className="text-base md:text-lg font-semibold text-white md:text-black mb-3 px-6 md:px-24 pt-3">
                 Category
             </h3>
 
@@ -106,18 +106,18 @@ const Categories = () => {
                     <div
                         key={i}
                         className="group min-w-[90px] bg-card rounded-lg p-2 flex flex-col items-center shadow-sm 
-        md:hover:scale-105 md:hover:shadow-md transition-transform duration-500"
+                           md:hover:scale-105 md:hover:shadow-md transition-transform duration-500"
                     >
                         {/* Image */}
                         <img
                             src={cat.image}
                             alt={cat.name}
                             className="w-14 h-14 object-cover rounded-full mb-2 
-          transition-transform duration-500 md:group-hover:scale-110"
+                            transition-transform duration-500 md:group-hover:scale-110"
                         />
 
                         {/* Text */}
-                        <p className="text-xs font-medium text-text-primary">
+                        <p className="text-xs font-medium md:text-white text-black">
                             {cat.name}
                         </p>
                     </div>

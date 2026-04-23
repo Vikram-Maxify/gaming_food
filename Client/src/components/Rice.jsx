@@ -61,7 +61,7 @@ const Rice = () => {
 
             {/* Heading */}
             <div className="flex items-center justify-between mb-3 px-4 md:px-24">
-                <h3 className="text-base md:text-lg  font-semibold text-text-primary">
+                <h3 className="text-base md:text-lg  font-semibold text-white md:text-black">
                     Rice
                 </h3>
                 <span className="text-base md:text-lg text-text-secondary">
@@ -96,7 +96,7 @@ const Rice = () => {
 
                             {/* Info */}
                             <div className="px-2">
-                                <h4 className="text-sm font-semibold text-text-primary">
+                                <h4 className="text-sm font-semibold text-black">
                                     {item.name}
                                 </h4>
 

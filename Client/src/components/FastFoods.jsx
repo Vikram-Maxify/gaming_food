@@ -81,10 +81,10 @@ const FastFoods = () => {
 
       {/* Heading */}
       <div className="flex items-center justify-between mb-3 px-6 md:px-24">
-        <h3 className="text-base md:text-lg font-semibold text-text-primary">
+        <h3 className="text-base md:text-lg font-semibold text-white md:text-black">
           Fast Foods
         </h3>
-        <span className="text-xs text-text-secondary">See all</span>
+        <span className="text-xs text-white md:text-black">See all</span>
       </div>
 
       {/* Scroll */}
@@ -111,12 +111,12 @@ const FastFoods = () => {
 
               {/* Content */}
               <div className="p-2">
-                <h4 className="text-sm font-medium text-text-primary leading-tight">
+                <h4 className="text-sm font-medium text-black leading-tight">
                   {item.name}
                 </h4>
 
                 <div className="flex items-center justify-between mt-1">
-                  <span className="text-sm font-semibold text-text-primary">
+                  <span className="text-sm font-semibold text-black">
                     {item.price}
                   </span>
 

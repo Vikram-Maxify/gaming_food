@@ -55,7 +55,7 @@ const Starters = () => {
 
       {/* Heading */}
       <div className="flex items-center justify-between mb-3 px-7 md:px-24 mt-3">
-        <h3 className="text-base md:text-lg font-semibold text-text-primary">
+        <h3 className="text-base md:text-lg font-semibold text-white md:text-black">
           Starters
         </h3>
         <span className="text-xs text-text-secondary">See all</span>
@@ -83,7 +83,7 @@ const Starters = () => {
 
             {/* Info */}
             <div className="px-2">
-              <h4 className="text-sm font-semibold text-text-primary leading-tight">
+              <h4 className="text-sm font-semibold text-black leading-tight">
                 {item.name}
               </h4>
 
@@ -100,7 +100,7 @@ const Starters = () => {
 
               {/* Price + Add */}
               <div className="flex items-center justify-between mt-1">
-                <span className="text-sm font-semibold text-text-primary">
+                <span className="text-sm font-semibold text-black">
                   {item.price}
                 </span>
 

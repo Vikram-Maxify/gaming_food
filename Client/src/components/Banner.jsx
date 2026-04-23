@@ -13,7 +13,7 @@ const Banner = () => {
             Order a combo & get
           </p>
 
-          <h2 className="text-lg font-bold text-text-primary leading-tight">
+          <h2 className="text-lg font-bold text-black leading-tight">
             40% OFF
           </h2>
 

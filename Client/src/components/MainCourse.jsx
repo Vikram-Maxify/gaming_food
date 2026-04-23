@@ -73,7 +73,7 @@ const MainCourse = () => {
 
             {/* Heading */}
             <div className="flex items-center justify-between mb-3 px-4 md:px-24">
-                <h3 className="text-base md:text-lg font-semibold text-text-primary">
+                <h3 className="text-base md:text-lg font-semibold text-white md:text-black">
                     Main Course
                 </h3>
                 <span className="text-xs text-text-secondary">See all</span>
