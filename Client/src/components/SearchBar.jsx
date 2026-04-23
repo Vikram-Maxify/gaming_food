@@ -45,7 +45,7 @@ const SearchBar = () => {
 
             {/* FILTER POPUP */}
             {showFilter && (
-                <div className="fixed inset-0 bottom-60 bg-black/50 z-50 flex items-end md:items-center justify-center">
+                <div className="fixed inset-0  bg-black/50 z-50 flex items-end md:items-center justify-center">
                     <div className="bg-white w-full md:max-w-md rounded-t-2xl md:rounded-xl p-4">
 
                         {/* HEADER */}
