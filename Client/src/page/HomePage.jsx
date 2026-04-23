@@ -15,7 +15,7 @@ const HomePage = () => {
   return (
     <>
       <Navbar />
-      <SearchBar />
+      <SearchBar/>
       <Banner />
       <Categories />
       <FoodGrid />

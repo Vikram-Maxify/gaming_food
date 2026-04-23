@@ -46,13 +46,13 @@ const Profile = () => {
     <div className="min-h-screen bg-gray-50 pb-20">
 
       {/* Header */}
-      <div className="bg-orange-500 text-white p-6 rounded-b-3xl">
+      <div className="bg-orange-500 text-white p-10 rounded-b-3xl">
         <h1 className="text-2xl font-bold">My Profile</h1>
       </div>
 
       {/* Profile Card */}
-      <div className="px-4 -mt-8">
-        <div className="bg-white rounded-2xl shadow-lg p-6">
+      <div className="px-4 -mt-6">
+        <div className="bg-white rounded-2xl shadow-lg p-4">
           <div className="flex items-center gap-4">
             
             <div className="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center">
@@ -60,7 +60,7 @@ const Profile = () => {
                 <img
                   src={user.avatar}
                   alt={user.name}
-                  className="w-20 h-20 rounded-full object-cover"
+                  className="w-16 h-16 rounded-full object-cover"
                 />
               ) : (
                 <span className="text-3xl font-bold text-orange-500">
@@ -87,9 +87,9 @@ const Profile = () => {
 
         {/* Email */}
         <div className="bg-white rounded-xl shadow-sm p-4">
-          <p className="text-sm text-gray-500">Email</p>
+          <p className="text-sm text-gray-500">Name</p>
           <p className="font-medium text-gray-800">
-            {user?.email || "Not provided"}
+            {user?.name || "Not provided"}
           </p>
         </div>
 
@@ -98,14 +98,6 @@ const Profile = () => {
           <p className="text-sm text-gray-500">Phone</p>
           <p className="font-medium text-gray-800">
             {user?.mobile || "Not provided"}
-          </p>
-        </div>
-
-        {/* Address */}
-        <div className="bg-white rounded-xl shadow-sm p-4">
-          <p className="text-sm text-gray-500">Address</p>
-          <p className="font-medium text-gray-800">
-            {user?.address || "Not provided"}
           </p>
         </div>
 

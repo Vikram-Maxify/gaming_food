@@ -159,82 +159,82 @@ const AddToCart = () => {
     <>
       <Navbar />
 
-      <div className="mt-16 px-3 md:px-6">
-        <div className="min-h-screen bg-gray-100 py-4">
-          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="mt-6 px-3 md:px-6">
+        <div className="min-h-screen bg-gray-100 py-4 rounded-2xl">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-4 ">
 
             {/* 🛒 CART */}
-            <div className="lg:col-span-2 bg-white p-4 rounded-xl shadow">
+            <div className="lg:col-span-2 bg-white p-3 rounded-xl shadow">
               <h2 className="text-lg font-semibold mb-4">Shopping Cart</h2>
 
               {cartItems.length === 0 ? (
-                <p className="text-gray-500">Cart is empty 😢</p>
+                <p className="text-gray-500">Cart is empty</p>
               ) : (
-cartItems.map((item) => (
-  <div
-    key={`${item.product}-${getVariantId(item)}`}
-    className="flex items-center justify-between gap-3 border-b pb-4 mb-3"
-  >
+                cartItems.map((item) => (
+                  <div
+                    key={`${item.product}-${getVariantId(item)}`}
+                    className="flex items-center justify-between gap-3 pb-4 mb-3"
+                  >
 
-    {/* ✅ LEFT SIDE (IMAGE + DETAILS) */}
-    <div className="flex items-center gap-3 flex-1">
-      <img
-        src={item.image}
-        alt={item.name}
-        className="w-16 h-16 object-cover rounded"
-      />
+                    {/* ✅ LEFT SIDE (IMAGE + DETAILS) */}
+                    <div className="flex items-center gap-3 flex-1">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-16 h-16 object-cover rounded"
+                      />
 
-      <div>
-        <h3 className="font-medium">{item.name}</h3>
-        <p className="text-sm text-gray-500">
-          {item.variantName}
-        </p>
+                      <div>
+                        <h3 className="font-medium">{item.name}</h3>
+                        <p className="text-sm text-gray-500">
+                          {item.variantName}
+                        </p>
 
-        <p className="text-green-600 font-semibold">
-          ₹{item.price * item.quantity}
-        </p>
+                        <p className="text-green-600 font-semibold">
+                          ₹{item.price * item.quantity}
+                        </p>
 
-        <select
-          value={item.spiceLevel || "medium"}
-          onChange={(e) =>
-            updateSpice(item, e.target.value)
-          }
-          className="mt-1 border rounded px-2 py-1 text-sm"
-        >
-          <option value="low">🌶️ Low</option>
-          <option value="medium">🌶️ Medium</option>
-          <option value="high">🌶️ High</option>
-        </select>
-      </div>
-    </div>
+                        <select
+                          value={item.spiceLevel || "medium"}
+                          onChange={(e) =>
+                            updateSpice(item, e.target.value)
+                          }
+                          className="mt-1 border rounded px-2 py-1 text-sm"
+                        >
+                          <option value="low">🌶️ Low</option>
+                          <option value="medium">🌶️ Medium</option>
+                          <option value="high">🌶️ High</option>
+                        </select>
+                      </div>
+                    </div>
 
-    {/* ✅ RIGHT SIDE (QUANTITY CONTROL) */}
-    <div className="flex items-center gap-2 border rounded-lg px-2 py-1">
-      <button
-        onClick={() => decreaseQty(item)}
-        className="w-7 h-7 bg-gray-200 rounded"
-      >
-        −
-      </button>
+                    {/* ✅ RIGHT SIDE (QUANTITY CONTROL) */}
+                    <div className="flex items-center gap-2 border rounded-lg px-2 py-1">
+                      <button
+                        onClick={() => decreaseQty(item)}
+                        className="w-7 h-7 bg-gray-200 rounded"
+                      >
+                        −
+                      </button>
 
-      <span className="min-w-[20px] text-center">
-        {item.quantity}
-      </span>
+                      <span className="min-w-[20px] text-center">
+                        {item.quantity}
+                      </span>
 
-      <button
-        onClick={() => increaseQty(item)}
-        className="w-7 h-7 bg-gray-200 rounded"
-      >
-        +
-      </button>
-    </div>
-  </div>
-))
+                      <button
+                        onClick={() => increaseQty(item)}
+                        className="w-7 h-7 bg-gray-200 rounded"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                ))
               )}
             </div>
 
             {/* 💰 SUMMARY */}
-            <div className="bg-white p-4 rounded-xl shadow h-fit sticky top-20">
+            <div className="bg-white p-4 rounded-xl shadow h-fit sticky top-16">
               <h2 className="text-lg font-semibold mb-3">Order Summary</h2>
 
               <div className="flex justify-between mb-1">
@@ -272,7 +272,7 @@ cartItems.map((item) => (
                       : setShowTableModal(true)
                 }
                 disabled={!cartItems.length}
-                className="w-full mt-4 bg-orange-500 text-white py-2 rounded"
+                className="w-full mt-4 bg-orange-500 text-white py-2 rounded-lg"
               >
                 Checkout
               </button>
@@ -304,12 +304,12 @@ cartItems.map((item) => (
                         setSelectedTable(table.tableNumber)
                       }
                       className={`p-2 border rounded ${selectedTable === table.tableNumber
-                          ? "bg-black text-white"
-                          : isUserTable
-                            ? "bg-green-500 text-white"
-                            : table.isOccupied
-                              ? "bg-gray-300"
-                              : "bg-gray-100"
+                        ? "bg-black text-white"
+                        : isUserTable
+                          ? "bg-green-500 text-white"
+                          : table.isOccupied
+                            ? "bg-gray-300"
+                            : "bg-gray-100"
                         }`}
                     >
                       {table.tableNumber}
