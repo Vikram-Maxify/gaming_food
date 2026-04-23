@@ -1,11 +1,12 @@
-// src/pages/admin/Menu.jsx
-
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getProducts, deleteProduct, updateProduct } from "../redux/slice/AdminProductSlice";
+import {
+  getProducts,
+  deleteProduct,
+  updateProduct,
+} from "../redux/slice/AdminProductSlice";
 import { getCategories } from "../redux/slice/categorySlice";
-import { FaRegEdit } from "react-icons/fa";
-import { ImBin } from "react-icons/im";
+import Swal from "sweetalert2";
 
 const Menu = () => {
   const dispatch = useDispatch();
@@ -29,6 +30,21 @@ const Menu = () => {
     dispatch(getCategories());
   }, [dispatch]);
 
+  const themedSwal = Swal.mixin({
+    background: "#0D0D0D",
+    color: "#E5E7EB",
+    backdrop: "rgba(0,0,0,0.8)",
+    customClass: {
+      popup:
+        "rounded-2xl border border-borderSubtle shadow-[0_0_30px_rgba(255,122,24,0.15)]",
+      confirmButton:
+        "bg-primaryGradient text-white px-4 py-2 rounded-lg shadow-glow",
+      cancelButton:
+        "bg-[#1A1A1A] text-textSecondary border border-borderSubtle px-4 py-2 rounded-lg",
+    },
+    buttonsStyling: false,
+  });
+
   const categoriesList = [
     "all",
     ...new Set(products.map((p) => p.category?.name).filter(Boolean)),
@@ -37,6 +53,30 @@ const Menu = () => {
   const filteredData = products.filter((item) => {
     return category === "all" || item.category?.name === category;
   });
+
+  // 🔥 DELETE
+  const handleDelete = (id) => {
+    themedSwal
+      .fire({
+        title: "Delete Product?",
+        text: "This cannot be undone",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Delete",
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          dispatch(deleteProduct(id));
+
+          themedSwal.fire({
+            title: "Deleted!",
+            icon: "success",
+            timer: 1200,
+            showConfirmButton: false,
+          });
+        }
+      });
+  };
 
   const handleEditClick = (product) => {
     setEditProduct(product);
@@ -56,14 +96,10 @@ const Menu = () => {
   };
 
   const handleVariantChange = (index, field, value) => {
-    const updatedVariants = editForm.variants.map((v, i) =>
+    const updated = editForm.variants.map((v, i) =>
       i === index ? { ...v, [field]: value } : v
     );
-
-    setEditForm({
-      ...editForm,
-      variants: updatedVariants,
-    });
+    setEditForm({ ...editForm, variants: updated });
   };
 
   const addVariant = () => {
@@ -74,15 +110,15 @@ const Menu = () => {
   };
 
   const removeVariant = (index) => {
-    const updatedVariants = editForm.variants.filter((_, i) => i !== index);
-    setEditForm({ ...editForm, variants: updatedVariants });
+    const updated = editForm.variants.filter((_, i) => i !== index);
+    setEditForm({ ...editForm, variants: updated });
   };
 
   const handleUpdate = (e) => {
     e.preventDefault();
 
     if (!editForm.name || !editForm.category || !editForm.type) {
-      alert("Please fill required fields");
+      themedSwal.fire("Error", "Fill required fields", "error");
       return;
     }
 
@@ -94,240 +130,200 @@ const Menu = () => {
     data.append("variants", JSON.stringify(editForm.variants));
 
     dispatch(updateProduct({ id: editProduct._id, data }));
+
+    themedSwal.fire({
+      title: "Updated!",
+      icon: "success",
+      timer: 1200,
+      showConfirmButton: false,
+    });
+
     setShowEditModal(false);
-    setEditProduct(null);
   };
 
   return (
     <div className="p-6">
 
-      {/* Heading */}
       <h2 className="text-xl font-semibold mb-6 text-textPrimary">
-        🍔 Menu Management
+        Menu Management
       </h2>
 
-      {/* Filters */}
+      {/* FILTER */}
       <div className="flex flex-wrap gap-2 mb-6">
         {categoriesList.map((cat) => (
           <button
             key={cat}
             onClick={() => setCategory(cat)}
-            className={`px-4 py-1.5 text-xs rounded-full border transition
-              ${
-                category === cat
-                  ? "bg-primaryGradient text-white shadow-glow"
-                  : "bg-[#1A1A1A] text-textSecondary border-borderSubtle hover:text-textPrimary hover:border-primary"
-              }`}
+            className={`px-4 py-1.5 text-xs rounded-full border ${
+              category === cat
+                ? "bg-primaryGradient text-white shadow-glow"
+                : "bg-[#1A1A1A] text-textSecondary border-borderSubtle"
+            }`}
           >
             {cat}
           </button>
         ))}
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-        <div className="bg-cardGradient border border-borderSubtle p-5 rounded-xl2 shadow-soft hover:shadow-glowHover transition">
-          <p className="text-sm text-textSecondary">Total Items</p>
-          <h3 className="text-2xl font-semibold text-textPrimary mt-1">
-            {filteredData.length}
-          </h3>
-        </div>
-      </div>
+      {/* GRID */}
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-5">
 
-      {/* Table */}
-      <div className="bg-cardGradient border border-borderSubtle rounded-xl2 shadow-soft overflow-hidden">
+        {filteredData.map((item) => (
+          <div
+            key={item._id}
+            className="bg-cardGradient border border-borderSubtle rounded-xl2 p-4 shadow-soft"
+          >
+            <img
+              src={item.image}
+              className="h-40 w-full object-cover rounded-lg mb-3"
+            />
 
-        {/* Header */}
-        <div className="grid grid-cols-6 px-4 py-3 text-xs font-medium text-textSecondary border-b border-borderSubtle">
-          <span>Image</span>
-          <span>Name</span>
-          <span>Category</span>
-          <span>Variants</span>
-          <span>Credits</span>
-          <span>Action</span>
-        </div>
+            <h3 className="text-textPrimary font-semibold text-sm">
+              {item.name}
+            </h3>
 
-        {/* Rows */}
-        {loading ? (
-          <p className="p-4 text-textSecondary">Loading...</p>
-        ) : filteredData.length === 0 ? (
-          <p className="p-4 text-textSecondary">No products found</p>
-        ) : (
-          filteredData.map((item) => (
-            <div
-              key={item._id}
-              className="grid grid-cols-6 px-4 py-3 text-sm items-center border-b border-borderSubtle hover:bg-[#1A1A1A] transition"
-            >
-              <img
-                src={item.image}
-                alt={item.name}
-                className="w-12 h-12 object-cover rounded-lg border border-borderSubtle"
-              />
+            <div className="flex gap-2 mt-3">
 
-              <span className="text-textPrimary">{item.name}</span>
+              <button
+                onClick={() => handleEditClick(item)}
+                className="flex-1 py-1.5 text-xs rounded-lg bg-[#1A1A1A] border border-borderSubtle text-primary"
+              >
+                Edit
+              </button>
 
-              <span className="text-textSecondary">
-                {item.category?.name}
-              </span>
+              <button
+                onClick={() => handleDelete(item._id)}
+                className="flex-1 py-1.5 text-xs rounded-lg bg-[#1A1A1A] border border-borderSubtle text-danger"
+              >
+                Delete
+              </button>
 
-              <div className="flex flex-wrap gap-1">
-                {item.variants?.map((v, i) => (
-                  <span
-                    key={i}
-                    className="text-xs bg-primary/20 text-primary px-2 py-0.5 rounded-full border border-primary/30"
-                  >
-                    {v.name} ₹{v.price}
-                  </span>
-                ))}
-              </div>
-
-              <span className="text-textPrimary">
-                {item.creditPoints}
-              </span>
-
-              <div className="flex gap-2">
-                <button
-                  onClick={() => handleEditClick(item)}
-                  className="p-2 rounded-lg bg-[#1A1A1A] border border-borderSubtle hover:shadow-glow transition text-primary"
-                >
-                  <FaRegEdit />
-                </button>
-
-                <button
-                  onClick={() => dispatch(deleteProduct(item._id))}
-                  className="p-2 rounded-lg bg-[#1A1A1A] border border-borderSubtle hover:shadow-glow transition text-danger"
-                >
-                  <ImBin />
-                </button>
-              </div>
             </div>
-          ))
-        )}
+
+          </div>
+        ))}
+
       </div>
 
-      {/* Edit Modal */}
+      {/* EDIT MODAL */}
       {showEditModal && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-cardGradient border border-borderSubtle p-6 rounded-xl2 w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-soft">
-            <h3 className="text-xl font-bold mb-4 text-textPrimary">Edit Product</h3>
+  <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50">
 
-            <form onSubmit={handleUpdate} className="flex flex-col gap-4">
+    <div className="bg-cardGradient border border-borderSubtle p-6 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-soft">
 
-              <div>
-                <label className="text-sm text-textSecondary">Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={editForm.name}
-                  onChange={handleEditChange}
-                  className="w-full p-2 bg-[#1A1A1A] border border-borderSubtle rounded-lg text-textPrimary outline-none focus:shadow-glow"
-                />
-              </div>
+      {/* HEADER */}
+      <div className="flex justify-between items-center mb-5">
+        <h3 className="text-lg text-textPrimary font-semibold">
+          Edit Product
+        </h3>
 
-              <div>
-                <label className="text-sm text-textSecondary">Category</label>
-                <select
-                  name="category"
-                  value={editForm.category}
-                  onChange={handleEditChange}
-                  className="w-full p-2 bg-[#1A1A1A] border border-borderSubtle rounded-lg text-textPrimary"
-                >
-                  <option value="">Select Category</option>
-                  {categories.map((cat) => (
-                    <option key={cat._id} value={cat._id}>
-                      {cat.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+        <button
+          onClick={() => setShowEditModal(false)}
+          className="w-8 h-8 flex items-center justify-center bg-[#1A1A1A] border border-borderSubtle rounded-lg text-textSecondary hover:text-textPrimary hover:shadow-glow transition"
+        >
+          ✕
+        </button>
+      </div>
 
-              <div>
-                <label className="text-sm text-textSecondary">Type</label>
-                <select
-                  name="type"
-                  value={editForm.type}
-                  onChange={handleEditChange}
-                  className="w-full p-2 bg-[#1A1A1A] border border-borderSubtle rounded-lg text-textPrimary"
-                >
-                  <option value="">Select Type</option>
-                  <option value="veg">Veg</option>
-                  <option value="non-veg">Non-Veg</option>
-                  <option value="drink">Drink</option>
-                </select>
-              </div>
+      <form onSubmit={handleUpdate} className="flex flex-col gap-4">
 
-              <div>
-                <label className="text-sm text-textSecondary">Credit Points</label>
-                <input
-                  type="number"
-                  name="creditPoints"
-                  value={editForm.creditPoints}
-                  onChange={handleEditChange}
-                  className="w-full p-2 bg-[#1A1A1A] border border-borderSubtle rounded-lg text-textPrimary outline-none focus:shadow-glow"
-                />
-              </div>
+        {/* NAME */}
+        <input
+          type="text"
+          name="name"
+          value={editForm.name}
+          onChange={handleEditChange}
+          className="p-2.5 bg-[#1A1A1A] border border-borderSubtle rounded-xl text-textPrimary outline-none 
+          focus:border-primary focus:ring-1 focus:ring-primary/40 focus:shadow-[0_0_10px_rgba(255,122,24,0.5)] transition-all"
+        />
 
-              <div>
-                <label className="text-sm text-textSecondary mb-2 block">Variants</label>
-                {editForm.variants.map((variant, index) => (
-                  <div key={index} className="flex gap-2 mb-2">
-                    <input
-                      type="text"
-                      placeholder="Size"
-                      value={variant.name}
-                      onChange={(e) => handleVariantChange(index, "name", e.target.value)}
-                      className="flex-1 p-2 bg-[#1A1A1A] border border-borderSubtle rounded-lg text-textPrimary"
-                    />
-                    <input
-                      type="number"
-                      placeholder="Price"
-                      value={variant.price}
-                      onChange={(e) => handleVariantChange(index, "price", e.target.value)}
-                      className="w-24 p-2 bg-[#1A1A1A] border border-borderSubtle rounded-lg text-textPrimary"
-                    />
-                    {editForm.variants.length > 1 && (
-                      <button
-                        type="button"
-                        onClick={() => removeVariant(index)}
-                        className="text-danger px-2"
-                      >
-                        ✕
-                      </button>
-                    )}
-                  </div>
-                ))}
-                <button
-                  type="button"
-                  onClick={addVariant}
-                  className="text-sm text-primary"
-                >
-                  + Add Variant
-                </button>
-              </div>
+        {/* CATEGORY */}
+        <select
+          name="category"
+          value={editForm.category}
+          onChange={handleEditChange}
+          className="p-2.5 bg-[#1A1A1A] border border-borderSubtle rounded-xl text-textPrimary outline-none 
+          focus:border-primary focus:ring-1 focus:ring-primary/40 focus:shadow-[0_0_10px_rgba(255,122,24,0.5)] transition-all"
+        >
+          <option value="">Select Category</option>
+          {categories.map((cat) => (
+            <option key={cat._id} value={cat._id}>
+              {cat.name}
+            </option>
+          ))}
+        </select>
 
-              <div className="flex gap-2 mt-4">
-                <button
-                  type="submit"
-                  className="flex-1 bg-primaryGradient text-white py-2 rounded-xl2 shadow-glow hover:shadow-glowHover transition"
-                >
-                  Update
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowEditModal(false);
-                    setEditProduct(null);
-                  }}
-                  className="flex-1 bg-[#1A1A1A] border border-borderSubtle text-textSecondary py-2 rounded-xl2 hover:text-textPrimary"
-                >
-                  Cancel
-                </button>
-              </div>
+        {/* TYPE */}
+        <select
+          name="type"
+          value={editForm.type}
+          onChange={handleEditChange}
+          className="p-2.5 bg-[#1A1A1A] border border-borderSubtle rounded-xl text-textPrimary outline-none 
+          focus:border-primary focus:ring-1 focus:ring-primary/40 focus:shadow-[0_0_10px_rgba(255,122,24,0.5)] transition-all"
+        >
+          <option value="">Type</option>
+          <option value="veg">Veg</option>
+          <option value="non-veg">Non-Veg</option>
+          <option value="drink">Drink</option>
+        </select>
 
-            </form>
+        {/* VARIANTS */}
+        {editForm.variants.map((v, i) => (
+          <div key={i} className="flex gap-2">
+
+            <input
+              value={v.name}
+              onChange={(e) =>
+                handleVariantChange(i, "name", e.target.value)
+              }
+              className="flex-1 p-2 bg-[#1A1A1A] border border-borderSubtle rounded outline-none 
+              focus:border-primary focus:ring-1 focus:ring-primary/40 focus:shadow-[0_0_8px_rgba(255,122,24,0.4)] transition"
+            />
+
+            <input
+              value={v.price}
+              onChange={(e) =>
+                handleVariantChange(i, "price", e.target.value)
+              }
+              className="w-24 p-2 bg-[#1A1A1A] border border-borderSubtle rounded outline-none 
+              focus:border-primary focus:ring-1 focus:ring-primary/40 focus:shadow-[0_0_8px_rgba(255,122,24,0.4)] transition"
+            />
+
+            <button
+              type="button"
+              onClick={() => removeVariant(i)}
+              className="px-2 text-danger hover:scale-110 transition"
+            >
+              ❌
+            </button>
+
           </div>
-        </div>
-      )}
+        ))}
+
+        {/* ADD VARIANT */}
+        <button
+          type="button"
+          onClick={addVariant}
+          className="text-xs text-primary hover:underline w-fit"
+        >
+          + Add Variant
+        </button>
+
+        {/* SUBMIT */}
+        <button
+          type="submit"
+          className="bg-primaryGradient text-white py-2.5 rounded-xl shadow-glow hover:shadow-glowHover transition font-medium"
+        >
+          Update Product
+        </button>
+
+      </form>
+
+    </div>
+
+  </div>
+)}
+
     </div>
   );
 };
