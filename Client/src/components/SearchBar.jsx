@@ -11,7 +11,7 @@ const SearchBar = () => {
 
     return (
         <>
-            <div className="flex items-center justify-center gap-3 mb-4 px-2">
+            <div className="flex items-center justify-center gap-3 px-2 mt-4 mb-4">
 
                 {/* Search Input */}
                 <div className="relative w-full md:w-1/2 px-3">
@@ -61,15 +61,14 @@ const SearchBar = () => {
                                     <button
                                         key={type}
                                         onClick={() => setSelectedType(type)}
-                                        className={`px-3 py-1 rounded-full border ${
-                                            selectedType === type
+                                        className={`px-3 py-1 rounded-full border ${selectedType === type
                                                 ? type === "veg"
                                                     ? "bg-green-100 text-green-700"
                                                     : "bg-red-100 text-red-700"
                                                 : ""
-                                        }`}
+                                            }`}
                                     >
-                                        {type === "veg" ? "Veg 🌱" : "Non-Veg 🍗"}
+                                        {type === "veg" ? "Veg" : "Non-Veg"}
                                     </button>
                                 ))}
                             </div>
@@ -83,11 +82,10 @@ const SearchBar = () => {
                                     <button
                                         key={price}
                                         onClick={() => setPriceRange(price)}
-                                        className={`px-3 py-1 rounded-full border ${
-                                            priceRange === price
+                                        className={`px-3 py-1 rounded-full border ${priceRange === price
                                                 ? "bg-orange-500 text-white"
                                                 : ""
-                                        }`}
+                                            }`}
                                     >
                                         ₹{price}
                                     </button>
@@ -103,11 +101,10 @@ const SearchBar = () => {
                                     <button
                                         key={r}
                                         onClick={() => setRating(r)}
-                                        className={`px-3 py-1 rounded-full border ${
-                                            rating === r
+                                        className={`px-3 py-1 rounded-full border ${rating === r
                                                 ? "bg-yellow-400 text-white"
                                                 : ""
-                                        }`}
+                                            }`}
                                     >
                                         ⭐ {r}+
                                     </button>
