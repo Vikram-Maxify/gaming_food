@@ -60,7 +60,7 @@ const Rice = () => {
         <div className="mb-6">
 
             {/* Heading */}
-            <div className="flex items-center justify-between mb-3 px-6">
+            <div className="flex items-center justify-between mb-3 px-4 md:px-24">
                 <h3 className="text-sm font-semibold text-text-primary">
                     Rice
                 </h3>
@@ -70,7 +70,7 @@ const Rice = () => {
             </div>
 
             {/* SAME GRID SYSTEM */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-1 px-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-1 px-4 md:px-24">
 
                 {riceItems.map((item, i) => {
                     const isActive = selected.includes(item.name);

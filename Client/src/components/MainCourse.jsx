@@ -72,7 +72,7 @@ const MainCourse = () => {
         <div className="mb-6">
 
             {/* Heading */}
-            <div className="flex items-center justify-between mb-3 px-6">
+            <div className="flex items-center justify-between mb-3 px-4 md:px-24">
                 <h3 className="text-sm font-semibold text-text-primary">
                     Main Course
                 </h3>
@@ -80,12 +80,12 @@ const MainCourse = () => {
             </div>
 
             {/* Scroll */}
-            <div className="flex gap-2 overflow-x-auto no-scrollbar px-6">
+            <div className="flex gap-4 overflow-x-auto no-scrollbar px-4 md:px-24">
 
                 {mainCourse.map((item, i) => (
                     <div
                         key={i}
-                        className="min-w-[160px] bg-white rounded-2xl shadow-md overflow-hidden"
+                        className="min-w-[160px] bg-white rounded-lg shadow-md overflow-hidden"
                     >
 
                         {/* Image */}

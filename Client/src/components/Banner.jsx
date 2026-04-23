@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 const Banner = () => {
   return (
 
-    <div className="px-4">
+    <div className="px-4 md:px-24">
       <div className="w-full bg-gradient-to-r from-primary to-accent-yellow rounded-xl2 p-6 flex items-center justify-between overflow-hidden">
 
         {/* LEFT CONTENT */}

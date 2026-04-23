@@ -74,7 +74,7 @@ const Breads = () => {
     <div className="mb-6">
 
       {/* Heading */}
-      <div className="flex items-center justify-between mb-3 px-6">
+      <div className="flex items-center justify-between mb-3 px-4 md:px-24">
         <h3 className="text-sm font-semibold text-text-primary">
           Breads
         </h3>
@@ -84,7 +84,7 @@ const Breads = () => {
       </div>
 
       {/* Scroll */}
-      <div className="flex gap-3 overflow-x-auto no-scrollbar px-4">
+      <div className="flex gap-3 overflow-x-auto no-scrollbar px-4 md:px-24">
 
         {breadsList.map((item, i) => {
           const isActive = selected.includes(item.name);
@@ -93,14 +93,14 @@ const Breads = () => {
             <div
               key={i}
               onClick={() => toggleBread(item.name)}
-              className={`min-w-[110px] cursor-pointer rounded-lg p-2 transition border ${isActive
+              className={`min-w-[110px] cursor-pointer rounded-lg  transition border ${isActive
                   ? "bg-primary/10 border-primary"
                   : "bg-card border-secondary-dark"
                 }`}
             >
 
               {/* Image */}
-              <div className="w-full h-16 rounded-lg overflow-hidden mb-1 bg-secondary">
+              <div className="w-full h-16 md:w-full md:h-28 rounded-lg overflow-hidden mb-1 bg-secondary">
                 <img
                   src={item.image}
                   alt={item.name}
