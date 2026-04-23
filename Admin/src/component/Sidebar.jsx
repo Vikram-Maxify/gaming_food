@@ -14,7 +14,6 @@ import {
     SquareMenu,
     Table,
     User,
-    
 } from "lucide-react";
 
 const Sidebar = () => {
@@ -25,7 +24,7 @@ const Sidebar = () => {
         { to: "/admin", label: "Dashboard", icon: LayoutDashboard },
         { to: "/admin/menu", label: "Menu", icon: SquareMenu },
         { to: "/admin/categories", label: "Categories", icon: Utensils },
-        { to: "/admin/add_item", label: "Add Item", icon:  Utensils},
+        { to: "/admin/add_item", label: "Add Item", icon: Utensils },
         { to: "/admin/table", label: "Add Table", icon: Table },
         { to: "/admin/orders", label: "Orders", icon: ShoppingCart },
         { to: "/admin/schef_dash", label: "Chef Dashboard", icon: LayoutDashboard },
@@ -35,29 +34,31 @@ const Sidebar = () => {
         { to: "/admin/profile", label: "Profile", icon: User },
     ];
 
-    // 🔥 Logout handler
     const handleLogout = async () => {
         await dispatch(logoutAdmin());
-
-        // agar token localStorage me hai
         localStorage.removeItem("token");
-
         navigate("/admin/login");
     };
 
     return (
-        <div className="h-screen w-60 bg-white border-r border-gray-200 p-4 flex flex-col justify-between">
+        <div className="h-screen w-[260px] bg-surface border-r border-borderSubtle flex flex-col justify-between p-4">
 
             {/* TOP */}
             <div>
 
-                {/* Logo */}
-                <h1 className="text-lg font-semibold text-gray-900 mb-6">
-                    Admin Panel
-                </h1>
+                {/* 🔥 Logo */}
+                <div className="mb-8">
+                    <h1 className="text-xl font-semibold text-textPrimary tracking-wide">
+                        Hungry Fork
+                    </h1>
+                    <p className="text-xs text-textSecondary mt-1">
+                        Admin Dashboard
+                    </p>
+                </div>
 
                 {/* Links */}
                 <div className="flex flex-col gap-1">
+
                     {links.map((item, i) => {
                         const Icon = item.icon;
 
@@ -65,14 +66,26 @@ const Sidebar = () => {
                             <NavLink key={i} to={item.to}>
                                 {({ isActive }) => (
                                     <div
-                                        className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-200
-                    ${isActive
-                                                ? "bg-gray-100 text-gray-900 font-medium"
-                                                : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"
-                                            }`}
+                                        className={`
+                                        group flex items-center gap-3 px-4 py-2.5 rounded-xl2 text-sm transition-smooth duration-300 cursor-pointer
+                                        
+                                        ${isActive
+                                                ? "bg-sidebarActive border-l-[3px] border-primary text-textPrimary shadow-glow"
+                                                : "text-textSecondary hover:text-textPrimary hover:bg-[#1A1A1A]"
+                                            }
+                                        `}
                                     >
-                                        <Icon size={18} />
-                                        {item.label}
+                                        <Icon
+                                            size={18}
+                                            className={`transition ${
+                                                isActive
+                                                    ? "text-primary"
+                                                    : "text-textSecondary group-hover:text-primary"
+                                            }`}
+                                        />
+                                        <span className="font-medium">
+                                            {item.label}
+                                        </span>
                                     </div>
                                 )}
                             </NavLink>
@@ -82,12 +95,12 @@ const Sidebar = () => {
 
             </div>
 
-            {/* 🔥 LOGOUT (BOTTOM) */}
+            {/* 🔥 LOGOUT */}
             <div
                 onClick={handleLogout}
-                className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-red-500 hover:bg-red-50 cursor-pointer"
+                className="group flex items-center gap-3 px-4 py-2.5 rounded-xl2 text-sm text-danger hover:bg-[#1A1A1A] cursor-pointer transition"
             >
-                <LogOut size={18} />
+                <LogOut size={18} className="group-hover:scale-110 transition" />
                 Logout
             </div>
 

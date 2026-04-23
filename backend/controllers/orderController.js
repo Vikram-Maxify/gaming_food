@@ -126,14 +126,16 @@ const createOrder = async (req, res) => {
       const credits = product.creditPoints * quantity;
       totalCredits += credits;
 
-      orderItems.push({
-        product: product._id,
-        variantName,
-        price: finalPrice,
-        quantity,
-        creditPoints: product.creditPoints,
-        spiceLevel,
-      });
+orderItems.push({
+  product: product._id,
+  productName: product.name, // ✅ snapshot
+  image: product.image,      // ✅ ADD THIS
+  variantName,
+  price: finalPrice,
+  quantity,
+  creditPoints: product.creditPoints,
+  spiceLevel,
+});
     }
 
     // ✅ Add credits to user

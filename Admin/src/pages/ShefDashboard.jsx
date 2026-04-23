@@ -9,7 +9,14 @@ import {
   updateOrderInState,
 } from "../redux/slice/adminOrderSlice";
 
-// ✅ SINGLE SOCKET INSTANCE
+import {
+  Flame,
+  Clock,
+  CheckCircle,
+  Circle,
+  CookingPot,
+} from "lucide-react";
+
 const socket = io("http://localhost:5002", {
   autoConnect: true,
 });
@@ -18,23 +25,22 @@ const ChefDashboard = () => {
   const dispatch = useDispatch();
   const { orders, loading } = useSelector((state) => state.order);
 
-  // 🔥 Spice Icon Function
+  // 🔥 Spice Icon (converted)
   const getSpiceIcon = (level) => {
     switch (level) {
       case "low":
-        return "🟢";
+        return <Circle className="text-success" size={14} />;
       case "medium":
-        return "🟡";
+        return <Flame className="text-warning" size={14} />;
       case "high":
-        return "🟠";
+        return <Flame className="text-primary" size={14} />;
       case "extra-high":
-        return "🔴";
+        return <Flame className="text-danger" size={14} />;
       default:
-        return "🟡";
+        return <Flame className="text-warning" size={14} />;
     }
   };
 
-  // 🔥 Fetch + Socket Setup
   useEffect(() => {
     dispatch(getOrders());
 
@@ -43,7 +49,6 @@ const ChefDashboard = () => {
     const handleNewOrder = (order) => {
       dispatch(addOrder(order));
 
-      // 🔔 sound only for new pending order
       if (order.status === "pending") {
         const audio = new Audio("/notification.mp3");
         audio.play().catch(() => {});
@@ -63,17 +68,14 @@ const ChefDashboard = () => {
     };
   }, [dispatch]);
 
-  // 🔥 Status update
   const handleStatus = (id, status) => {
     dispatch(updateOrderStatus({ id, status }));
   };
 
-  // ✅ FILTER ACTIVE
   const activeOrders = orders.filter(
     (o) => o.status !== "delivered"
   );
 
-  // 🔥 SORT BY PRIORITY
   const sortedOrders = [...activeOrders].sort((a, b) => {
     const priority = {
       pending: 1,
@@ -84,17 +86,27 @@ const ChefDashboard = () => {
   });
 
   return (
-    <div>
-      <h2 className="text-xl font-bold mb-4 text-gray-900">
-        Kitchen Orders
-      </h2>
+    <div className="p-6">
+
+      {/* Header */}
+      <div className="mb-6">
+        <h2 className="text-2xl font-semibold text-textPrimary flex items-center gap-2">
+          <CookingPot size={22} className="text-primary" />
+          Kitchen Orders
+        </h2>
+        <p className="text-sm text-textSecondary">
+          Live cooking queue
+        </p>
+      </div>
 
       {loading ? (
-        <p>Loading...</p>
+        <p className="text-textSecondary">Loading...</p>
       ) : sortedOrders.length === 0 ? (
-        <p>No orders found</p>
+        <p className="text-textSecondary">No orders found</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+
           {sortedOrders.map((order) => {
             const totalAmount = order.items.reduce(
               (sum, item) => sum + item.price * item.quantity,
@@ -104,41 +116,47 @@ const ChefDashboard = () => {
             return (
               <div
                 key={order._id}
-                className={`bg-white border-2 rounded-xl p-5 shadow-sm ${
+                className={`bg-cardGradient border rounded-xl2 p-5 shadow-soft hover:shadow-glowHover transition
+                ${
                   order.status === "pending"
-                    ? "border-red-400"
-                    : "border-gray-300"
+                    ? "border-danger/50"
+                    : "border-borderSubtle"
                 }`}
               >
+
                 {/* Top */}
                 <div className="flex justify-between items-center mb-3">
-                  <h3 className="text-lg font-bold text-gray-900">
+
+                  <h3 className="text-lg font-semibold text-textPrimary">
                     #{order._id.slice(-5)}
                   </h3>
 
-                  <span className="text-sm font-semibold text-gray-700">
-                    Table: {order.tableNumber || "T"}
+                  <span className="text-sm text-textSecondary">
+                    Table {order.tableNumber || "T"}
                   </span>
+
                 </div>
 
-                {/* ⏱️ Time */}
-                <p className="text-xs text-gray-500 mb-2">
+                {/* Time */}
+                <div className="flex items-center gap-2 text-xs text-textSecondary mb-3">
+                  <Clock size={14} />
                   {new Date(order.createdAt).toLocaleTimeString()}
-                </p>
+                </div>
 
                 {/* Items */}
-                <div className="mb-4">
+                <div className="mb-4 space-y-2">
                   {order.items?.map((item, idx) => (
-                    <div key={idx} className="mb-2 text-gray-900">
-                      <p className="font-semibold">
-                        • {item.product?.name}
-                        {item.variantName && ` (${item.variantName})`} x
-                        {item.quantity}
+                    <div key={idx} className="border-b border-borderSubtle pb-1">
+
+                      <p className="text-textPrimary font-medium">
+                        {item.product?.name}
+                        {item.variantName && ` (${item.variantName})`} ×{item.quantity}
                       </p>
 
-                      <div className="flex justify-between text-sm text-gray-600">
-                        <span>
-                          {getSpiceIcon(item.spiceLevel)}{" "}
+                      <div className="flex justify-between text-xs text-textSecondary">
+
+                        <span className="flex items-center gap-1">
+                          {getSpiceIcon(item.spiceLevel)}
                           {item.spiceLevel || "medium"}
                         </span>
 
@@ -146,41 +164,51 @@ const ChefDashboard = () => {
                           ₹{item.price} × {item.quantity} = ₹
                           {item.price * item.quantity}
                         </span>
+
                       </div>
+
                     </div>
                   ))}
                 </div>
 
                 {/* Total */}
-                <div className="mt-3 border-t pt-2 text-right font-bold text-gray-900">
-                  Total: ₹{totalAmount}
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-textSecondary text-sm">Total</span>
+                  <span className="text-primary font-semibold text-lg">
+                    ₹{totalAmount}
+                  </span>
                 </div>
 
-                {/* Status */}
-                <div className="flex items-center justify-between mt-3">
+                {/* Status + Actions */}
+                <div className="flex items-center justify-between">
+
                   <span
-                    className={`text-sm px-3 py-1 rounded-full font-semibold ${
+                    className={`flex items-center gap-1 text-xs px-3 py-1 rounded-full font-medium ${
                       order.status === "pending"
-                        ? "bg-gray-200 text-gray-800"
+                        ? "bg-danger/20 text-danger border border-danger/30"
                         : order.status === "preparing"
-                        ? "bg-yellow-200 text-yellow-900"
-                        : "bg-green-200 text-green-900"
+                        ? "bg-primary/20 text-primary border border-primary/30"
+                        : "bg-success/20 text-success border border-success/30"
                     }`}
                   >
+                    {order.status === "ready" && <CheckCircle size={14} />}
+                    {order.status === "pending" && <Circle size={14} />}
+                    {order.status === "preparing" && <Flame size={14} />}
                     {order.status}
                   </span>
 
-                  {/* Actions */}
                   <div className="flex gap-2">
+
                     <button
                       disabled={order.status !== "pending"}
                       onClick={() =>
                         handleStatus(order._id, "preparing")
                       }
-                      className={`text-sm px-3 py-1 rounded ${
+                      className={`text-xs px-3 py-1 rounded-lg border border-borderSubtle transition
+                      ${
                         order.status !== "pending"
-                          ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                          : "bg-black text-white"
+                          ? "opacity-40"
+                          : "bg-[#1A1A1A] text-primary hover:shadow-glow"
                       }`}
                     >
                       Preparing
@@ -191,19 +219,24 @@ const ChefDashboard = () => {
                       onClick={() =>
                         handleStatus(order._id, "ready")
                       }
-                      className={`text-sm px-3 py-1 rounded ${
+                      className={`text-xs px-3 py-1 rounded-lg border border-borderSubtle transition
+                      ${
                         order.status !== "preparing"
-                          ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                          : "bg-green-600 text-white"
+                          ? "opacity-40"
+                          : "bg-[#1A1A1A] text-success hover:shadow-glow"
                       }`}
                     >
                       Ready
                     </button>
+
                   </div>
+
                 </div>
+
               </div>
             );
           })}
+
         </div>
       )}
     </div>

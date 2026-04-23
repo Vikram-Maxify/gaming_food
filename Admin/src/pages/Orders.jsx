@@ -9,7 +9,6 @@ import {
   updateOrderInState,
 } from "../redux/slice/adminOrderSlice";
 
-// ✅ single socket instance
 const socket = io("http://localhost:5002", {
   autoConnect: true,
 });
@@ -18,7 +17,6 @@ const Orders = () => {
   const dispatch = useDispatch();
   const { orders, loading } = useSelector((state) => state.order);
 
-  // 🔥 Initial fetch + socket setup
   useEffect(() => {
     dispatch(getOrders());
 
@@ -41,25 +39,32 @@ const Orders = () => {
     };
   }, [dispatch]);
 
-  // 🔥 Status update
   const handleStatus = (id, status) => {
     dispatch(updateOrderStatus({ id, status }));
   };
 
   return (
-    <div>
-      <h2 className="text-lg font-semibold mb-4 text-gray-900">
-        Orders
-      </h2>
+    <div className="p-6">
+
+      {/* Header */}
+      <div className="mb-6">
+        <h2 className="text-2xl font-semibold text-textPrimary">
+          🍽 Orders
+        </h2>
+        <p className="text-sm text-textSecondary">
+          Real-time incoming orders
+        </p>
+      </div>
 
       {loading ? (
-        <p>Loading...</p>
+        <p className="text-textSecondary">Loading...</p>
       ) : orders.length === 0 ? (
-        <p>No orders found</p>
+        <p className="text-textSecondary">No orders found</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+
           {orders.map((order) => {
-            // ✅ total calculation (safe)
             const totalAmount = order.items.reduce(
               (sum, item) => sum + item.price * item.quantity,
               0
@@ -68,65 +73,71 @@ const Orders = () => {
             return (
               <div
                 key={order._id}
-                className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm"
+                className="bg-cardGradient border border-borderSubtle rounded-xl2 p-5 shadow-soft hover:shadow-glowHover transition flex flex-col justify-between"
               >
-                {/* Top */}
-                <div className="flex justify-between items-center mb-2">
-                  <h3 className="text-sm font-semibold text-gray-900">
-                    #{order._id.slice(-5)}
-                  </h3>
 
-                  <span className="text-xs text-gray-500">
+                {/* Top */}
+                <div className="flex justify-between items-start mb-3">
+
+                  <div>
+                    <h3 className="text-sm font-semibold text-textPrimary">
+                      #{order._id.slice(-5)}
+                    </h3>
+                    <p className="text-xs text-textSecondary mt-1">
+                      Table: {order.tableNumber || "T"}
+                    </p>
+                  </div>
+
+                  <span className="text-xs text-textSecondary">
                     {new Date(order.createdAt).toLocaleTimeString([], {
                       hour: "2-digit",
                       minute: "2-digit",
                     })}
                   </span>
 
-                  <span className="text-xs text-gray-500">
-                    Table: {order.tableNumber || "T"}
-                  </span>
                 </div>
 
                 {/* Items */}
-                <div className="text-sm text-gray-700 mb-2">
+                <div className="text-sm mb-3 space-y-2">
                   {order.items?.map((item, idx) => (
-                    <div key={idx} className="mb-1">
-                      <p className="font-medium">
-                        • {item.product?.name}
-                        {item.variantName &&
-                          ` (${item.variantName})`}{" "}
-                        x{item.quantity}
+                    <div key={idx} className="border-b border-borderSubtle pb-1">
+
+                      <p className="text-textPrimary font-medium">
+                        {item.product?.name}
+                        {item.variantName && ` (${item.variantName})`} ×{item.quantity}
                       </p>
 
-                      <div className="flex justify-between text-xs text-gray-500">
-                        <span>
-                          {item.spiceLevel || "medium"}
-                        </span>
-
+                      <div className="flex justify-between text-xs text-textSecondary">
+                        <span>{item.spiceLevel || "medium"}</span>
                         <span>
                           ₹{item.price} × {item.quantity} = ₹
                           {item.price * item.quantity}
                         </span>
                       </div>
+
                     </div>
                   ))}
                 </div>
 
                 {/* Total */}
-                <p className="text-sm font-semibold text-gray-900 mb-3">
-                  Total: ₹{totalAmount}
-                </p>
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-sm text-textSecondary">Total</span>
+                  <span className="text-lg font-semibold text-primary">
+                    ₹{totalAmount}
+                  </span>
+                </div>
 
-                {/* Status */}
+                {/* Status + Actions */}
                 <div className="flex items-center justify-between">
+
+                  {/* Status */}
                   <span
-                    className={`text-xs px-2 py-1 rounded-full ${
+                    className={`text-xs px-3 py-1 rounded-full font-medium ${
                       order.status === "pending"
-                        ? "bg-gray-100 text-gray-600"
+                        ? "bg-warning/20 text-warning border border-warning/30"
                         : order.status === "preparing"
-                        ? "bg-yellow-100 text-yellow-700"
-                        : "bg-green-100 text-green-700"
+                        ? "bg-primary/20 text-primary border border-primary/30"
+                        : "bg-success/20 text-success border border-success/30"
                     }`}
                   >
                     {order.status}
@@ -134,15 +145,17 @@ const Orders = () => {
 
                   {/* Actions */}
                   <div className="flex gap-2">
+
                     <button
                       disabled={order.status !== "pending"}
                       onClick={() =>
                         handleStatus(order._id, "preparing")
                       }
-                      className={`text-xs px-2 py-1 rounded ${
+                      className={`text-xs px-3 py-1 rounded-lg border border-borderSubtle transition
+                      ${
                         order.status !== "pending"
-                          ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                          : "bg-gray-100 hover:bg-gray-200"
+                          ? "opacity-40 cursor-not-allowed"
+                          : "bg-[#1A1A1A] text-primary hover:shadow-glow"
                       }`}
                     >
                       Preparing
@@ -153,19 +166,24 @@ const Orders = () => {
                       onClick={() =>
                         handleStatus(order._id, "ready")
                       }
-                      className={`text-xs px-2 py-1 rounded ${
+                      className={`text-xs px-3 py-1 rounded-lg border border-borderSubtle transition
+                      ${
                         order.status !== "preparing"
-                          ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                          : "bg-gray-100 hover:bg-gray-200"
+                          ? "opacity-40 cursor-not-allowed"
+                          : "bg-[#1A1A1A] text-success hover:shadow-glow"
                       }`}
                     >
                       Ready
                     </button>
+
                   </div>
+
                 </div>
+
               </div>
             );
           })}
+
         </div>
       )}
     </div>

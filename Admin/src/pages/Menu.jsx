@@ -14,7 +14,6 @@ const Menu = () => {
 
   const [category, setCategory] = useState("all");
 
-  // 🔥 Edit modal state
   const [showEditModal, setShowEditModal] = useState(false);
   const [editProduct, setEditProduct] = useState(null);
   const [editForm, setEditForm] = useState({
@@ -25,24 +24,20 @@ const Menu = () => {
     variants: [],
   });
 
-  // 🔥 fetch products
   useEffect(() => {
     dispatch(getProducts());
     dispatch(getCategories());
   }, [dispatch]);
 
-  // 🔥 dynamic categories (DB se)
   const categoriesList = [
     "all",
     ...new Set(products.map((p) => p.category?.name).filter(Boolean)),
   ];
 
-  // 🔥 filter
   const filteredData = products.filter((item) => {
     return category === "all" || item.category?.name === category;
   });
 
-  // 🔥 Open edit modal
   const handleEditClick = (product) => {
     setEditProduct(product);
     setEditForm({
@@ -55,25 +50,22 @@ const Menu = () => {
     setShowEditModal(true);
   };
 
-  // 🔥 Handle edit form change
   const handleEditChange = (e) => {
     const { name, value } = e.target;
     setEditForm({ ...editForm, [name]: value });
   };
 
-  // 🔥 Handle variant change
   const handleVariantChange = (index, field, value) => {
-  const updatedVariants = editForm.variants.map((v, i) =>
-    i === index ? { ...v, [field]: value } : v
-  );
+    const updatedVariants = editForm.variants.map((v, i) =>
+      i === index ? { ...v, [field]: value } : v
+    );
 
-  setEditForm({
-    ...editForm,
-    variants: updatedVariants,
-  });
-};
+    setEditForm({
+      ...editForm,
+      variants: updatedVariants,
+    });
+  };
 
-  // 🔥 Add new variant
   const addVariant = () => {
     setEditForm({
       ...editForm,
@@ -81,13 +73,11 @@ const Menu = () => {
     });
   };
 
-  // 🔥 Remove variant
   const removeVariant = (index) => {
     const updatedVariants = editForm.variants.filter((_, i) => i !== index);
     setEditForm({ ...editForm, variants: updatedVariants });
   };
 
-  // 🔥 Submit update
   const handleUpdate = (e) => {
     e.preventDefault();
 
@@ -109,24 +99,25 @@ const Menu = () => {
   };
 
   return (
-    <div className="p-4">
+    <div className="p-6">
 
       {/* Heading */}
-      <h2 className="text-lg font-semibold mb-4 text-gray-900">
+      <h2 className="text-xl font-semibold mb-6 text-textPrimary">
         🍔 Menu Management
       </h2>
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-2 mb-4">
+      <div className="flex flex-wrap gap-2 mb-6">
         {categoriesList.map((cat) => (
           <button
             key={cat}
             onClick={() => setCategory(cat)}
-            className={`px-3 py-1 text-xs rounded-full border ${
-              category === cat
-                ? "bg-gray-900 text-white"
-                : "bg-white text-gray-600 border-gray-300"
-            }`}
+            className={`px-4 py-1.5 text-xs rounded-full border transition
+              ${
+                category === cat
+                  ? "bg-primaryGradient text-white shadow-glow"
+                  : "bg-[#1A1A1A] text-textSecondary border-borderSubtle hover:text-textPrimary hover:border-primary"
+              }`}
           >
             {cat}
           </button>
@@ -135,19 +126,19 @@ const Menu = () => {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-
-        <div className="bg-white border p-4 rounded-xl shadow-sm">
-          <p className="text-sm text-gray-500">Total Items</p>
-          <h3 className="text-xl font-semibold">{filteredData.length}</h3>
+        <div className="bg-cardGradient border border-borderSubtle p-5 rounded-xl2 shadow-soft hover:shadow-glowHover transition">
+          <p className="text-sm text-textSecondary">Total Items</p>
+          <h3 className="text-2xl font-semibold text-textPrimary mt-1">
+            {filteredData.length}
+          </h3>
         </div>
-
       </div>
 
       {/* Table */}
-      <div className="bg-white border rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-cardGradient border border-borderSubtle rounded-xl2 shadow-soft overflow-hidden">
 
         {/* Header */}
-        <div className="grid grid-cols-6 bg-gray-50 px-4 py-3 text-sm font-medium text-gray-600">
+        <div className="grid grid-cols-6 px-4 py-3 text-xs font-medium text-textSecondary border-b border-borderSubtle">
           <span>Image</span>
           <span>Name</span>
           <span>Category</span>
@@ -158,59 +149,53 @@ const Menu = () => {
 
         {/* Rows */}
         {loading ? (
-          <p className="p-4">Loading...</p>
+          <p className="p-4 text-textSecondary">Loading...</p>
         ) : filteredData.length === 0 ? (
-          <p className="p-4">No products found</p>
+          <p className="p-4 text-textSecondary">No products found</p>
         ) : (
           filteredData.map((item) => (
             <div
               key={item._id}
-              className="grid grid-cols-6 px-4 py-3 text-sm border-t items-center"
+              className="grid grid-cols-6 px-4 py-3 text-sm items-center border-b border-borderSubtle hover:bg-[#1A1A1A] transition"
             >
-              {/* Image */}
               <img
                 src={item.image}
                 alt={item.name}
-                className="w-12 h-12 object-cover rounded"
+                className="w-12 h-12 object-cover rounded-lg border border-borderSubtle"
               />
 
-              {/* Name */}
-              <span className="text-gray-900">{item.name}</span>
+              <span className="text-textPrimary">{item.name}</span>
 
-              {/* Category */}
-              <span className="text-gray-600">
+              <span className="text-textSecondary">
                 {item.category?.name}
               </span>
 
-              {/* Variants */}
               <div className="flex flex-wrap gap-1">
                 {item.variants?.map((v, i) => (
                   <span
                     key={i}
-                    className="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded"
+                    className="text-xs bg-primary/20 text-primary px-2 py-0.5 rounded-full border border-primary/30"
                   >
                     {v.name} ₹{v.price}
                   </span>
                 ))}
               </div>
 
-              {/* Credits */}
-              <span className="text-gray-700">
+              <span className="text-textPrimary">
                 {item.creditPoints}
               </span>
 
-              {/* Actions */}
               <div className="flex gap-2">
                 <button
                   onClick={() => handleEditClick(item)}
-                  className="text-xl px-2 py-1 bg-blue-400/30 rounded hover:bg-blue-500/30"
+                  className="p-2 rounded-lg bg-[#1A1A1A] border border-borderSubtle hover:shadow-glow transition text-primary"
                 >
                   <FaRegEdit />
                 </button>
 
                 <button
                   onClick={() => dispatch(deleteProduct(item._id))}
-                  className="text-xl px-2 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200"
+                  className="p-2 rounded-lg bg-[#1A1A1A] border border-borderSubtle hover:shadow-glow transition text-danger"
                 >
                   <ImBin />
                 </button>
@@ -220,34 +205,32 @@ const Menu = () => {
         )}
       </div>
 
-      {/* 🔥 Edit Modal */}
+      {/* Edit Modal */}
       {showEditModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-            <h3 className="text-xl font-bold mb-4">Edit Product</h3>
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-cardGradient border border-borderSubtle p-6 rounded-xl2 w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-soft">
+            <h3 className="text-xl font-bold mb-4 text-textPrimary">Edit Product</h3>
 
             <form onSubmit={handleUpdate} className="flex flex-col gap-4">
 
-              {/* Name */}
               <div>
-                <label className="text-sm text-gray-600">Name</label>
+                <label className="text-sm text-textSecondary">Name</label>
                 <input
                   type="text"
                   name="name"
                   value={editForm.name}
                   onChange={handleEditChange}
-                  className="w-full p-2 border rounded"
+                  className="w-full p-2 bg-[#1A1A1A] border border-borderSubtle rounded-lg text-textPrimary outline-none focus:shadow-glow"
                 />
               </div>
 
-              {/* Category */}
               <div>
-                <label className="text-sm text-gray-600">Category</label>
+                <label className="text-sm text-textSecondary">Category</label>
                 <select
                   name="category"
                   value={editForm.category}
                   onChange={handleEditChange}
-                  className="w-full p-2 border rounded"
+                  className="w-full p-2 bg-[#1A1A1A] border border-borderSubtle rounded-lg text-textPrimary"
                 >
                   <option value="">Select Category</option>
                   {categories.map((cat) => (
@@ -258,14 +241,13 @@ const Menu = () => {
                 </select>
               </div>
 
-              {/* Type */}
               <div>
-                <label className="text-sm text-gray-600">Type</label>
+                <label className="text-sm text-textSecondary">Type</label>
                 <select
                   name="type"
                   value={editForm.type}
                   onChange={handleEditChange}
-                  className="w-full p-2 border rounded"
+                  className="w-full p-2 bg-[#1A1A1A] border border-borderSubtle rounded-lg text-textPrimary"
                 >
                   <option value="">Select Type</option>
                   <option value="veg">Veg</option>
@@ -274,42 +256,40 @@ const Menu = () => {
                 </select>
               </div>
 
-              {/* Credit Points */}
               <div>
-                <label className="text-sm text-gray-600">Credit Points</label>
+                <label className="text-sm text-textSecondary">Credit Points</label>
                 <input
                   type="number"
                   name="creditPoints"
                   value={editForm.creditPoints}
                   onChange={handleEditChange}
-                  className="w-full p-2 border rounded"
+                  className="w-full p-2 bg-[#1A1A1A] border border-borderSubtle rounded-lg text-textPrimary outline-none focus:shadow-glow"
                 />
               </div>
 
-              {/* Variants */}
               <div>
-                <label className="text-sm text-gray-600 mb-2 block">Variants</label>
+                <label className="text-sm text-textSecondary mb-2 block">Variants</label>
                 {editForm.variants.map((variant, index) => (
                   <div key={index} className="flex gap-2 mb-2">
                     <input
                       type="text"
-                      placeholder="Size (Half/Full)"
+                      placeholder="Size"
                       value={variant.name}
                       onChange={(e) => handleVariantChange(index, "name", e.target.value)}
-                      className="flex-1 p-2 border rounded"
+                      className="flex-1 p-2 bg-[#1A1A1A] border border-borderSubtle rounded-lg text-textPrimary"
                     />
                     <input
                       type="number"
                       placeholder="Price"
                       value={variant.price}
                       onChange={(e) => handleVariantChange(index, "price", e.target.value)}
-                      className="w-24 p-2 border rounded"
+                      className="w-24 p-2 bg-[#1A1A1A] border border-borderSubtle rounded-lg text-textPrimary"
                     />
                     {editForm.variants.length > 1 && (
                       <button
                         type="button"
                         onClick={() => removeVariant(index)}
-                        className="text-red-500 px-2"
+                        className="text-danger px-2"
                       >
                         ✕
                       </button>
@@ -319,17 +299,16 @@ const Menu = () => {
                 <button
                   type="button"
                   onClick={addVariant}
-                  className="text-sm text-orange-500"
+                  className="text-sm text-primary"
                 >
                   + Add Variant
                 </button>
               </div>
 
-              {/* Actions */}
               <div className="flex gap-2 mt-4">
                 <button
                   type="submit"
-                  className="flex-1 bg-orange-500 text-white py-2 rounded hover:bg-orange-600"
+                  className="flex-1 bg-primaryGradient text-white py-2 rounded-xl2 shadow-glow hover:shadow-glowHover transition"
                 >
                   Update
                 </button>
@@ -339,7 +318,7 @@ const Menu = () => {
                     setShowEditModal(false);
                     setEditProduct(null);
                   }}
-                  className="flex-1 bg-gray-200 text-gray-700 py-2 rounded hover:bg-gray-300"
+                  className="flex-1 bg-[#1A1A1A] border border-borderSubtle text-textSecondary py-2 rounded-xl2 hover:text-textPrimary"
                 >
                   Cancel
                 </button>
