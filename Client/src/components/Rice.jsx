@@ -61,16 +61,16 @@ const Rice = () => {
 
             {/* Heading */}
             <div className="flex items-center justify-between mb-3 px-4 md:px-24">
-                <h3 className="text-sm font-semibold text-text-primary">
+                <h3 className="text-base md:text-lg  font-semibold text-text-primary">
                     Rice
                 </h3>
-                <span className="text-xs text-text-secondary">
+                <span className="text-base md:text-lg text-text-secondary">
                     Add-on
                 </span>
             </div>
 
             {/* SAME GRID SYSTEM */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-1 px-4 md:px-24">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 px-4 md:px-24">
 
                 {riceItems.map((item, i) => {
                     const isActive = selected.includes(item.name);
@@ -79,7 +79,7 @@ const Rice = () => {
                         <div
                             key={i}
                             onClick={() => toggle(item.name)}
-                            className={`bg-card rounded-xl p-2 shadow-sm transition cursor-pointer ${isActive ? "ring-2 ring-primary" : ""
+                            className={`bg-card rounded-xl shadow-sm transition cursor-pointer ${isActive ? "ring-2 ring-primary" : ""
                                 }`}
                         >
 
@@ -95,8 +95,8 @@ const Rice = () => {
                             </div>
 
                             {/* Info */}
-                            <div className="px-1">
-                                <h4 className="text-sm font-medium text-text-primary">
+                            <div className="px-2">
+                                <h4 className="text-sm font-semibold text-text-primary">
                                     {item.name}
                                 </h4>
 

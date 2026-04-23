@@ -53,19 +53,19 @@ const FoodGrid = () => {
 
       {/* Heading */}
       <div className="flex items-center justify-between mb-3 px-6 md:px-24">
-        <h3 className="text-sm font-semibold text-text-primary">
+        <h3 className="text-base md:text-lg font-semibold text-text-primary">
           Popular Food
         </h3>
         <span className="text-xs text-text-secondary">See all</span>
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-7 px-4 md:px-24">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-7 px-4 md:px-24">
 
         {foods.map((item, i) => (
           <div
             key={i}
-            className="bg-card rounded-xl  hover:shadow-md transition duration-200 shadow-md"
+            className="bg-card rounded-xl  hover:shadow-md shadow-md"
           >
 
             {/* Image Wrapper */}
@@ -73,12 +73,12 @@ const FoodGrid = () => {
               <img
                 src={item.image}
                 alt={item.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover transition-transform duration-500 md:hover:scale-105"
               />
             </div>
 
             {/* Info */}
-            <div className="px-1">
+            <div className="px-2">
 
               {/* Top Row: Name + Rating */}
               <div className="flex items-start justify-between">

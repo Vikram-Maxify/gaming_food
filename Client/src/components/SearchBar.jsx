@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Search, SlidersHorizontal } from "lucide-react";
+import { FaStar } from "react-icons/fa6";
 
 const SearchBar = () => {
 
@@ -102,11 +103,11 @@ const SearchBar = () => {
                                         key={r}
                                         onClick={() => setRating(r)}
                                         className={`px-3 py-1 rounded-full border ${rating === r
-                                                ? "bg-yellow-400 text-white"
-                                                : ""
+                                                ? "bg-yellow-400 text-white flex"
+                                                : "flex"
                                             }`}
                                     >
-                                        ⭐ {r}+
+                                         {r}<FaStar className=" text-xl ps-1 mt-[1px] flex items-center"/>
                                     </button>
                                 ))}
                             </div>

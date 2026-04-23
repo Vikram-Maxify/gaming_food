@@ -21,8 +21,8 @@ export default {
           blue: "#A0C4FF",
         },
         text: {
-          primary: "#1F1F1F",
-          secondary: "#6B7280",
+          primary: "#FFFFFF",
+          secondary: "",
         },
         card: "#FFFFFF",
       },

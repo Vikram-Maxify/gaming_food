@@ -75,16 +75,16 @@ const Breads = () => {
 
       {/* Heading */}
       <div className="flex items-center justify-between mb-3 px-4 md:px-24">
-        <h3 className="text-sm font-semibold text-text-primary">
+        <h3 className="text-base md:text-lg font-semibold text-text-primary">
           Breads
         </h3>
-        <span className="text-xs text-text-secondary">
+        <span className="text-sm md:text-lg text-text-secondary">
           Choose
         </span>
       </div>
 
       {/* Scroll */}
-      <div className="flex gap-3 overflow-x-auto no-scrollbar px-4 md:px-24">
+      <div className="flex gap-4 overflow-x-auto no-scrollbar px-4 md:px-24">
 
         {breadsList.map((item, i) => {
           const isActive = selected.includes(item.name);
@@ -100,7 +100,7 @@ const Breads = () => {
             >
 
               {/* Image */}
-              <div className="w-full h-16 md:w-full md:h-28 rounded-lg overflow-hidden mb-1 bg-secondary">
+              <div className="w-full h-16 md:w-full md:h-28 rounded-lg overflow-hidden  bg-secondary">
                 <img
                   src={item.image}
                   alt={item.name}
@@ -110,11 +110,11 @@ const Breads = () => {
               </div>
 
               {/* Text */}
-              <p className="text-xs font-medium text-text-primary leading-tight">
+              <p className="text-sm font-semibold text-text-primary leading-tight mt-1">
                 {item.name}
               </p>
 
-              <p className="text-[11px] text-text-secondary">
+              <p className="text-[11px] font-medium text-text-secondary">
                 {item.price}
               </p>
 
