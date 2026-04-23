@@ -15,7 +15,9 @@ const HomePage = () => {
   return (
     <>
       <Navbar />
-      <SearchBar/>
+      <div className='md:hidden'>
+        <SearchBar />
+      </div>
       <Banner />
       <Categories />
       <FoodGrid />
@@ -24,7 +26,7 @@ const HomePage = () => {
       <MainCourse />
       <Breads />
       <Rice />
-      <Footer/>
+      <Footer />
     </>
   )
 }

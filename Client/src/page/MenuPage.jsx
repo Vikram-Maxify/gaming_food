@@ -131,7 +131,6 @@ export default function MenuPage() {
     return (
         <>
         <Navbar/>
-            <SearchBar />
             <div className="min-h-screen bg-gray-100 p-4 pb-24 mt-6">
 
                 {/* 🔥 PRODUCTS */}

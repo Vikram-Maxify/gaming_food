@@ -26,9 +26,8 @@ const Navbar = () => {
                 </div>
 
                 <div className="w-[50%]">
-                    <SearchBar className="hidden "/>
+                    <SearchBar className="hidden md:block"/>
                 </div>
-
 
                 {/* RIGHT */}
                 {/* RIGHT */}
