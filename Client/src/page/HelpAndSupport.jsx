@@ -1,6 +1,7 @@
 import React from 'react'
 import help from '../assets/Images/helpImage1.avif'
 import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
 
 const HelpAndSupport = () => {
     return (
@@ -18,7 +19,7 @@ const HelpAndSupport = () => {
                 </h1>
             </div>
 
-            <div className="w-[90%] md:w-[80%] lg:w-[60%] mx-auto mt-10 flex flex-col lg:flex-row gap-10 lg:gap-20">
+            <div className="w-[90%] md:w-[80%] lg:w-[60%] mx-auto mt-10 flex flex-col lg:flex-row gap-10 lg:gap-20 mb-10">
 
                 {/* Left */}
                 <div className="w-full lg:w-1/2 flex flex-col">
@@ -74,6 +75,7 @@ const HelpAndSupport = () => {
 
                 </div>
             </div>
+            <Footer/>
         </>
     )
 }
