@@ -43,10 +43,10 @@ const Footer = () => {
                         {/* Column 3 */}
                         <div className="w-[45%] flex flex-col md:w-auto">
                             <h1 className="text-xl text-white">Learn More</h1>
-                            <Link to="#" className='text-gray-400 mt-4 hover:text-white'>Privacy</Link>
-                            <Link to="#" className='text-gray-400 mt-2 hover:text-white'>Security</Link>
+                            <Link to="/privacy" className='text-gray-400 mt-4 hover:text-white'>Privacy</Link>
+                            <Link to="/security" className='text-gray-400 mt-2 hover:text-white'>Security</Link>
                             <Link to="/terms" className='text-gray-400 mt-2 hover:text-white'>Terms of Service</Link>
-                            <Link to="#" className='text-gray-400 mt-2 hover:text-white'>Help & Support</Link>
+                            <Link to="" className='text-gray-400 mt-2 hover:text-white'>Help & Support</Link>
                             <Link to="#" className='text-gray-400 mt-2 hover:text-white mb-10'>Blog</Link>
                         </div>
 

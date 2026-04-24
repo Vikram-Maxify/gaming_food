@@ -3,7 +3,6 @@ import './App.css'
 import { Route, Routes } from 'react-router-dom'
 
 import HomePage from './page/HomePage'
-// import BottomNav from './components/BottomNav'
 import Login from './page/Login'
 import Register from './page/Register'
 import Profile from './page/Profile'
@@ -15,10 +14,14 @@ import AddToCart from './page/AddToCart'
 import PrivateRoute from './page/PrivateRoute' // 🔥 ADD
 import TabStyle1 from './components/BottomNav'
 import TermsOfServices from './page/TermsOfServices'
+import Privacy from './page/Privacy'
+import Security from './page/Security'
+import ScrollToTop from './components/ScrollToTop'
 
 function App() {
   return (
     <>
+      <ScrollToTop />
       <Routes>
         {/* 🔓 PUBLIC ROUTES */}
         <Route path='/' element={<HomePage />} />
@@ -40,9 +43,9 @@ function App() {
         </Route>
 
         {/* footer  */}
-          <Route path='/terms' element={<TermsOfServices />} />
-        
-
+        <Route path='/terms' element={<TermsOfServices />} />
+        <Route path='/privacy' element={<Privacy />} />
+        <Route path='/security' element={<Security />} />
       </Routes>
       <TabStyle1 />
 
