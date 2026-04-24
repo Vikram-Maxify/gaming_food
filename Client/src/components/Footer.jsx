@@ -20,34 +20,34 @@ const Footer = () => {
                         Foodie
                     </h1>
 
-                    <div className="flex flex-wrap justify-between gap-6 w-full mt-10">
+                    <div className="flex flex-wrap justify-between gap-6 w-full mt-20">
 
                         {/* Column 1 */}
                         <div className="w-[45%] md:w-auto flex flex-col">
                             <h1 className="text-xl text-white">Eternal</h1>
-                            <Link to="#" className='text-gray-400 mt-3 hover:text-white'>About Us</Link>
-                            <Link to="#" className='text-gray-400 mt-1 hover:text-white'>Foodie Corporate</Link>
-                            <Link to="#" className='text-gray-400 mt-1 hover:text-white'>Career</Link>
-                            <Link to="#" className='text-gray-400 mt-1 hover:text-white'>Team</Link>
+                            <Link to="#" className='text-gray-400 mt-4 hover:text-white'>About Us</Link>
+                            <Link to="#" className='text-gray-400 mt-2 hover:text-white'>Foodie Corporate</Link>
+                            <Link to="#" className='text-gray-400 mt-2 hover:text-white'>Career</Link>
+                            <Link to="#" className='text-gray-400 mt-2 hover:text-white'>Team</Link>
                         </div>
 
                         {/* Column 2 */}
                         <div className="w-[45%] md:w-auto flex flex-col">
                             <h1 className="text-xl text-white">For Restaurants</h1>
-                            <Link to="#" className='text-gray-400 mt-3 hover:text-white'>Partner With Us</Link>
-                            <Link to="#" className='text-gray-400 mt-1 hover:text-white'>Apps For You</Link>
-                            <Link to="#" className='text-gray-400 mt-1 hover:text-white'>Restaurant Consulting</Link>
-                            <Link to="#" className='text-gray-400 mt-1 hover:text-white'>Foodie Dineout</Link>
+                            <Link to="#" className='text-gray-400 mt-4 hover:text-white'>Partner With Us</Link>
+                            <Link to="#" className='text-gray-400 mt-2 hover:text-white'>Apps For You</Link>
+                            <Link to="#" className='text-gray-400 mt-2 hover:text-white'>Restaurant Consulting</Link>
+                            <Link to="#" className='text-gray-400 mt-2 hover:text-white'>Foodie Dineout</Link>
                         </div>
 
                         {/* Column 3 */}
                         <div className="w-[45%] flex flex-col md:w-auto">
                             <h1 className="text-xl text-white">Learn More</h1>
-                            <Link to="#" className='text-gray-400 mt-3 hover:text-white'>Privacy</Link>
-                            <Link to="#" className='text-gray-400 mt-1 hover:text-white'>Security</Link>
-                            <Link to="#" className='text-gray-400 mt-1 hover:text-white'>Terms of Service</Link>
-                            <Link to="#" className='text-gray-400 mt-1 hover:text-white'>Help & Support</Link>
-                            <Link to="#" className='text-gray-400 mt-1 hover:text-white'>Blog</Link>
+                            <Link to="#" className='text-gray-400 mt-4 hover:text-white'>Privacy</Link>
+                            <Link to="#" className='text-gray-400 mt-2 hover:text-white'>Security</Link>
+                            <Link to="/terms" className='text-gray-400 mt-2 hover:text-white'>Terms of Service</Link>
+                            <Link to="#" className='text-gray-400 mt-2 hover:text-white'>Help & Support</Link>
+                            <Link to="#" className='text-gray-400 mt-2 hover:text-white mb-10'>Blog</Link>
                         </div>
 
                         {/* Column 4 (Social Links) */}

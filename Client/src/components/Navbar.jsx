@@ -25,7 +25,7 @@ const Navbar = () => {
                     </nav>
                 </div>
 
-                <div className="w-[50%]">
+                <div className="w-[60%]">
                     <SearchBar className="hidden md:block"/>
                 </div>
 
@@ -51,10 +51,10 @@ const Navbar = () => {
                     </div>
 
                     {/* Desktop Icons */}
-                    <div className="hidden md:flex items-center gap-3">
+                    <div className="hidden md:flex items-center gap-4">
                         <Link to="/cart">
                             <button className="bg-card p-2 rounded-full shadow-sm relative hover:scale-105 transition">
-                                <ShoppingCart size={18} className="text-black text-base" />
+                                <ShoppingCart size={20} className="text-black text-base" />
 
                                 <span className="absolute -top-1 -right-1 bg-red-500 text-xs text-white rounded-full px-1">
                                     2
