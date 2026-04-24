@@ -25,7 +25,7 @@ const Footer = () => {
                         {/* Column 1 */}
                         <div className="w-[45%] md:w-auto flex flex-col">
                             <h1 className="text-xl text-white">Eternal</h1>
-                            <Link to="#" className='text-gray-400 mt-4 hover:text-white'>About Us</Link>
+                            <Link to="/about" className='text-gray-400 mt-4 hover:text-white'>About Us</Link>
                             <Link to="#" className='text-gray-400 mt-2 hover:text-white'>Foodie Corporate</Link>
                             <Link to="#" className='text-gray-400 mt-2 hover:text-white'>Career</Link>
                             <Link to="#" className='text-gray-400 mt-2 hover:text-white'>Team</Link>

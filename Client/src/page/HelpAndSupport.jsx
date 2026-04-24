@@ -5,7 +5,7 @@ import Navbar from '../components/Navbar'
 const HelpAndSupport = () => {
     return (
         <>
-            <Navbar />
+            <Navbar className="block" />
             <div className="relative">
                 <img
                     src={help}
@@ -55,7 +55,7 @@ const HelpAndSupport = () => {
                 {/* Right */}
                 <div className="w-full lg:w-1/2 flex flex-col gap-6">
 
-                    <div className="w-full border shadow-md px-6 rounded-lg py-6">
+                    <div className="w-full border shadow-md px-6 rounded-lg py-6 hover:border-red-300">
                         <h2 className="text-base font-semibold">Report a Safety Emergency</h2>
                         <p className="mt-2">
                             We are committed to the safety of everyone using Foodie.
@@ -65,7 +65,7 @@ const HelpAndSupport = () => {
                         </button>
                     </div>
 
-                    <div className="w-full border shadow-md px-6 rounded-lg py-6 mb-28">
+                    <div className="w-full border shadow-md px-6 rounded-lg py-6 mb-28 hover:border-red-300">
                         <h2 className="text-base font-semibold">Issue with your live order</h2>
                         <p className="mt-2 ">
                             Click on the 'Support' or 'Online ordering help' section in your app to connect to our customer support team.

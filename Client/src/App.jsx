@@ -18,6 +18,7 @@ import Privacy from './page/Privacy'
 import Security from './page/Security'
 import ScrollToTop from './components/ScrollToTop'
 import HelpAndSupport from './page/HelpAndSupport'
+import About from './page/About'
 
 function App() {
   return (
@@ -48,6 +49,8 @@ function App() {
         <Route path='/privacy' element={<Privacy />} />
         <Route path='/security' element={<Security />} />
         <Route path='/help' element={<HelpAndSupport />} />
+        <Route path='/about' element={<About />} />
+        
       </Routes>
       <TabStyle1 />
 
