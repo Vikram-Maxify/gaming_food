@@ -15,7 +15,7 @@ const SearchBar = () => {
             <div className="flex items-center justify-center gap-3 px-2 mt-4 md:mt-3 mb-4">
 
                 {/* Search Input */}
-                <div className="relative w-full md:w-[30%] px-3">
+                <div className="relative w-full md:w-[50%] px-3">
 
                     {/* Search Icon */}
                     <Search
