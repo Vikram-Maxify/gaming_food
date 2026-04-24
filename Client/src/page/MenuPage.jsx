@@ -226,7 +226,7 @@ export default function MenuPage() {
                         <button
                             onClick={handleAddToCart}
                             disabled={cartLoading}
-                            className="mt-4 w-full bg-red-500 text-white py-2 rounded"
+                            className="mt-4 w-full bg-red-500 text-white py-2 rounded-md"
                         >
                             {cartLoading ? "Adding..." : "Add to Cart"}
                         </button>

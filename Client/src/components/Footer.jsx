@@ -16,7 +16,7 @@ const Footer = () => {
                 <div className="w-full md:w-[92%] mx-auto px-4 mb-[86px] md:mb-0 hidden md:block">
 
                     {/* Title */}
-                    <h1 className="text-white text-4xl font-semibold mb-6 text-center md:text-left">
+                    <h1 className="text-white text-5xl font-semibold mb-6 text-center md:text-left">
                         Foodie
                     </h1>
 
@@ -56,10 +56,10 @@ const Footer = () => {
 
                             {/* 👇 Inline icons */}
                             <div className="flex items-center gap-4 mt-3">
-                                <Link to=""><FaLinkedin className='text-xl text-white hover:text-gray-300' /></Link>
-                                <Link to=""><FaInstagram className='text-xl text-white hover:text-gray-300' /></Link>
-                                <Link to=""><FaFacebookF className='text-xl text-white hover:text-gray-300' /></Link>
-                                <Link to=""><FaTwitter className='text-xl text-white hover:text-gray-300' /></Link>
+                                <Link to=""><FaLinkedin className='text-2xl text-white hover:text-gray-300' /></Link>
+                                <Link to=""><FaInstagram className='text-2xl text-white hover:text-gray-300' /></Link>
+                                <Link to=""><FaFacebookF className='text-2xl text-white hover:text-gray-300' /></Link>
+                                <Link to=""><FaTwitter className='text-2xl text-white hover:text-gray-300' /></Link>
                             </div>
                         </div>
 
