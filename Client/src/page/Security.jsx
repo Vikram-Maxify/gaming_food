@@ -5,13 +5,13 @@ const Security = () => {
     return (
         <>
             <Navbar />
-            <div className=" mx-auto mt-20 mb-10 px-5 sm:ps-10 md:ps-20 lg:ps-40 xl:ps-44">
+           <div className="flex flex-col items-center justify-center mx-auto mt-20 mb-10 px-5 sm:ps-10 md:ps-20 lg:ps-40 xl:ps-44">
 
-                <h1 className="text-4xl font-bold text-gray-900 mb-4 md:ps-56">
+                <h1 className="text-4xl font-bold text-gray-900 mb-4 text-start">
                     Security Policy
                 </h1>
-                <p>
-                    At Foodies, we prioritize the safety of your data and transactions by implementing strong security measures across our platform.
+                <p className='text-start'>
+                    At Foodies, we prioritize the safety of your data and transactions by implementing strong security <br/> measures across our platform.
                 </p>
 
                 <div className="space-y-3 mt-3">

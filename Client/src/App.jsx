@@ -17,6 +17,7 @@ import TermsOfServices from './page/TermsOfServices'
 import Privacy from './page/Privacy'
 import Security from './page/Security'
 import ScrollToTop from './components/ScrollToTop'
+import HelpAndSupport from './page/HelpAndSupport'
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
         <Route path='/terms' element={<TermsOfServices />} />
         <Route path='/privacy' element={<Privacy />} />
         <Route path='/security' element={<Security />} />
+        <Route path='/help' element={<HelpAndSupport />} />
       </Routes>
       <TabStyle1 />
 

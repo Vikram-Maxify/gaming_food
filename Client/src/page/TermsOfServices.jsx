@@ -5,8 +5,7 @@ const TermsOfServices = () => {
     return (
         <>
             <Navbar />
-            <div className="mx-auto mt-20 mb-10 px-5 sm:ps-10 md:ps-20 lg:ps-40 xl:ps-44">
-
+            <div className="flex flex-col items-center justify-center mx-auto mt-20 mb-10 px-5 sm:ps-10 md:ps-20 lg:ps-40 xl:ps-44">
                 {/* Page Title */}
                 <h1 className="text-4xl font-bold text-gray-900 mb-4 md:ps-56">
                     Terms of Service
@@ -60,8 +59,8 @@ const TermsOfServices = () => {
                         <li className='mt-1'>Unauthorized access to other user accounts, data, or system resources is considered a serious violation.</li>
                         <li className='mt-1'>Using the platform for illegal activities, including fraud or unauthorized transactions, is strictly forbidden</li>
                     </ul>
-                   <h2 className='text-xl font-semibold text-gray-800'>7. Limitation of Liability</h2>
-                   <h4 className='text-medium text-lg'>Foodies is not responsible for:</h4>
+                    <h2 className='text-xl font-semibold text-gray-800'>7. Limitation of Liability</h2>
+                    <h4 className='text-medium text-lg'>Foodies is not responsible for:</h4>
                     <ul className='list-disc pl-5'>
                         <li className='mt-1'>Foodies does not guarantee the quality, taste, or safety of food provided by restaurants listed on the platform.</li>
                         <li className='mt-1'>We are not responsible for delays, cancellations, or service issues caused by restaurants or external factors.</li>

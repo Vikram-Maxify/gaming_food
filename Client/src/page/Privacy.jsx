@@ -5,14 +5,13 @@ const PrivacyPolicy = () => {
     return (
         <>
             <Navbar />
-            <div className="mx-auto mt-20 mb-10 px-5 sm:ps-10 md:ps-20 lg:ps-40 xl:ps-44">
-
+            <div className="flex flex-col items-center justify-center mx-auto mt-20 mb-10 px-5 sm:ps-10 md:ps-20 lg:ps-40 xl:ps-44">
                 {/* Page Title */}
-                <h1 className="text-4xl font-bold text-gray-900 mb-4 md:ps-56">
+                <h1 className="text-4xl font-bold text-gray-900 mb-4">
                     Privacy Policy
                 </h1>
-                <p>
-                    At Foodies, we value your privacy and are committed to protecting your personal information. This policy explains how we collect, use, and safeguard your data.
+                <p className='text-start'>
+                    At Foodies, we value your privacy and are committed to protecting your personal information. This policy explains how <br/> we collect, use, and safeguard your data.
                 </p>
 
                 {/* Section */}
