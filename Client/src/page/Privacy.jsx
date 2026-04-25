@@ -4,7 +4,7 @@ import Navbar from '../components/Navbar'
 const PrivacyPolicy = () => {
     return (
         <>
-            <Navbar />
+            {/* <Navbar /> */}
             <div className="flex flex-col items-center justify-center mx-auto mt-20 mb-10 px-5 sm:ps-10 md:ps-20 lg:ps-40 xl:ps-44">
                 {/* Page Title */}
                 <h1 className="text-4xl font-bold text-gray-900 mb-4">

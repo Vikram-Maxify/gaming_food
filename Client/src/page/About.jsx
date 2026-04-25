@@ -13,7 +13,7 @@ import Footer from '../components/Footer';
 const About = () => {
     return (
         <>
-            <Navbar />
+            {/* <Navbar /> */}
             <div>
                 <div className="relative">
                     <img
