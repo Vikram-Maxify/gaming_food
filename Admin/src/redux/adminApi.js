@@ -76,11 +76,11 @@ export const deleteTableAPI = (id) =>
 
 // 🔹 GET SETTINGS
 export const getSettingsAPI = () =>
-  API.get("/admin/settings");
+  API.get("/settings/settings");
 
 // 🔹 UPDATE SETTINGS
 export const updateSettingsAPI = (data) =>
-  API.post("/admin/settings", data); // formData (title + logo)
+  API.post("/settings/settings", data); // formData (title + logo)
 
 
 // 🔹 GET ALL ORDERS

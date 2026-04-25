@@ -19,11 +19,13 @@ import Security from './page/Security'
 import ScrollToTop from './components/ScrollToTop'
 import HelpAndSupport from './page/HelpAndSupport'
 import About from './page/About'
+import Navbar from './components/Navbar'
 
 function App() {
   return (
     <>
       <ScrollToTop />
+      <Navbar />
       <Routes>
         {/* 🔓 PUBLIC ROUTES */}
         <Route path='/' element={<HomePage />} />
