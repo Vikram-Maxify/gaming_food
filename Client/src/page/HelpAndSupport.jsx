@@ -6,7 +6,7 @@ import Footer from '../components/Footer'
 const HelpAndSupport = () => {
     return (
         <>
-            <Navbar className="block" />
+            {/* <Navbar className="block" /> */}
             <div className="relative">
                 <img
                     src={help}
