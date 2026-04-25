@@ -7,9 +7,6 @@ exports.updateSettings = async (req, res) => {
   try {
     const { title } = req.body;
 
-    if (!title || !req.file) {
-      return res.status(400).json({ message: "Title and logo required" });
-    }
 
     const logoUrl = await uploadToImageBB(req.file);
 
