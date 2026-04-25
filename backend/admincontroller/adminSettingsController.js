@@ -1,27 +1,30 @@
 const WebsiteSettings = require("../models/WebsiteSettings");
 const uploadToImageBB = require("../utils/uploadToImageBB");
 
-
 // 🔹 Create or Update Settings
 exports.updateSettings = async (req, res) => {
   try {
     const { title } = req.body;
 
-
-    const logoUrl = await uploadToImageBB(req.file);
-
     let settings = await WebsiteSettings.findOne();
 
+    // 🟢 Image upload only if file exists
+    let logoUrl;
+    if (req.file) {
+      logoUrl = await uploadToImageBB(req.file);
+    }
+
     if (settings) {
-      // update
-      settings.title = title;
-      settings.logo = logoUrl;
+      // update only if provided
+      if (title) settings.title = title;
+      if (logoUrl) settings.logo = logoUrl;
+
       await settings.save();
     } else {
-      // create
+      // create new (only provided fields)
       settings = await WebsiteSettings.create({
-        title,
-        logo: logoUrl,
+        title: title || "",
+        logo: logoUrl || "",
       });
     }
 
@@ -29,6 +32,7 @@ exports.updateSettings = async (req, res) => {
       message: "Settings updated successfully",
       settings,
     });
+
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

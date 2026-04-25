@@ -5,7 +5,6 @@ const uploadToImageBB = async (file) => {
   try {
     const formData = new FormData();
 
-    // ✅ convert buffer → base64
     const base64Image = file.buffer.toString("base64");
 
     formData.append("image", base64Image);
