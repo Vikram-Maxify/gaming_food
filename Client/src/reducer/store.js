@@ -6,6 +6,7 @@ import productReducer from "../reducer/slice/productSlice"
 import orderReducer from "../reducer/slice/orderSlice"
 import cartReducer from "../reducer/slice/cartSlice"
 import tableReducer from "../reducer/slice/tableSlice"
+import settingsReducer from "../reducer/slice/settingSlice"
 
 
 
@@ -17,6 +18,8 @@ export const store = configureStore({
     order: orderReducer,
     cart: cartReducer,
     table: tableReducer,
+    settings: settingsReducer,
+  
 
 
 

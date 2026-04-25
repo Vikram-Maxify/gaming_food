@@ -1,77 +1,107 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Search, ShoppingCart } from "lucide-react";
-import { useSelector } from "react-redux";
+import { ShoppingCart } from "lucide-react";
+import { useSelector, useDispatch } from "react-redux";
 import SearchBar from "./SearchBar";
+import ProfilePopup from "./ProfilePopup";
+import { getSettings } from "../reducer/slice/settingSlice";
 
 const Navbar = () => {
+    const { token } = useSelector((state) => state.auth);
+    const { settings } = useSelector((state) => state.settings);
 
-    const { token, user } = useSelector((state) => state.auth);
+    const dispatch = useDispatch();
+
+    console.log(settings);
+
+
+    const [open, setOpen] = useState(false);
+
+    useEffect(() => {
+        dispatch(getSettings());
+    }, [dispatch]);
 
     return (
+        <div className="hidden md:block sticky top-0 z-50">
+            <div className="w-full flex items-center justify-between px-6 py-3 bg-white/90 backdrop-blur-md shadow-sm border-b">
 
-        <div className="hidden md:block top-0 sticky z-50">
-            <div className="w-full flex items-center justify-between p-3 md:px-6 bg-white shadow-sm">
+                {/* 🔥 LEFT */}
+                <div className="flex items-center gap-8">
 
-                {/* LEFT (Desktop only) */}
-                <div className="hidden md:flex items-center gap-6">
-                    <Link to="/"><h1 className="text-lg font-semibold">Foodie</h1></Link>
+                    {/* Logo + Title */}
+{settings && (
+  <Link to="/" className="flex items-center gap-2">
+    <img
+      src={settings.logo}
+      alt={settings.title}
+      className="w-8 h-8 object-contain"
+    />
 
-                    <nav className="flex gap-4 text-base">
-                        <Link to="/" className="shadow-sm hover:text-red-500 rounded-sm px-1">Home</Link>
-                        <Link to="/menu" className="shadow-sm hover:text-red-500 rounded-sm px-1">Menu</Link>
-                        <Link to="/offers" className="shadow-sm hover:text-red-500 rounded-sm px-1">Offers</Link>
-                        <Link to="/contact" className="shadow-sm hover:text-red-500 rounded-sm px-1">Contact</Link>
+    <h1 className="text-lg font-semibold">
+      {settings.title}
+    </h1>
+  </Link>
+)}
+
+                    {/* Nav Links */}
+                    <nav className="flex gap-5 text-sm font-medium text-gray-700">
+                        <Link to="/" className="hover:text-orange-500 transition">Home</Link>
+                        <Link to="/menu" className="hover:text-orange-500 transition">Menu</Link>
+                        <Link to="/offers" className="hover:text-orange-500 transition">Offers</Link>
+                        <Link to="/contact" className="hover:text-orange-500 transition">Contact</Link>
                     </nav>
                 </div>
 
-                <div className="w-[60%]">
-                    <SearchBar className="hidden md:block"/>
+                {/* 🔥 CENTER (Search) */}
+                <div className="w-[40%]">
+                    <SearchBar />
                 </div>
 
-                {/* RIGHT */}
-                {/* RIGHT */}
-                <div className="flex items-center gap-3 ml-auto">
+                {/* 🔥 RIGHT */}
+                <div className="flex items-center gap-5">
 
-                    <div className="flex gap-4 text-sm text-text-secondary">
+                    {/* Auth Links */}
+                    {!token && (
+                        <div className="flex gap-3 text-sm">
+                            <Link
+                                to="/login"
+                                className="px-3 py-1 rounded-md hover:bg-gray-100 transition"
+                            >
+                                Login
+                            </Link>
 
-                        {/* show only if NOT logged in */}
-                        {!token && (
-                            <>
-                                <Link to="/login" className="shadow-sm hover:bg-gray-300 rounded-sm px-1">
-                                    Login
-                                </Link>
+                            <Link
+                                to="/register"
+                                className="px-3 py-1 rounded-md bg-orange-500 text-white hover:bg-orange-600 transition"
+                            >
+                                Register
+                            </Link>
+                        </div>
+                    )}
 
-                                <Link to="/register" className="shadow-sm hover:bg-gray-300 rounded-sm px-1">
-                                    Register
-                                </Link>
-                            </>
-                        )}
-
-                    </div>
-
-                    {/* Desktop Icons */}
-                    <div className="hidden md:flex items-center gap-4">
-                        <Link to="/cart">
-                            <button className="bg-card p-2 rounded-full shadow-sm relative hover:scale-105 transition">
-                                <ShoppingCart size={20} className="text-black text-base" />
-
-                                <span className="absolute -top-1 -right-1 bg-red-500 text-xs text-white rounded-full px-1">
-                                    2
-                                </span>
-                            </button>
-                        </Link>
-
-                    </div>
-
-                    {/* Profile image */}
-                    <Link to="/profile">
-                        <img
-                            src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100"
-                            alt="profile"
-                            className="w-9 h-9 md:w-10 md:h-10 rounded-full object-cover border border-secondary-dark hidden md:block"
-                        />
+                    {/* Cart */}
+                    <Link to="/cart">
+                        <button className="relative p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition">
+                            <ShoppingCart size={20} />
+                            <span className="absolute -top-1 -right-1 bg-red-500 text-xs text-white rounded-full px-1">
+                                2
+                            </span>
+                        </button>
                     </Link>
+
+                    {/* 🔥 Profile Avatar */}
+                    {token && (
+                        <div className="relative">
+                            <img
+                                onClick={() => setOpen(!open)}
+                                src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100"
+                                alt="profile"
+                                className="w-10 h-10 rounded-full object-cover border border-gray-300 cursor-pointer hover:scale-105 transition"
+                            />
+
+                            {open && <ProfilePopup onClose={() => setOpen(false)} />}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

@@ -14,7 +14,7 @@ import Footer from '../components/Footer'
 const HomePage = () => {
   return (
     <>
-      <Navbar />
+      
       <div className='md:hidden'>
         <SearchBar />
       </div>
