@@ -157,7 +157,6 @@ const AddToCart = () => {
 
   return (
     <>
-      <Navbar />
 
       <div className="mt-6 px-3 md:px-6">
         <div className="min-h-screen bg-gray-100 py-4 rounded-2xl">
