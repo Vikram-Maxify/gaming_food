@@ -46,9 +46,22 @@ export const updateQuantityThunk = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const res = await API.put("/api/cart/update", data);
-      return res.data.cart; // ✅ full cart
+      return res.data.cart;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message);
+    }
+  }
+);
+
+// 🗑️ CLEAR CART
+export const clearCartThunk = createAsyncThunk(
+  "cart/clear",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await API.delete("/api/cart/clear");
+      return res.data.cart;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || "Failed to clear cart");
     }
   }
 );
@@ -58,6 +71,7 @@ const cartSlice = createSlice({
   initialState: {
     cartItems: [],
     totalAmount: 0,
+    totalItems: 0,
     loading: false,
     error: null,
   },
@@ -82,41 +96,79 @@ const cartSlice = createSlice({
         (acc, item) => acc + item.price * item.quantity,
         0
       );
+      
+      state.totalItems = state.cartItems.reduce(
+        (acc, item) => acc + item.quantity,
+        0
+      );
+    },
+
+    // 🗑️ CLEAR CART LOCAL (without API)
+    clearCartLocal: (state) => {
+      state.cartItems = [];
+      state.totalAmount = 0;
+      state.totalItems = 0;
+      state.loading = false;
+      state.error = null;
     },
   },
 
   extraReducers: (builder) => {
     builder
-
       // 🛒 ADD
       .addCase(addToCartThunk.fulfilled, (state, action) => {
         state.cartItems = action.payload.items;
         state.totalAmount = action.payload.totalAmount;
+        state.totalItems = action.payload.items?.reduce(
+          (acc, item) => acc + item.quantity,
+          0
+        ) || 0;
       })
 
       // 📦 GET
       .addCase(getCartThunk.fulfilled, (state, action) => {
         state.cartItems = action.payload.items;
         state.totalAmount = action.payload.totalAmount;
+        state.totalItems = action.payload.items?.reduce(
+          (acc, item) => acc + item.quantity,
+          0
+        ) || 0;
       })
 
       // ❌ REMOVE
       .addCase(removeFromCartThunk.fulfilled, (state, action) => {
         state.cartItems = action.payload.items;
         state.totalAmount = action.payload.totalAmount;
+        state.totalItems = action.payload.items?.reduce(
+          (acc, item) => acc + item.quantity,
+          0
+        ) || 0;
       })
 
-      // 🔄 UPDATE (FINAL FIX)
+      // 🔄 UPDATE
       .addCase(updateQuantityThunk.fulfilled, (state, action) => {
-        // ✅ ALWAYS replace full cart from backend
         state.cartItems = action.payload.items;
         state.totalAmount = action.payload.totalAmount;
+        state.totalItems = action.payload.items?.reduce(
+          (acc, item) => acc + item.quantity,
+          0
+        ) || 0;
+      })
+
+      // 🗑️ CLEAR CART
+      .addCase(clearCartThunk.fulfilled, (state, action) => {
+        state.cartItems = [];
+        state.totalAmount = 0;
+        state.totalItems = 0;
+        state.loading = false;
+        state.error = null;
       })
 
       .addMatcher(
         (action) => action.type.endsWith("/pending"),
         (state) => {
           state.loading = true;
+          state.error = null;
         }
       )
 
@@ -137,5 +189,5 @@ const cartSlice = createSlice({
   },
 });
 
-export const { updateQuantityLocal } = cartSlice.actions;
+export const { updateQuantityLocal, clearCartLocal } = cartSlice.actions;
 export default cartSlice.reducer;
