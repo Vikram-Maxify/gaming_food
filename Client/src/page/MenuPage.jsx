@@ -86,7 +86,7 @@ export default function MenuPage() {
         if (showCartPopup) {
             // Clear any existing timeout
             if (popupTimeoutRef.current) clearTimeout(popupTimeoutRef.current);
-            
+
             // After 3 seconds, switch to banner mode
             popupTimeoutRef.current = setTimeout(() => {
                 setPopupMode("banner");
@@ -141,7 +141,7 @@ export default function MenuPage() {
                 quantity: 1,
             }));
         }
-        
+
         // Show premium popup
         setLastAddedItem({
             name: activeProduct.name,
@@ -152,7 +152,7 @@ export default function MenuPage() {
         });
         setPopupMode("toast");
         setShowCartPopup(true);
-        
+
         setShowDetailPopup(false);
         setQuantity(1);
     };
@@ -176,7 +176,7 @@ export default function MenuPage() {
         <>
             {/* Main Content */}
             <div className={`min-h-screen bg-gray-50 pb-28 pt-4 ${showDetailPopup || showFilter ? 'overflow-hidden' : ''}`}>
-                
+
                 {/* Header Section */}
                 <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-100">
                     <div className="px-4 py-3">
@@ -191,7 +191,7 @@ export default function MenuPage() {
                                     <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
                                 )}
                             </button>
-                            
+
                             <div className="flex-1 max-w-xs">
                                 <select
                                     value={sortBy}
@@ -403,7 +403,7 @@ export default function MenuPage() {
                                             <p className="text-xs text-gray-500">{lastAddedItem.variantName} • Qty: {lastAddedItem.quantity}</p>
                                             <p className="text-sm font-bold text-orange-500 mt-1">₹{lastAddedItem.price * lastAddedItem.quantity}</p>
                                         </div>
-                                        <button 
+                                        <button
                                             onClick={() => window.location.href = "/cart"}
                                             className="px-4 py-2 bg-orange-500 text-white rounded-xl text-sm font-semibold hover:bg-orange-600 transition shadow-md whitespace-nowrap"
                                         >
@@ -434,7 +434,7 @@ export default function MenuPage() {
                                         <MdShoppingCart className="text-orange-400" size={20} />
                                         <span className="text-white font-semibold text-sm">Your Cart</span>
                                     </div>
-                                    <button 
+                                    <button
                                         onClick={() => {
                                             setShowCartPopup(false);
                                             setPopupMode("toast");
@@ -445,7 +445,7 @@ export default function MenuPage() {
                                         <IoIosClose size={24} />
                                     </button>
                                 </div>
-                                
+
                                 <div className="p-4">
                                     {/* Cart Items Preview */}
                                     <div className="max-h-48 overflow-y-auto space-y-2 mb-4">
@@ -462,7 +462,7 @@ export default function MenuPage() {
                                             <p className="text-xs text-gray-400 text-center">+{cartItems.length - 3} more items</p>
                                         )}
                                     </div>
-                                    
+
                                     {/* Total */}
                                     <div className="border-t border-gray-100 pt-3 mb-4">
                                         <div className="flex justify-between items-center">
@@ -470,7 +470,7 @@ export default function MenuPage() {
                                             <span className="text-xl font-bold text-orange-500">₹{totalCartAmount}</span>
                                         </div>
                                     </div>
-                                    
+
                                     {/* Action Buttons */}
                                     <div className="flex gap-3">
                                         <button
