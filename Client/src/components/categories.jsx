@@ -72,7 +72,7 @@ const Categories = () => {
                     {categories.map((cat, i) => (
                         <div
                             key={i}
-                            className="group relative min-w-[85px] cursor-pointer"
+                            className="group relative min-w-[85px] cursor-pointer pt-4"
                         >
                             {/* Card Container */}
                             <div className="relative bg-white rounded-2xl p-3 flex flex-col items-center 

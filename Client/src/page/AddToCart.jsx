@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { 
-  Trash2, 
-  Minus, 
-  Plus, 
-  ShoppingBag, 
-  Truck, 
+import {
+  Trash2,
+  Minus,
+  Plus,
+  ShoppingBag,
+  Truck,
   CreditCard,
   ChevronRight,
   CheckCircle,
@@ -35,7 +35,7 @@ const AddToCart = () => {
   const [showTableModal, setShowTableModal] = useState(false);
   const [takeaway, setTakeaway] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
-  
+
 
   useEffect(() => {
     dispatch(getTablesThunk());
@@ -173,10 +173,10 @@ const AddToCart = () => {
 
   return (
     <>
-      
+
       <div className="min-h-screen bg-gray-50 pt-3 pb-28">
         <div className="max-w-7xl mx-auto px-4">
-          
+
           {/* Page Title */}
           <div className="mb-6">
             <h1 className="text-2xl font-bold text-gray-800">My Cart</h1>
@@ -184,7 +184,7 @@ const AddToCart = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            
+
             {/* Cart Items - Left Column */}
             <div className="lg:col-span-2 space-y-4">
               {cartItems.map((item) => (
@@ -265,7 +265,7 @@ const AddToCart = () => {
             <div className="lg:col-span-1">
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sticky top-24">
                 <h2 className="text-lg font-bold text-gray-800 mb-4">Order Summary</h2>
-                
+
                 <div className="space-y-3">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-500">Total Product Price</span>
@@ -279,7 +279,7 @@ const AddToCart = () => {
                     <span className="text-gray-500">Discount</span>
                     <span className="text-green-600 font-semibold">-₹{discount}</span>
                   </div>
-                  
+
                   <div className="border-t border-gray-100 pt-3 mt-2">
                     <div className="flex justify-between font-bold text-lg">
                       <span>Total Payment</span>
@@ -289,16 +289,16 @@ const AddToCart = () => {
                 </div>
 
                 {/* Takeaway Toggle */}
-                <div className="flex items-center justify-between mt-4 p-3 bg-gray-50 rounded-xl">
+                <div className="flex items-center justify-between mt-4 p-3 bg-gray-200 rounded-xl">
                   <div className="flex items-center gap-2">
                     <Truck size={18} className="text-gray-500" />
                     <span className="text-sm font-medium">Takeaway</span>
                   </div>
                   <button
                     onClick={() => setTakeaway(!takeaway)}
-                    className={`relative w-11 h-6 rounded-full transition-colors duration-300 ${takeaway ? 'bg-orange-500' : 'bg-gray-300'}`}
+                    className={`relative w-11 h-6 rounded-full transition-colors duration-300 ${takeaway ? 'bg-orange-500' : 'bg-gray-400'}`}
                   >
-                    <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-300 ${takeaway ? 'translate-x-5' : 'translate-x-0.5'}`} />
+                    <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-300 ${takeaway ? 'translate-x-5' : 'translate-x-0.5'}`} />
                   </button>
                 </div>
 
@@ -390,8 +390,8 @@ const AddToCart = () => {
                         onClick={() => setSelectedTable(table.tableNumber)}
                         className={`
                           relative p-4 rounded-xl text-center transition-all duration-300
-                          ${isSelected 
-                            ? 'bg-orange-500 text-white shadow-lg scale-105' 
+                          ${isSelected
+                            ? 'bg-orange-500 text-white shadow-lg scale-105'
                             : isUserTable
                               ? 'bg-green-500 text-white'
                               : isOccupied
