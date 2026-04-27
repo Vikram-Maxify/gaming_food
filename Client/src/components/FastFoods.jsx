@@ -78,7 +78,7 @@ const FastFoods = () => {
         <div className="flex items-center gap-2">
           <div className="w-1 h-6 bg-gradient-to-b from-orange-500 to-orange-600 rounded-full"></div>
           <h3 className="text-lg font-bold text-gray-800">
-            Popular Food
+            Most Loved Items
           </h3>
           <span className="text-[10px] bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full font-medium">
             🔥 Best Seller
