@@ -27,10 +27,10 @@ const Categories = () => {
     };
 
     return (
-        <div className="mb-6">
+        <div className="mb-5">
             {/* Header Section - Premium Style */}
-            <div className="flex items-center justify-between px-4 mb-4">
-                <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between px-4 mb-3">
+                <div className="flex items-center gap-2 pt-3">
                     <div className="w-1 h-6 bg-gradient-to-b from-orange-500 to-orange-600 rounded-full"></div>
                     <h3 className="text-lg font-bold text-gray-800">
                         Food Categories

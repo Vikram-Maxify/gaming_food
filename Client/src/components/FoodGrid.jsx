@@ -91,7 +91,7 @@ const FoodGrid = () => {
             ⭐ Top Rated
           </span>
         </div>
-        
+
         <Link to="/menu" className="group flex items-center gap-1 text-sm font-medium text-orange-500 hover:text-orange-600 transition-all duration-300">
           <span>See All</span>
           <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -114,29 +114,29 @@ const FoodGrid = () => {
                 alt={item.name}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               />
-              
+
               {/* Dark Overlay on Hover */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              
+
               {/* Veg/Non-Veg Badge */}
               <div className="absolute top-2 left-2">
                 <div className={`w-4 h-4 rounded-full border-2 ${item.isVeg ? 'border-green-600' : 'border-red-600'} bg-white flex items-center justify-center`}>
                   <div className={`w-2 h-2 rounded-full ${item.isVeg ? 'bg-green-600' : 'bg-red-600'}`}></div>
                 </div>
               </div>
-              
+
               {/* Rating Badge */}
               <div className="absolute top-2 right-2 flex items-center gap-1 bg-white/95 backdrop-blur-sm px-2 py-1 rounded-full shadow-md">
                 <Star size={12} className="text-yellow-500 fill-yellow-500" />
                 <span className="text-[11px] font-bold text-gray-800">{item.rating}</span>
               </div>
-              
+
               {/* Time Badge - Bottom Left */}
               <div className="absolute bottom-2 left-2 flex items-center gap-1 bg-black/70 backdrop-blur-sm px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <Clock size={10} className="text-white" />
                 <span className="text-[9px] text-white font-medium">{item.time}</span>
               </div>
-              
+
               {/* Quick Add Button - Bottom Right on Hover */}
               <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
                 <button className="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 active:scale-95">
@@ -151,7 +151,7 @@ const FoodGrid = () => {
               <h4 className="text-sm md:text-base font-bold text-gray-800 leading-tight line-clamp-1 group-hover:text-orange-500 transition-colors duration-300">
                 {item.name}
               </h4>
-              
+
               {/* Price Section */}
               <div className="flex items-center gap-2 mt-1">
                 <span className="text-xs text-gray-400 line-through">{item.originalPrice}</span>
@@ -159,7 +159,7 @@ const FoodGrid = () => {
                   {item.price}
                 </span>
               </div>
-              
+
               {/* Additional Info */}
               <div className="flex items-center justify-between mt-2">
                 <div className="flex items-center gap-1">
@@ -172,7 +172,7 @@ const FoodGrid = () => {
           </div>
         ))}
       </div>
-      
+
       <style jsx>{`
         .line-clamp-1 {
           display: -webkit-box;
