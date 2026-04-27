@@ -247,7 +247,7 @@ export default function MenuPage() {
                                                         : "bg-gray-100 text-gray-700"
                                                     }`}
                                             >
-                                                {type === "all" ? "All" : type === "veg" ? "🌱 Veg" : "🍗 Non-Veg"}
+                                                {type === "all" ? "All" : type === "veg" ? " Veg" : " Non-Veg"}
                                             </button>
                                         ))}
                                     </div>
