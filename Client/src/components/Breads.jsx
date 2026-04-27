@@ -94,7 +94,7 @@ const Breads = () => {
             Freshly Baked
           </span>
         </div>
-        
+
         <Link to="/menu" className="group flex items-center gap-1 text-sm font-medium text-orange-500 hover:text-orange-600 transition-all duration-300">
           <span>Choose</span>
           <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform duration-300" />
@@ -106,10 +106,10 @@ const Breads = () => {
         {/* Left Gradient Fade */}
         <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none md:hidden"></div>
         <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none md:hidden"></div>
-        
+
         {/* Desktop Scroll Buttons */}
         <div className="hidden md:flex absolute -left-3 top-1/2 -translate-y-1/2 z-20">
-          <button 
+          <button
             onClick={() => scroll('left')}
             className="p-2 rounded-full bg-white shadow-lg border border-gray-200 hover:bg-orange-500 hover:text-white hover:border-orange-500 transition-all duration-300"
           >
@@ -117,7 +117,7 @@ const Breads = () => {
           </button>
         </div>
         <div className="hidden md:flex absolute -right-3 top-1/2 -translate-y-1/2 z-20">
-          <button 
+          <button
             onClick={() => scroll('right')}
             className="p-2 rounded-full bg-white shadow-lg border border-gray-200 hover:bg-orange-500 hover:text-white hover:border-orange-500 transition-all duration-300"
           >
@@ -125,23 +125,18 @@ const Breads = () => {
           </button>
         </div>
 
-        <div 
+        <div
           ref={scrollContainerRef}
-          className="flex gap-4 overflow-x-auto scroll-smooth px-4 pb-4 no-scrollbar"
+          className="flex gap-4 overflow-x-auto scroll-smooth px-4 pb-4 no-scrollbar pt-6"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {breadsList.map((item, i) => {
-            const isActive = selected.includes(item.name);
 
             return (
               <div
                 key={i}
-                onClick={() => toggleBread(item.name)}
                 className={`group relative min-w-[130px] md:min-w-[140px] cursor-pointer rounded-2xl transition-all duration-300
-                  ${isActive 
-                    ? 'bg-orange-50 ring-2 ring-orange-500 shadow-lg' 
-                    : 'bg-white shadow-sm hover:shadow-xl border border-gray-100'
-                  } hover:-translate-y-1`}
+                  bg-white shadow-sm hover:shadow-xl border border-gray-100 hover:-translate-y-1 `}
               >
                 {/* Popular Badge */}
                 {item.isPopular && (
@@ -160,60 +155,57 @@ const Breads = () => {
                     loading="lazy"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />
-                  
+
                   {/* Active Check Overlay */}
-                  {isActive && (
-                    <div className="absolute inset-0 bg-orange-500/20 flex items-center justify-center">
-                      <div className="bg-orange-500 rounded-full p-1 shadow-lg">
-                        <Check size={16} className="text-white" />
-                      </div>
-                    </div>
-                  )}
-                  
+
+
                   {/* Gradient Overlay on Hover */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
 
                 {/* Content */}
-                <div className="p-2.5">
-                  <p className={`text-xs font-bold leading-tight transition-colors duration-300 line-clamp-1
-                    ${isActive ? 'text-orange-600' : 'text-gray-800 group-hover:text-orange-500'}`}>
-                    {item.name}
-                  </p>
-                  
-                  {/* Price Section */}
-                  <div className="flex items-center gap-1.5 mt-1">
-                    <span className="text-xs font-bold text-orange-500">
-                      {item.price}
+                <p className="text-xs font-bold leading-tight transition-colors duration-300 line-clamp-1 text-gray-800 group-hover:text-orange-500 px-2">
+                  {item.name}
+                </p>
+
+                {/* Price Section */}
+                <div className="flex items-center gap-1.5 mt-1 px-2">
+                  <span className="text-xs font-bold text-orange-500">
+                    {item.price}
+                  </span>
+                  <span className="text-[10px] text-gray-400 line-through">
+                    {item.originalPrice}
+                  </span>
+                </div>
+
+                {/* Add/Selected Indicator */}
+                <div className="flex items-center justify-between mt-2 px-2 mb-3">
+                  <span className="text-[9px] text-gray-400">per piece</span>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleBread(item.name);
+                    }}
+                    className="relative group/btn bg-gradient-to-r from-orange-500 to-orange-600 text-white p-1.5 rounded-full hover:shadow-lg hover:shadow-orange-200 transition-all duration-300 active:scale-95"
+                  >
+                    <Plus size={12} />
+
+                    {/* Tooltip */}
+                    <span className="absolute -top-8 left-1/2 -translate-x-[65%] bg-gray-800 text-white text-[9px] px-2 py-1 rounded-full opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none">
+                      Add to cart
                     </span>
-                    <span className="text-[10px] text-gray-400 line-through">
-                      {item.originalPrice}
-                    </span>
-                  </div>
-                  
-                  {/* Add/Selected Indicator */}
-                  <div className="flex items-center justify-between mt-2">
-                    <span className="text-[9px] text-gray-400">per piece</span>
-                    {isActive ? (
-                      <span className="text-[10px] font-medium text-orange-500 bg-orange-100 px-2 py-0.5 rounded-full">
-                        Added
-                      </span>
-                    ) : (
-                      <button className="bg-gray-100 text-gray-600 p-1 rounded-full hover:bg-orange-500 hover:text-white transition-all duration-300">
-                        <Plus size={12} />
-                      </button>
-                    )}
-                  </div>
+                  </button>
                 </div>
               </div>
+
             );
           })}
         </div>
       </div>
-      
+
       {/* Selected Summary Bar */}
       {selected.length > 0 && (
-        <div className="fixed bottom-20 left-4 right-4 md:hidden z-40">
+        <div className="fixed bottom-20 left-4 right-4 md:hidden z-40 ">
           <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl p-3 shadow-2xl animate-slide-up">
             <div className="flex items-center justify-between">
               <div>
@@ -227,7 +219,7 @@ const Breads = () => {
           </div>
         </div>
       )}
-      
+
       <style jsx>{`
         .no-scrollbar::-webkit-scrollbar {
           display: none;

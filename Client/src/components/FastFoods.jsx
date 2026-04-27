@@ -166,7 +166,7 @@ const FastFoods = () => {
 
                   <button className="relative group/btn bg-gradient-to-r from-orange-500 to-orange-600 text-white p-2 rounded-full hover:shadow-lg hover:shadow-orange-200 transition-all duration-300 active:scale-95">
                     <Plus size={14} />
-                    <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] px-2 py-1 rounded-full opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none">
+                    <span className="absolute -top-8 left-1/2 -translate-x-[65%] bg-gray-800 text-white text-[10px] px-2 py-1 rounded-full opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none">
                       Add to cart
                     </span>
                   </button>
