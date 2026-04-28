@@ -10,7 +10,6 @@ const {
 
 const { protect, adminOnly } = require("../middleware/auth");
 
-// 📌 multer middleware (image upload)
 const upload = require("../middleware/multer");
 
 // ===============================

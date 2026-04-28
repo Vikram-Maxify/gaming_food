@@ -84,11 +84,20 @@ const productSchema = new mongoose.Schema(
       min: 0,
     },
 
+    isPopular: {
+      type: Boolean,
+      default: false,
+    },
+
     isAvailable: {
       type: Boolean,
       default: true,
     },
-
+    slug: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     status: {
       type: String,
       enum: ["active", "inactive"],

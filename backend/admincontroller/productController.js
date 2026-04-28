@@ -1,21 +1,18 @@
 const Product = require("../models/productModel");
 const Category = require("../models/categoryModel");
 const uploadToImageBB = require("../utils/uploadToImageBB");
+const slugify = require("slugify");
 
-
-// ✅ CREATE (your existing)
 const createProduct = async (req, res) => {
   try {
     const { name, category, type, creditPoints, variants } = req.body;
 
-    // 🔍 validate basic fields
     if (!name || !category || !type || !creditPoints || !req.file) {
       return res.status(400).json({
         message: "All fields required (name, category, type, creditPoints, image)",
       });
     }
 
-    // 🔍 validate variants
     if (!variants) {
       return res.status(400).json({
         message: "Variants are required",
@@ -25,7 +22,7 @@ const createProduct = async (req, res) => {
     let parsedVariants;
 
     try {
-      parsedVariants = JSON.parse(variants); // ⚠️ frontend se string aata hai
+      parsedVariants = JSON.parse(variants);
     } catch (err) {
       return res.status(400).json({ message: "Invalid variants format" });
     }
@@ -43,8 +40,16 @@ const createProduct = async (req, res) => {
 
     const imageUrl = await uploadToImageBB(req.file);
 
+    // ⭐ CREATE SLUG
+    const slug = slugify(name, {
+      lower: true,      // lowercase
+      strict: true,     // remove special chars
+      trim: true,
+    });
+
     const product = await Product.create({
       name,
+      slug, // 👈 add here
       image: imageUrl,
       category,
       type,
@@ -102,7 +107,7 @@ const getProductById = async (req, res) => {
 // ✅ UPDATE PRODUCT
 const updateProduct = async (req, res) => {
   try {
-    const { name, category, type, creditPoints, variants } = req.body;
+    const { name, category, type, creditPoints, variants, isPopular } = req.body;
 
     let product = await Product.findById(req.params.id);
 
@@ -110,9 +115,15 @@ const updateProduct = async (req, res) => {
       return res.status(404).json({ message: "Product not found" });
     }
 
+    // ✅ Basic fields
     if (name) product.name = name;
     if (type) product.type = type;
-    if (creditPoints) product.creditPoints = creditPoints;
+    if (creditPoints !== undefined) product.creditPoints = creditPoints;
+
+    // ⭐ NEW: update isPopular
+    if (isPopular !== undefined) {
+      product.isPopular = isPopular;
+    }
 
     // ✅ update variants
     if (variants) {
@@ -138,6 +149,8 @@ const updateProduct = async (req, res) => {
       const imageUrl = await uploadToImageBB(req.file);
       product.image = imageUrl;
     }
+
+    
 
     await product.save();
 
