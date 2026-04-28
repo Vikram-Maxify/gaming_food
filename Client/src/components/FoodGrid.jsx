@@ -1,116 +1,215 @@
-import React from "react";
-import { Plus } from "lucide-react";
-import { FaStar } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Plus, Star } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProducts } from "../reducer/slice/productSlice";
+import { addToCartThunk } from "../reducer/slice/cartSlice";
 
-const foods = [
-  {
-    name: "Cheese Burger",
-    price: "₹149",
-    image:
-      "https://images.unsplash.com/photo-1550547660-d9450f859349?w=400&auto=format&fit=crop&q=60",
-    rating: 4,
-  },
-  {
-    name: "Pepperoni Pizza",
-    price: "₹299",
-    image:
-      "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&auto=format&fit=crop&q=60",
-    rating: 4,
-  },
-  {
-    name: "Cold Coffee",
-    price: "₹99",
-    image:
-      "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&auto=format&fit=crop&q=60",
-    rating: 4,
-  },
-  {
-    name: "Chocolate Donut",
-    price: "₹79",
-    image:
-      "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=400&auto=format&fit=crop&q=60",
-    rating: 4,
-  },
-  {
-    name: "Sandwich",
-    price: "₹79",
-    image:
-      "https://images.unsplash.com/photo-1550547660-d9450f859349?w=400&auto=format&fit=crop&q=60",
-    rating: 4,
-  },
-  {
-    name: "Sandwich",
-    price: "₹79",
-    image:
-      "https://images.unsplash.com/photo-1550547660-d9450f859349?w=400&auto=format&fit=crop&q=60",
-    rating: 4,
-  },
-];
+export default function PopularFood() {
+  const dispatch = useDispatch();
+  const { products, loading } = useSelector((state) => state.products);
+  const { loading: cartLoading } = useSelector((state) => state.cart);
 
-const FoodGrid = () => {
+  // ✅ Updated states (for real popup)
+  const [showDetailPopup, setShowDetailPopup] = useState(false);
+  const [activeProduct, setActiveProduct] = useState(null);
+  const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
+  const [quantity, setQuantity] = useState(1);
+
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
+
+  // ✅ ONLY POPULAR ITEMS
+  const popularFoods = products
+    ?.filter((item) => item.isPopular && item.isAvailable !== false)
+    ?.slice(0, 8);
+
+  const handleOpen = (item) => {
+    setActiveProduct(item);
+    setSelectedVariantIndex(0);
+    setQuantity(1);
+    setShowDetailPopup(true);
+  };
+
+  const handleAddToCart = () => {
+    const variant = activeProduct.variants[selectedVariantIndex];
+
+    for (let i = 0; i < quantity; i++) {
+      dispatch(
+        addToCartThunk({
+          productId: activeProduct._id,
+          variantId: variant._id,
+          quantity: 1,
+        })
+      );
+    }
+
+    setShowDetailPopup(false);
+  };
+
   return (
-    <div className="mb-6">
-
-      {/* Heading */}
-      <div className="flex items-center justify-between mb-3 px-6 md:px-24">
-        <h3 className="text-base md:text-lg font-semibold text-white md:text-black">
-          Popular Food
-        </h3>
-        <Link to = "/menu"><span className="text-sm md:text-base text-white md:text-black">See all</span></Link>
+    <div className="mb-10">
+      {/* Header */}
+      <div className="flex justify-between items-center px-4 mb-4">
+        <h2 className="text-lg font-bold">🔥 Popular Food</h2>
       </div>
 
-      {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-7 px-4 md:px-24">
+      {/* Loader */}
+      {loading ? (
+        <div className="text-center py-10">Loading...</div>
+      ) : (
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 px-4 ">
+          {popularFoods?.map((item) => {
+            const price = item.variants?.[0]?.price;
 
-        {foods.map((item, i) => (
+            return (
+              <div
+                key={item._id}
+                className="group bg-white rounded-xl overflow-hidden shadow hover:shadow-2xl cursor-pointer  hover:-translate-y-2 border transition-all duration-300 border-gray-100"
+                onClick={() => handleOpen(item)}
+              >
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="h-32 w-full object-cover rounded-t-xl transition-transform duration-500 group-hover:scale-105"
+                />
+
+                <div className="p-3">
+                  <h3 className="font-semibold text-sm">{item.name}</h3>
+
+                  <div className="flex justify-between items-center mt-2">
+                    <span className="text-orange-500 font-bold">
+                      ₹{price}
+                    </span>
+
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleOpen(item);
+                      }}
+                      className="bg-orange-500 text-white p-1 rounded-full"
+                    >
+                      <Plus size={14} />
+                    </button>
+                  </div>
+
+                  <div className="text-xs text-gray-400 mt-1 flex items-center gap-1">
+                    <Star size={12} className="text-yellow-500" />
+                    {item.rating || 4}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* ✅ REAL POPUP (MenuPage style) */}
+      {showDetailPopup && activeProduct && (
+        <div className="fixed inset-0 bg-black/70 flex items-end md:items-center justify-center z-[100] mb-24">
           <div
-            key={i}
-            className="bg-card rounded-xl  hover:shadow-md shadow-md"
+            className="bg-white w-full md:max-w-md rounded-t-2xl md:rounded-2xl overflow-hidden animate-slide-up"
+            style={{ maxHeight: "90vh", overflowY: "auto" }}
           >
-
-            {/* Image Wrapper */}
-            <div className="w-full h-52 rounded-xl overflow-hidden mb-3">
+            {/* Image */}
+            <div className="relative">
               <img
-                src={item.image}
-                alt={item.name}
-                className="w-full h-full object-cover transition-transform duration-500 md:hover:scale-105"
+                src={activeProduct.image}
+                alt={activeProduct.name}
+                className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
               />
+
+              <button
+                onClick={() => setShowDetailPopup(false)}
+                className="absolute top-3 right-3 bg-white/90 rounded-full p-1.5 shadow-md"
+              >
+                ✕
+              </button>
+
+              {activeProduct.type === "veg" ? (
+                <div className="absolute bottom-3 left-3 w-5 h-5 rounded-full border-2 border-green-600 bg-white flex items-center justify-center">
+                  <div className="w-2.5 h-2.5 rounded-full bg-green-600"></div>
+                </div>
+              ) : (
+                <div className="absolute bottom-3 left-3 w-5 h-5 rounded-full border-2 border-red-600 bg-white flex items-center justify-center">
+                  <div className="w-2.5 h-2.5 rounded-full bg-red-600"></div>
+                </div>
+              )}
             </div>
 
-            {/* Info */}
-            <div className="px-2">
+            {/* Content */}
+            <div className="p-5 pb-8 ">
+              <h2 className="text-xl font-bold text-gray-800">
+                {activeProduct.name}
+              </h2>
 
-              {/* Top Row: Name + Rating */}
-              <div className="flex items-start justify-between">
-                <h4 className="text-base font-semibold md:text-black leading-tight mt-2">
-                  {item.name}
+              <p className="text-sm text-gray-500 mt-1">
+                {activeProduct.category?.name}
+              </p>
+
+              <p className="text-sm text-gray-600 mt-2">
+                {activeProduct.description ||
+                  "Delicious food prepared with fresh ingredients. Served hot and fresh."}
+              </p>
+
+              {/* Variants */}
+              <div className="mt-4">
+                <h4 className="font-semibold text-sm mb-2">
+                  Select Variant
                 </h4>
-                <div className="bg-green-600 text-white px-1 rounded flex items-center mt-3">
-                  <h4 className="flex items-center text-base">
-                    {item.rating}
-                    <FaStar className="text-white ml-1 text-base" />
-                  </h4>
+
+                <div className="flex gap-2 flex-wrap">
+                  {activeProduct.variants?.map((v, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setSelectedVariantIndex(i)}
+                      className={`px-4 py-2 rounded-full text-sm font-medium border ${selectedVariantIndex === i
+                          ? "bg-orange-500 text-white border-orange-500"
+                          : "border-gray-200 text-gray-700"
+                        }`}
+                    >
+                      {v.name} • ₹{v.price}
+                    </button>
+                  ))}
                 </div>
               </div>
 
-              {/* Price (just below name) */}
-              <span className="text-sm font-semibold text-gray-500 mt-1 block ">
-                {item.price}
-              </span>
-              {/* Add Button */}
-              <div className="flex justify-end">
-                <button className="bg-green-500 text-white p-1.5 rounded-full hover:scale-105 active:scale-95 transition -translate-y-2 hover:bg-green-800">
-                  <Plus size={16} />
+              {/* Quantity */}
+              <div className="mt-4 flex items-center gap-3">
+                <button
+                  onClick={() =>
+                    setQuantity(Math.max(1, quantity - 1))
+                  }
+                >
+                  -
+                </button>
+
+                <span>{quantity}</span>
+
+                <button onClick={() => setQuantity(quantity + 1)}>
+                  +
                 </button>
               </div>
+
+              {/* Price */}
+              <div className="mt-4 text-2xl font-bold text-orange-500">
+                ₹
+                {activeProduct.variants?.[selectedVariantIndex]?.price *
+                  quantity}
+              </div>
+
+              {/* Add Button */}
+              <button
+                onClick={handleAddToCart}
+                disabled={cartLoading}
+                className="w-full mt-4 bg-orange-500 text-white py-2 rounded-full"
+              >
+                {cartLoading ? "Adding..." : "Add to Cart"}
+              </button>
             </div>
           </div>
-        ))}
-
-      </div>
+        </div>
+      )}
     </div>
   );
-};
-
-export default FoodGrid;
+}

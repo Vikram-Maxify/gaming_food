@@ -8,6 +8,7 @@ import categoryReducer from "./slice/categorySlice";
 import tableReducer from "./slice/adminTableSlice";
 import settingsReducer from "./slice/settingsSlice";
 import orderReducer from "./slice/adminOrderSlice";
+import bannerReducer from "./slice/bannerSlice";
 
 export const store = configureStore({
   reducer: {
@@ -17,5 +18,7 @@ export const store = configureStore({
     table: tableReducer,
      settings: settingsReducer,
       order: orderReducer,
+      banner: bannerReducer,
+  
   },
 });

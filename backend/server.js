@@ -46,6 +46,7 @@ app.use("/api/admin/product", require("./adminroute/productRoutes"));
 app.use("/api/admin/order", require("./adminroute/orderRoutes"));
 app.use("/api/admin/table", require("./adminroute/tableRoutes"));
 app.use("/api/admin/settings", require("./adminroute/adminSettingsRoutes"));
+app.use("/api/admin/banner", require("./adminroute/adminBannerRoutes"));
 app.use("/api/admin/notification", require("./adminroute/adminNotificationRoutes"));
 app.use("/api/admin/promo", require("./adminroute/adminPromoRoutes"));
 

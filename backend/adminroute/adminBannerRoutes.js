@@ -6,11 +6,14 @@ const {
   updateBanner,
   deleteBanner,
   getAllBannersAdmin,
-} = require("../controllers/adminBannerController");
+} = require("../admincontroller/adminBannerController");
 
-const { protect, adminOnly } = require("../middleware/auth");
 
-const upload = require("../middleware/multer");
+// 📌 multer middleware (image upload)
+const protect = require("../middleware/authmiddleware");
+const admin = require("../middleware/adminMiddleware");
+const protectAdmin = require("../middleware/Adminauthmiddleware");
+const upload = require("../middleware/upload");
 
 // ===============================
 // ✅ ADMIN ONLY ROUTES
@@ -18,9 +21,9 @@ const upload = require("../middleware/multer");
 
 // CREATE BANNER (with images upload)
 router.post(
-  "/",
-  protect,
-  adminOnly,
+  "/create",
+  protectAdmin,
+  admin,
   upload.array("images", 6),
   createBanner
 );
@@ -28,16 +31,16 @@ router.post(
 // UPDATE BANNER (optional new images)
 router.put(
   "/:id",
-  protect,
-  adminOnly,
+  protectAdmin,
+  admin,
   upload.array("images", 6),
   updateBanner
 );
 
 // DELETE BANNER
-router.delete("/:id", protect, adminOnly, deleteBanner);
+router.delete("/:id", protectAdmin, admin, deleteBanner);
 
 // GET ALL BANNERS (ADMIN VIEW)
-router.get("/all", protect, adminOnly, getAllBannersAdmin);
+router.get("/all", protectAdmin, admin, getAllBannersAdmin);
 
 module.exports = router;

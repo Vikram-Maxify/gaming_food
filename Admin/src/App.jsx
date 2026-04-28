@@ -16,6 +16,7 @@ import AdminOrders from './pages/AdminOrders';
 import AdminOtpSettings from './pages/AdminOtpSettings';
 import TableManage from './pages/TableManage';
 import AdminProfile from './pages/AdminProfile';
+import BannerManager from './component/BannerManager';
 
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
           <Route path="orders" element={<Orders />} />
           <Route path="users" element={<Users />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="baner_mng" element={<BannerManager />} />
           <Route path="schef_Dash" element={<ShefDashboard />} />
           <Route path="coins_mng" element={<CoinManage />} />
           <Route path="add_item" element={<AddProduct />} />

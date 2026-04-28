@@ -1,84 +1,97 @@
-import { useEffect, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+// src/components/ProfilePopup.jsx
+import React from "react";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { logoutUser } from "../reducer/slice/authSlice";
-import { useNavigate } from "react-router-dom";
+import { User, ShoppingBag, Heart, Settings, LogOut, X } from "lucide-react";
 
 const ProfilePopup = ({ onClose }) => {
-    const popupRef = useRef();
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-    const { user } = useSelector((state) => state.auth);
+  const handleLogout = async () => {
+    await dispatch(logoutUser());
+    localStorage.removeItem("token");
+    navigate("/login");
+    onClose();
+  };
 
-    // 👉 click outside close
-    useEffect(() => {
-        const handleClickOutside = (e) => {
-            if (popupRef.current && !popupRef.current.contains(e.target)) {
-                onClose();
-            }
-        };
+  return (
+    <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50 animate-slide-down">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-orange-500 to-orange-600 px-4 py-3 flex justify-between items-center">
+        <span className="text-white text-sm font-semibold">My Account</span>
+        <button onClick={onClose} className="text-white/80 hover:text-white">
+          <X size={16} />
+        </button>
+      </div>
 
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, [onClose]);
-
-    const handleLogout = async () => {
-        await dispatch(logoutUser());
-        localStorage.removeItem("token");
-        navigate("/login");
-    };
-
-    return (
-        <div
-            ref={popupRef}
-            className="absolute right-0 mt-3 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 overflow-hidden animate-in fade-in zoom-in-95"
+      {/* Menu Items */}
+      <div className="py-2">
+        <Link
+          to="/profile"
+          onClick={onClose}
+          className="flex items-center gap-3 px-4 py-2.5 hover:bg-orange-50 transition-colors group"
         >
-            {/* Top Gradient */}
-            <div className="bg-gradient-to-r from-orange-500 to-orange-600 p-5 text-white">
-                <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center">
-                        {user?.avatar ? (
-                            <img
-                                src={user.avatar}
-                                alt={user.name}
-                                className="w-12 h-12 rounded-full object-cover"
-                            />
-                        ) : (
-                            <span className="text-xl font-bold">
-                                {user?.name?.charAt(0)?.toUpperCase()}
-                            </span>
-                        )}
-                    </div>
+          <User size={16} className="text-gray-400 group-hover:text-orange-500" />
+          <span className="text-sm text-gray-700 group-hover:text-orange-500">My Profile</span>
+        </Link>
 
-                    <div>
-                        <h3 className="font-semibold text-lg">
-                            {user?.name || "User"}
-                        </h3>
-                        <p className="text-sm opacity-80">
-                            {user?.mobile || "No number"}
-                        </p>
-                    </div>
-                </div>
-            </div>
+        <Link
+          to="/orders"
+          onClick={onClose}
+          className="flex items-center gap-3 px-4 py-2.5 hover:bg-orange-50 transition-colors group"
+        >
+          <ShoppingBag size={16} className="text-gray-400 group-hover:text-orange-500" />
+          <span className="text-sm text-gray-700 group-hover:text-orange-500">My Orders</span>
+        </Link>
 
-            {/* Body */}
-            <div className="p-4 space-y-3">
+        <Link
+          to="/wishlist"
+          onClick={onClose}
+          className="flex items-center gap-3 px-4 py-2.5 hover:bg-orange-50 transition-colors group"
+        >
+          <Heart size={16} className="text-gray-400 group-hover:text-orange-500" />
+          <span className="text-sm text-gray-700 group-hover:text-orange-500">Wishlist</span>
+        </Link>
 
-                {/* Divider */}
-                <div className="border-t"></div>
+        <Link
+          to="/settings"
+          onClick={onClose}
+          className="flex items-center gap-3 px-4 py-2.5 hover:bg-orange-50 transition-colors group"
+        >
+          <Settings size={16} className="text-gray-400 group-hover:text-orange-500" />
+          <span className="text-sm text-gray-700 group-hover:text-orange-500">Settings</span>
+        </Link>
 
-                {/* Logout */}
-                <button
-                    onClick={handleLogout}
-                    className="w-full text-left px-4 py-3 rounded-xl hover:bg-red-50 transition flex items-center justify-between"
-                >
-                    <span className="text-red-500 font-medium">Logout</span>
-                    <span>🚪</span>
-                </button>
+        <div className="border-t border-gray-100 my-1"></div>
 
-            </div>
-        </div>
-    );
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-red-50 transition-colors group"
+        >
+          <LogOut size={16} className="text-gray-400 group-hover:text-red-500" />
+          <span className="text-sm text-gray-700 group-hover:text-red-500">Logout</span>
+        </button>
+      </div>
+
+      <style jsx>{`
+        @keyframes slide-down {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-slide-down {
+          animation: slide-down 0.2s ease-out;
+        }
+      `}</style>
+    </div>
+  );
 };
 
 export default ProfilePopup;
