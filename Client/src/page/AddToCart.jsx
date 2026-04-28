@@ -36,6 +36,8 @@ const AddToCart = () => {
   const [takeaway, setTakeaway] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
+  console.log(tables);
+
 
   useEffect(() => {
     dispatch(getTablesThunk());
@@ -378,38 +380,76 @@ const AddToCart = () => {
                 </div>
               ) : (
                 <div className="grid grid-cols-3 gap-3">
-                  {tables.map((table) => {
-                    const isUserTable = user?.tableNumber === table.tableNumber;
-                    const isSelected = selectedTable === table.tableNumber;
-                    const isOccupied = table.isOccupied && !isUserTable;
+                  {(tables || []).map((table) => {
+                    const isUserTable = user?.tableNumber === table?.tableNumber;
+                    const isSelected = selectedTable === table?.tableNumber;
+
+                    // ✅ occupied logic (safe)
+                    const isOccupied = table?.isOccupied && !isUserTable;
+
+                    // ✅ safe name
+                    const occupiedName = table?.occupiedBy?.name || "";
+
+                    // ✅ safe initials function inline (no dependency issue)
+                    const getInitials = (name) => {
+                      if (!name || typeof name !== "string") return "";
+                      return name
+                        .trim()
+                        .split(" ")
+                        .filter(Boolean)
+                        .map((n) => n[0])
+                        .join("")
+                        .toUpperCase()
+                        .slice(0, 2); // max 2 letters
+                    };
 
                     return (
                       <button
-                        key={table._id}
+                        key={table?._id || table?.tableNumber}
                         disabled={isOccupied}
-                        onClick={() => setSelectedTable(table.tableNumber)}
+                        onClick={() => setSelectedTable(table?.tableNumber)}
                         className={`
-                          relative p-4 rounded-xl text-center transition-all duration-300
-                          ${isSelected
-                            ? 'bg-orange-500 text-white shadow-lg scale-105'
+          relative p-4 rounded-xl text-center transition-all duration-300
+          ${isSelected
+                            ? "bg-orange-500 text-white shadow-lg scale-105"
                             : isUserTable
-                              ? 'bg-green-500 text-white'
+                              ? "bg-green-500 text-white"
                               : isOccupied
-                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                : 'bg-gray-50 text-gray-700 hover:bg-orange-50 hover:border-orange-300 border border-gray-200'
+                                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                                : "bg-gray-50 text-gray-700 hover:bg-orange-50 hover:border-orange-300 border border-gray-200"
                           }
-                        `}
+        `}
                       >
-                        <span className="text-xl font-bold">{table.tableNumber}</span>
+                        {/* Table Number */}
+                        <span className="text-xl font-bold">
+                          {table?.tableNumber || "-"}
+                        </span>
+
+                        {/* ✅ YOUR TABLE */}
                         {isUserTable && (
                           <span className="absolute -top-2 -right-2 bg-green-600 text-white text-[9px] px-1.5 py-0.5 rounded-full">
                             Your
                           </span>
                         )}
+
+                        {/* ✅ OCCUPIED TABLE (NO DESIGN CHANGE, JUST SAFE) */}
                         {isOccupied && (
-                          <span className="absolute -top-2 -right-2 bg-gray-400 text-white text-[9px] px-1.5 py-0.5 rounded-full">
-                            Busy
-                          </span>
+                          <div className="absolute -top-2 -right-2 group">
+                            {/* Badge */}
+                            <span
+                              title={occupiedName || "Busy"} // hover pe full name
+                              className="bg-gray-500 text-white text-[9px] px-1.5 py-0.5 rounded-full"
+                            >
+                              {occupiedName ? getInitials(occupiedName) : "Busy"}
+                            </span>
+
+                            {/* Tooltip (same design feel, optional hover) */}
+                            {occupiedName && (
+                              <div className="absolute bottom-full mb-1 hidden group-hover:block bg-black text-white text-[10px] px-2 py-1 rounded whitespace-nowrap z-10">
+                                {occupiedName}
+                              </div>
+                            )}
+                          </div>
                         )}
                       </button>
                     );

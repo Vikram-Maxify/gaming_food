@@ -1,5 +1,6 @@
 const Table = require("../models/tableModel");
-const Auth = require("../models/authModels"); // ✅ import user model
+const Auth = require("../models/authModels");
+const mongoose = require("mongoose");
 
 
 const createTable = async (req, res) => {
@@ -29,17 +30,22 @@ const createTable = async (req, res) => {
 
 
 const freeTable = async (req, res) => {
+  const session = await mongoose.startSession();
+
   try {
+    session.startTransaction();
+
     const tableId = req.params.id;
 
-    const table = await Table.findById(tableId);
+    const table = await Table.findById(tableId).session(session);
 
     if (!table) {
+      await session.abortTransaction();
       return res.status(404).json({ message: "Table not found" });
     }
 
-    // Already free
     if (!table.isOccupied) {
+      await session.abortTransaction();
       return res.status(400).json({
         message: "Table is already free",
       });
@@ -47,20 +53,28 @@ const freeTable = async (req, res) => {
 
     // ✅ Step 1: free table
     table.isOccupied = false;
-    await table.save();
+    table.currentOrder = null; // 👉 important (agar use kar rahe ho)
+    await table.save({ session });
 
-    // ✅ Step 2: remove table from user
+    // ✅ Step 2: unlink users
     await Auth.updateMany(
-      { tableNumber: table.tableNumber }, // ya table._id agar use kar rahe ho
-      { $set: { tableNumber: null } }
+      { tableNumber: table.tableNumber },
+      { $set: { tableNumber: null } },
+      { session }
     );
 
+    await session.commitTransaction();
+    session.endSession();
+
     res.json({
-      message: "Table is now free and users unlinked",
+      message: "Table freed successfully",
       table,
     });
 
   } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+
     res.status(500).json({ message: error.message });
   }
 };

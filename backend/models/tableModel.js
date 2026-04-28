@@ -5,7 +5,7 @@ const tableSchema = new mongoose.Schema(
     tableNumber: {
       type: String,
       required: true,
-      unique: true, // T1, T2, T3
+      unique: true,
     },
 
     isOccupied: {
@@ -16,6 +16,13 @@ const tableSchema = new mongoose.Schema(
     currentOrder: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Order",
+      default: null,
+    },
+
+    // 🔥 ADD THIS (FOR NAME SHOW)
+    occupiedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Auth",
       default: null,
     },
   },

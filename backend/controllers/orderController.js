@@ -4,66 +4,72 @@ const Product = require("../models/productModel");
 const Table = require("../models/tableModel");
 const Cart = require("../models/cartModel");
 
-
-// ✅ Select Table
+// ✅ Select Table (FULL FIXED)
 const selectTable = async (req, res) => {
   try {
-    const { tableNumber } = req.body;
+    let { tableNumber } = req.body;
 
     if (!tableNumber) {
       return res.status(400).json({ message: "Table number required" });
     }
 
+    // ✅ normalize (IMPORTANT)
+    tableNumber = tableNumber.trim().toLowerCase();
+
+    console.log("👉 Request:", tableNumber);
+
     const user = await User.findById(req.user._id);
 
-    // ✅ STEP 1: User already has table
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // ✅ already has table
     if (user.tableNumber) {
-      return res.status(200).json({
-        message: "Table already assigned to you",
-        tableNumber: user.tableNumber, // 🔥 IMPORTANT
+      return res.json({
+        message: "Already assigned",
+        tableNumber: user.tableNumber,
       });
     }
 
-    // ✅ STEP 2: Check table exists
-    const table = await Table.findOne({ tableNumber });
-    if (!table) {
-      return res.status(404).json({ message: "Table not found" });
-    }
+    // 🔥 MAIN FIX (ATOMIC UPDATE)
+    const updatedTable = await Table.findOneAndUpdate(
+      {
+        tableNumber,
+        isOccupied: false, // 🔥 ensures only free table updates
+      },
+      {
+        isOccupied: true,
+        occupiedBy: user._id,
+      },
+      {
+        new: true,
+      }
+    );
 
-    // ✅ STEP 3: Check occupied
-    if (table.isOccupied) {
+    console.log("🔥 UpdatedTable:", updatedTable);
+
+    // ❌ if null → table not found OR already occupied
+    if (!updatedTable) {
       return res.status(400).json({
-        message: "Table already occupied",
-        tableNumber: tableNumber, // 🔥 optional but useful for UI
+        message: "Table not found OR already occupied",
       });
     }
 
-    // ✅ STEP 4: Assign table
+    // ✅ update user
     user.tableNumber = tableNumber;
     await user.save();
 
-    table.isOccupied = true;
-    await table.save();
-
-    // 🔥 SOCKET
-    const io = req.app.get("io");
-    if (io) {
-      io.to("adminRoom").emit("tableSelected", {
-        userId: user._id,
-        tableNumber,
-      });
-    }
-
-    res.status(200).json({
+    res.json({
       message: "Table selected successfully",
-      tableNumber: tableNumber, // 🔥 ALWAYS SEND
+      table: updatedTable,
     });
 
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  } catch (err) {
+    console.error("❌ ERROR:", err);
+    res.status(500).json({ message: err.message });
   }
 };
-
 // ✅ Create Order
 const createOrder = async (req, res) => {
   try {
