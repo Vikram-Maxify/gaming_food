@@ -35,6 +35,7 @@ const Security = () => {
     ];
 
     const sections = [
+        //hekejh//
         {
             icon: MdSecurity,
             title: "Data Protection",
