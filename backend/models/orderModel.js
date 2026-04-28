@@ -26,9 +26,9 @@ items: [
       ref: "Product",
     },
 
-    productName: String, // ✅ snapshot name
+    productName: String, 
 
-    image: String, // ✅ ADD THIS
+    image: String,
 
     variantName: {
       type: String,

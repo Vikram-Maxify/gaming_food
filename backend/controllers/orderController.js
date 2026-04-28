@@ -36,7 +36,7 @@ const selectTable = async (req, res) => {
     const updatedTable = await Table.findOneAndUpdate(
       {
         tableNumber,
-        isOccupied: false, // 🔥 ensures only free table updates
+        isOccupied: false,
       },
       {
         isOccupied: true,
