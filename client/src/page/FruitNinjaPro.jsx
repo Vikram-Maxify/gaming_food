@@ -29,14 +29,32 @@ export default function FruitNinjaPro() {
     };
   }, []);
 
-  // 🍉 SPAWN FRUITS (REALISTIC ARC)
+  // 📱 RESPONSIVE CANVAS
+  useEffect(() => {
+    const canvas = canvasRef.current;
+
+    const resizeCanvas = () => {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+    };
+
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+
+    return () => window.removeEventListener("resize", resizeCanvas);
+  }, []);
+
+  // 🍉 SPAWN FRUITS
   useEffect(() => {
     const interval = setInterval(() => {
       if (gameOver) return;
 
+      const canvas = canvasRef.current;
+
       fruitsRef.current.push({
-        x: Math.random() * 450 + 25,
-        y: 650,
+        x: Math.random() * canvas.width,
+        y: canvas.height,
         vx: (Math.random() - 0.5) * 4,
         vy: -Math.random() * 8 - 10,
         g: 0.35,
@@ -60,20 +78,19 @@ export default function FruitNinjaPro() {
     const ctx = canvas.getContext("2d");
 
     const animate = () => {
-      // 🔥 screen shake
       let shakeX = 0;
       let shakeY = 0;
 
       if (shakeRef.current > 0) {
         shakeX = (Math.random() - 0.5) * 10;
         shakeY = (Math.random() - 0.5) * 10;
-        shakeRef.current -= 1;
+        shakeRef.current--;
       }
 
       ctx.setTransform(1, 0, 0, 1, shakeX, shakeY);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // ✂️ TRAIL (smooth blade)
+      // ✂️ TRAIL
       if (trailRef.current.length > 1) {
         ctx.beginPath();
         ctx.lineWidth = 4;
@@ -81,15 +98,11 @@ export default function FruitNinjaPro() {
         ctx.lineCap = "round";
 
         ctx.moveTo(trailRef.current[0].x, trailRef.current[0].y);
-
-        trailRef.current.forEach((p) => {
-          ctx.lineTo(p.x, p.y);
-        });
-
+        trailRef.current.forEach((p) => ctx.lineTo(p.x, p.y));
         ctx.stroke();
       }
 
-      // 🍉 FRUITS UPDATE
+      // 🍉 FRUITS
       fruitsRef.current.forEach((f) => {
         if (f.sliced) return;
 
@@ -130,7 +143,7 @@ export default function FruitNinjaPro() {
     animate();
   }, []);
 
-  // 💥 PARTICLE EFFECT
+  // 💥 PARTICLES
   const explode = (x, y, color) => {
     for (let i = 0; i < 15; i++) {
       particlesRef.current.push({
@@ -144,7 +157,7 @@ export default function FruitNinjaPro() {
     }
   };
 
-  // ✂️ CUT DETECTION (REAL FEEL)
+  // ✂️ CUT DETECTION
   const isCut = (fruit, trail) => {
     for (let i = 0; i < trail.length - 1; i++) {
       const dx = trail[i + 1].x - trail[i].x;
@@ -166,19 +179,21 @@ export default function FruitNinjaPro() {
     return false;
   };
 
-  // 🎯 MOUSE / TOUCH
+  // 🎯 INPUT HANDLER
   const handleMove = (e) => {
     if (gameOver) return;
 
-    const rect = canvasRef.current.getBoundingClientRect();
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
 
-    const x = e.touches
-      ? e.touches[0].clientX - rect.left
-      : e.clientX - rect.left;
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-    const y = e.touches
-      ? e.touches[0].clientY - rect.top
-      : e.clientY - rect.top;
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    const x = (clientX - rect.left) * scaleX;
+    const y = (clientY - rect.top) * scaleY;
 
     trailRef.current.push({ x, y });
     if (trailRef.current.length > 8) trailRef.current.shift();
@@ -208,33 +223,36 @@ export default function FruitNinjaPro() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-black text-white">
+<div className="h-screen overflow-hidden flex flex-col items-center justify-center bg-black text-white px-2 relative">
+      <h1 className="text-2xl md:text-3xl font-bold mb-2">
+        🍉 Fruit Ninja PRO
+      </h1>
 
-      <h1 className="text-3xl font-bold mb-2">🍉 Fruit Ninja PRO</h1>
-
-      <div className="text-xl mb-2">Score: {score}</div>
-
-      {gameOver && (
-        <div className="text-red-500 text-2xl animate-pulse mb-2">
-          💥 GAME OVER
-        </div>
-      )}
+      <div className="text-lg md:text-xl mb-2">Score: {score}</div>
 
       <canvas
         ref={canvasRef}
-        width={500}
-        height={650}
-        className="border border-cyan-400 rounded-xl bg-black"
+        className="w-full max-w-[500px] aspect-[5/6.5] border overflow-y-hidden border-cyan-400 rounded-xl bg-black"
         onMouseMove={handleMove}
         onTouchMove={handleMove}
       />
 
-      <button
-        onClick={reset}
-        className="mt-4 px-6 py-2 bg-green-500 rounded-lg"
-      >
-        Restart
-      </button>
+      {/* 💥 GAME OVER SCREEN */}
+      {gameOver && (
+        <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center z-10">
+
+          <div className="text-red-500 text-3xl mb-4 animate-pulse">
+            💥 GAME OVER
+          </div>
+
+          <button
+            onClick={reset}
+            className="px-8 py-3 bg-green-500 text-xl rounded-lg shadow-lg"
+          >
+            Restart
+          </button>
+        </div>
+      )}
     </div>
   );
 }
