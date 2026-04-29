@@ -1,18 +1,49 @@
-const chefOnly = (req, res, next) => {
+const jwt = require("jsonwebtoken");
+const Auth = require("../models/authModels");
+
+// 🔐 CHEF PROTECT MIDDLEWARE
+const protectChef = async (req, res, next) => {
   try {
-    // protect middleware already req.user set karta hai
-    if (!req.user) {
-      return res.status(401).json({ message: "Unauthorized" });
+    const token = req.cookies.chefToken;
+
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized - No chef token",
+      });
     }
 
-    if (req.user.role !== "chef") {
-      return res.status(403).json({ message: "Access denied - Chef only" });
+    // 🔑 verify token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // 👨‍🍳 find chef user
+    const chef = await Auth.findById(decoded.id).select("-password");
+
+    if (!chef) {
+      return res.status(401).json({
+        success: false,
+        message: "Chef not found",
+      });
     }
+
+    // ❌ role check (extra security)
+    if (chef.role !== "chef") {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied - Not a chef",
+      });
+    }
+
+    // 📦 attach user
+    req.user = chef;
 
     next();
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(401).json({
+      success: false,
+      message: "Invalid or expired chef token",
+    });
   }
 };
 
-module.exports = chefOnly;
+module.exports = protectChef;

@@ -1,47 +1,73 @@
 const Auth = require("../models/authModels");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 
-
-// 🔐 1. CHEF LOGIN
+// 🔐 CHEF LOGIN
 const chefLogin = async (req, res) => {
   try {
     const { mobile, password } = req.body;
 
+    if (!mobile || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Mobile and password required",
+      });
+    }
+
     const user = await Auth.findOne({ mobile });
 
-    // ❌ check chef only
+    // ❌ user check
     if (!user || user.role !== "chef") {
-      return res.status(400).json({ message: "Chef not found" });
+      return res.status(400).json({
+        success: false,
+        message: "Chef not found",
+      });
     }
 
-    // 🔐 password check
-    const isMatch = await user.comparePassword(password);
+    // 🔐 bcrypt compare DIRECT IN CONTROLLER
+    const isMatch = await bcrypt.compare(password, user.password);
+
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid password" });
+      return res.status(400).json({
+        success: false,
+        message: "Invalid password",
+      });
     }
 
-    // 🔑 token create
+    // 🔑 token generate
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
 
-    // 🍪 cookie name = chefToken
+    // 🍪 cookie set
     res.cookie("chefToken", token, {
       httpOnly: true,
-      secure: false
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    res.json({
+    return res.status(200).json({
       success: true,
-      message: "Chef login successful"
+      message: "Chef login successful",
+      chef: {
+        id: user._id,
+        name: user.name,
+        mobile: user.mobile,
+        role: user.role,
+      },
     });
 
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({
+      success: false,
+      message: err.message || "Server error",
+    });
   }
 };
+
 
 
 // 👨‍🍳 2. CHEF PROFILE

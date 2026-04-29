@@ -8,6 +8,7 @@ const {
 } = require("../controllers/chefController");
 const protect = require("../middleware/authmiddleware");
 const chefOnly = require("../middleware/chefOnly");
+const { getAllOrders, updateOrderStatus } = require("../admincontroller/orderController");
 
 
 
@@ -16,11 +17,14 @@ router.post("/login", chefLogin);
 
 
 // 👨‍🍳 PROFILE
-router.get("/profile", protect, chefOnly, chefProfile);
+router.get("/profile",  chefOnly, chefProfile);
+
+router.get("/order/all", chefOnly, getAllOrders);
+router.put("/order/status/:id", chefOnly, updateOrderStatus)
 
 
 // 🚪 LOGOUT
-router.post("/logout", protect, chefOnly, chefLogout);
+router.post("/logout",  chefOnly, chefLogout);
 
 
 module.exports = router;
