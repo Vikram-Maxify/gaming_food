@@ -10,6 +10,7 @@ const connectdb = require("./config/database");
 const gameSocket = require("./sockets/gameSocket");
 const ludoSocket = require("./sockets/ludoSocket");
 const carSocket = require("./sockets/carSocket");
+const cakeSocket = require("./sockets/cakeSocket");
 
 dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
@@ -89,6 +90,7 @@ io.on("connection", (socket) => {
 gameSocket(io);
 ludoSocket(io);
 carSocket(io);
+cakeSocket(io);   // 🔥 ADD THIS
 
 // ✅ DB + Server
 const port = process.env.PORT || 3000;
