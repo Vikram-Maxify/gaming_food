@@ -37,6 +37,7 @@ app.use("/api/table", require("./route/tableRoutes"));
 app.use("/api/cart", require("./route/cart"));
 app.use("/api/notification", require("./route/userNotificationRoutes"));
 app.use("/api/promo", require("./route/userPromoRoutes"));
+app.use("/api/chef", require("./route/chefRoutes"));
 
 
 
