@@ -2,7 +2,7 @@ const CarGame = require("../models/carGameModel");
 const User = require("../models/authModels");
 
 const ENTRY_FEE = 10;
-const WIN_REWARD = 18;
+const WIN_REWARD = 100;
 const FINISH = 100;
 
 const carSocket = (io) => {
@@ -13,7 +13,6 @@ const carSocket = (io) => {
     socket.on("joinCar", async ({ tableId, userId }) => {
       try {
         const user = await User.findById(userId);
-
         if (!user) {
           return socket.emit("errorMessage", "User not found");
         }
@@ -23,7 +22,7 @@ const carSocket = (io) => {
           status: { $in: ["waiting", "playing"] },
         });
 
-        // ✅ already joined
+        // already joined
         const alreadyJoined = game?.players?.some(
           (p) => p.user?.toString() === userId.toString()
         );
@@ -33,12 +32,12 @@ const carSocket = (io) => {
           return io.to(tableId).emit("carUpdate", game);
         }
 
-        // ❌ balance check
+        // balance check
         if (user.credit < ENTRY_FEE) {
           return socket.emit("errorMessage", "Insufficient balance");
         }
 
-        // 💰 deduct
+        // deduct entry fee
         user.credit -= ENTRY_FEE;
         await user.save();
 
@@ -50,9 +49,9 @@ const carSocket = (io) => {
             table: tableId,
             players: [{ user: userId, progress: 0 }],
             pot: ENTRY_FEE,
+            status: "waiting",
           });
 
-          // ⏳ wait for 2nd player
           setTimeout(async () => {
             const updatedGame = await CarGame.findById(game._id);
 
@@ -61,10 +60,8 @@ const carSocket = (io) => {
               updatedGame.players.length === 1 &&
               updatedGame.status === "waiting"
             ) {
-              console.log("🤖 Computer joined");
-
               updatedGame.players.push({
-                user: null,
+                user: null, // 🤖 computer
                 progress: 0,
               });
 
@@ -75,10 +72,8 @@ const carSocket = (io) => {
 
               io.to(tableId).emit("carUpdate", updatedGame);
 
-              // ✅ 👉 ADD THIS (IMPORTANT)
-              setTimeout(async () => {
-                const freshGame = await CarGame.findById(updatedGame._id);
-                makeComputerMove(freshGame, io);
+              setTimeout(() => {
+                makeComputerMove(updatedGame._id, io);
               }, 1000);
             }
           }, 10000);
@@ -94,45 +89,39 @@ const carSocket = (io) => {
         }
 
         io.to(tableId).emit("carUpdate", game);
-
       } catch (err) {
         socket.emit("errorMessage", err.message);
       }
     });
 
-    const makeComputerMove = async (game, io) => {
-      if (game.status !== "playing") return;
+    // 🤖 COMPUTER MOVE
+    const makeComputerMove = async (gameId, io) => {
+      const game = await CarGame.findById(gameId);
+      if (!game || game.status !== "playing") return;
 
-      const computer = game.players.find(p => !p.user);
-
+      const computer = game.players.find((p) => !p.user);
       if (!computer) return;
 
-      // random speed
       computer.progress += Math.floor(Math.random() * 10) + 5;
 
-      // 🏁 win check
+      // 🏁 WIN CHECK
       if (computer.progress >= FINISH) {
         game.status = "finished";
-        game.winner = null; // 🤖 computer winner
+        game.winner = null;
       }
 
       await game.save();
 
       io.to(game.table.toString()).emit("carUpdate", game);
 
-      // 🔁 keep moving until finish
       if (game.status === "playing") {
-        setTimeout(async () => {
-          const freshGame = await CarGame.findById(game._id);
-          makeComputerMove(freshGame, io);
-        }, 1000);
+        setTimeout(() => makeComputerMove(game._id, io), 1000);
       }
     };
 
-    // 🚀 ACCELERATE
+    // 🚀 PLAYER ACCELERATE
     socket.on("accelerate", async ({ gameId, userId }) => {
       const game = await CarGame.findById(gameId);
-
       if (!game || game.status !== "playing") return;
 
       const player = game.players.find(
@@ -148,9 +137,9 @@ const carSocket = (io) => {
         game.status = "finished";
         game.winner = player.user;
 
-        if (player.user) {
-          const user = await User.findById(player.user);
-          user.credits += WIN_REWARD;
+        const user = await User.findById(player.user);
+        if (user) {
+          user.credit += WIN_REWARD; // ✅ 100 added
           await user.save();
         }
       }
@@ -159,16 +148,9 @@ const carSocket = (io) => {
 
       io.to(game.table.toString()).emit("carUpdate", game);
 
-      // 🤖 👉 ADD THIS HERE (IMPORTANT)
-      if (game.status === "playing") {
-        const isComputer = game.players.some(p => !p.user);
-
-        if (isComputer) {
-          setTimeout(async () => {
-            const freshGame = await CarGame.findById(game._id);
-            makeComputerMove(freshGame, io);
-          }, 1000);
-        }
+      // 🤖 restart computer if needed
+      if (game.status === "playing" && game.players.some((p) => !p.user)) {
+        setTimeout(() => makeComputerMove(game._id, io), 1000);
       }
     });
   });

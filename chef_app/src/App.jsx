@@ -4,6 +4,7 @@ import { chefProfile } from "./redux/slice/chefAuthSlice";
 import ChefLogin from "./pages/ChefLogin";
 import Orders from "./pages/Orders";
 import PrivateRoute from "./components/PrivateRoute";
+import ChefNavbar from "./pages/ChefNavbar";
 
 function App() {
   const dispatch = useDispatch();
@@ -24,24 +25,20 @@ function App() {
   return (
     <div className="min-h-screen bg-[#0f0f0f] text-white">
 
-      {/* PUBLIC ROUTE */}
+      {/* PUBLIC */}
       {!isAuthenticated ? (
         <ChefLogin />
       ) : (
         <PrivateRoute>
-          <div>
+          
+          {/* 👨‍🍳 NAVBAR */}
+          <ChefNavbar />
 
-            {/* HEADER */}
-            <div className="p-4 border-b border-gray-800 flex justify-between items-center">
-              <h1 className="text-xl font-bold">
-                👨‍🍳 Chef Dashboard
-              </h1>
-            </div>
-
-            {/* ORDERS */}
+          {/* 📦 CONTENT */}
+          <div className="p-4">
             <Orders />
-
           </div>
+
         </PrivateRoute>
       )}
 

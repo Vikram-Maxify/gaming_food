@@ -179,7 +179,6 @@ const authSlice = createSlice({
         state.otpSent = false;
         state.tempUserId = null;
 
-        // ✅ SAVE USER
         localStorage.setItem("user", JSON.stringify(action.payload.user));
       })
       .addCase(verifyOTP.rejected, (state, action) => {
@@ -197,10 +196,11 @@ const authSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
         state.token = action.payload.token;
+        state.user = action.payload.user; // 🔥 FIX ADDED
         state.success = true;
 
-        // ✅ SAVE TOKEN
         localStorage.setItem("token", action.payload.token);
+        localStorage.setItem("user", JSON.stringify(action.payload.user)); // 🔥 FIX ADDED
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
