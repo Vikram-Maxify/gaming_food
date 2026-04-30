@@ -22,6 +22,7 @@ import {
 import { getTablesThunk } from "../reducer/slice/tableSlice";
 import { selectTable, createOrder } from "../reducer/slice/orderSlice";
 import Navbar from "../components/Navbar";
+import { getUser } from "../reducer/slice/authSlice";
 
 const AddToCart = () => {
   const dispatch = useDispatch();
@@ -29,6 +30,8 @@ const AddToCart = () => {
   const { cartItems, totalAmount } = useSelector((state) => state.cart);
   const { tables, loading: tableLoading } = useSelector((state) => state.table);
   const { user } = useSelector((state) => state.auth);
+
+  console.log(user)
   const { loading: orderLoading } = useSelector((state) => state.order);
 
   const [selectedTable, setSelectedTable] = useState(null);
@@ -42,6 +45,7 @@ const AddToCart = () => {
   useEffect(() => {
     dispatch(getTablesThunk());
     dispatch(getCartThunk());
+    dispatch(getUser())
   }, [dispatch]);
 
   useEffect(() => {
