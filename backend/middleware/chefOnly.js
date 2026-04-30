@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const Auth = require("../models/authModels");
+const Auth = require("../models/Chefmodel");
 
 // 🔐 CHEF PROTECT MIDDLEWARE
 const protectChef = async (req, res, next) => {
