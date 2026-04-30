@@ -38,6 +38,8 @@ app.use("/api/cart", require("./route/cart"));
 app.use("/api/notification", require("./route/userNotificationRoutes"));
 app.use("/api/promo", require("./route/userPromoRoutes"));
 app.use("/api/chef", require("./route/chefRoutes"));
+app.use("/api/chef/item-preparation", require("./adminroute/itemPreparationRoutes"));
+
 
 
 
