@@ -11,7 +11,7 @@ import ChefLayout from "./pages/Layout";
 
 // Pages
 import Orders from "./pages/Orders";
-// import CompletedOrders from "./pages/CompletedOrders";
+import CompleatedOrders from "./pages/CompleatedOrders";
 import ChefProfile from "./pages/ChefProfile";
 
 function App() {
@@ -57,7 +57,7 @@ function App() {
           }
         >
           <Route path="live-orders" element={<Orders />} />
-          {/* <Route path="completed-orders" element={<CompletedOrders />} /> */}
+          <Route path="completed-orders" element={<CompleatedOrders />} />
           <Route path="profile" element={<ChefProfile />} />
 
           {/* Default redirect */}

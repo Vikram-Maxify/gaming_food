@@ -17,7 +17,7 @@ const ChefProfile = () => {
 
     const handleLogout = async () => {
         await dispatch(chefLogout());
-        navigate("/login"); // 🔥 redirect after logout
+        navigate("/login");
     };
 
     if (loading || !chef) {
@@ -29,59 +29,86 @@ const ChefProfile = () => {
     }
 
     return (
-        <div className="max-w-2xl mx-auto bg-cardGradient border border-borderSubtle rounded-xl2 shadow-soft p-6">
+        <div className="min-h-screen bg-surface flex items-center justify-center px-6">
 
-            {/* 🔝 HEADER */}
-            <div className="flex items-center gap-4 mb-6">
+            <div className="
+        w-full max-w-xl
+        bg-card
+        border border-borderSubtle/70
+        rounded-2xl
+        p-7
+        shadow-[0_10px_40px_rgba(0,0,0,0.4)]
+      ">
 
-                {/* Avatar */}
-                <div className="w-14 h-14 rounded-full bg-[#1A1A1A] flex items-center justify-center text-xl text-textPrimary border border-borderSubtle">
-                    {chef.name?.charAt(0)}
+                {/* 🔝 HEADER */}
+                <div className="flex items-center gap-4 mb-8">
+
+                    {/* Avatar */}
+                    <div className="
+            w-16 h-16 rounded-full
+            bg-card border border-borderSubtle
+            flex items-center justify-center
+            text-xl font-semibold text-textPrimary
+            shadow-inner
+          ">
+                        {chef.name?.charAt(0)}
+                    </div>
+
+                    <div>
+                        <h2 className="text-xl font-semibold tracking-wide">
+                            {chef.name}
+                        </h2>
+                        <p className="text-sm text-textSecondary">
+                            👨‍🍳 Chef
+                        </p>
+                    </div>
+
                 </div>
 
-                <div>
-                    <h2 className="text-xl font-semibold text-textPrimary">
-                        {chef.name}
-                    </h2>
-                    <p className="text-sm text-textSecondary">
-                        👨‍🍳 Chef
-                    </p>
+                {/* 📋 DETAILS */}
+                <div className="space-y-5">
+
+                    <div className="flex justify-between items-center">
+                        <span className="text-textSecondary text-sm">Mobile</span>
+                        <span className="text-textPrimary font-medium">
+                            {chef.mobile}
+                        </span>
+                    </div>
+
+                    <div className="flex justify-between items-center">
+                        <span className="text-textSecondary text-sm">Category</span>
+                        <span className="text-textPrimary font-medium">
+                            {chef.category?.name || chef.category}
+                        </span>
+                    </div>
+
+                    <div className="flex justify-between items-center">
+                        <span className="text-textSecondary text-sm">Joined</span>
+                        <span className="text-textPrimary font-medium">
+                            {new Date(chef.createdAt).toLocaleDateString()}
+                        </span>
+                    </div>
+
                 </div>
+
+                {/* 🚪 LOGOUT */}
+                <button
+                    onClick={handleLogout}
+                    className="
+            mt-8 w-full
+            bg-card border border-borderSubtle
+            hover:border-red-500/40
+            hover:text-red-400
+            text-textPrimary
+            py-2.5 rounded-xl2
+            transition-all duration-200
+            font-medium
+          "
+                >
+                    Logout
+                </button>
 
             </div>
-
-            {/* 📋 DETAILS */}
-            <div className="space-y-4">
-
-                <div className="flex justify-between border-b border-borderSubtle pb-2">
-                    <span className="text-textSecondary text-sm">Mobile</span>
-                    <span className="text-textPrimary">{chef.mobile}</span>
-                </div>
-
-                <div className="flex justify-between border-b border-borderSubtle pb-2">
-                    <span className="text-textSecondary text-sm">Category</span>
-                    <span className="text-textPrimary">
-                        {chef.category?.name || chef.category}
-                    </span>
-                </div>
-
-                <div className="flex justify-between border-b border-borderSubtle pb-2">
-                    <span className="text-textSecondary text-sm">Joined</span>
-                    <span className="text-textPrimary">
-                        {new Date(chef.createdAt).toLocaleDateString()}
-                    </span>
-                </div>
-
-            </div>
-
-            {/* 🚪 LOGOUT */}
-            <button
-                onClick={handleLogout}
-                className="mt-6 w-full bg-red-500/90 hover:bg-red-600 text-white py-2.5 rounded-xl2 transition font-medium"
-            >
-                Logout
-            </button>
-
         </div>
     );
 };

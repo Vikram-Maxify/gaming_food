@@ -5,19 +5,21 @@ import { Outlet } from "react-router-dom";
 
 const ChefLayout = () => {
   return (
-    <div className="flex">
+    <div className="flex bg-surface text-textPrimary">
 
-      {/* Sidebar */}
-      <Sidebar />
+      {/* ✅ Sticky Sidebar */}
+      <div className="h-screen sticky top-0">
+        <Sidebar />
+      </div>
 
       {/* Right Side */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col h-screen overflow-hidden">
 
         {/* Topbar */}
         <Topbar />
 
-        {/* Page Content */}
-        <div className="p-6 bg-[#0F0F0F] min-h-screen">
+        {/* ✅ Scrollable Content Only */}
+        <div className="flex-1 overflow-y-auto p-6 bg-surface">
           <Outlet />
         </div>
 
