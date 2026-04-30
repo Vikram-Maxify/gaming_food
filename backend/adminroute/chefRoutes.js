@@ -7,7 +7,8 @@ const {
   chefLogin,
   chefProfile,
   chefLogout,
-  chefdelet
+  chefdelet,
+  updateChefByAdmin
 } = require("../admincontroller/chefController");
 const protect = require("../middleware/authmiddleware");
 const chefOnly = require("../middleware/chefOnly");
@@ -16,6 +17,7 @@ const { getAllOrders, updateOrderStatus } = require("../admincontroller/orderCon
 
 router.post("/register", chefRegister);
 router.get("/getall", getchef);
+router.put("/update/:id", updateChefByAdmin);
 router.delete("/delete/:id", chefdelet);
 
 module.exports = router;

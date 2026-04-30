@@ -91,6 +91,51 @@ const chefdelet = async (req, res) => {
   }
 };
 
+const updateChefByAdmin = async (req, res) => {
+  try {
+    const chefId = req.params.id;
+    const updates = req.body;
+
+    // ❌ fields that should NOT be updated directly
+    const restrictedFields = ["password", "role", "_id"];
+
+    // 🔍 remove restricted fields
+    restrictedFields.forEach((field) => {
+      if (updates[field]) delete updates[field];
+    });
+
+    // 🔄 optional: handle credit increment
+    if (updates.credit !== undefined && typeof updates.credit === "number") {
+      updates.$inc = { credit: updates.credit };
+      delete updates.credit;
+    }
+
+    const chef = await Auth.findByIdAndUpdate(
+      chefId,
+      updates,
+      { new: true, runValidators: true }
+    );
+
+    if (!chef) {
+      return res.status(404).json({
+        success: false,
+        message: "Chef not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Chef updated successfully",
+      chef,
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
 
 
 
@@ -98,5 +143,7 @@ module.exports = {
   chefRegister,
   getchef,
   chefdelet,
+  updateChefByAdmin
+
 
 }
