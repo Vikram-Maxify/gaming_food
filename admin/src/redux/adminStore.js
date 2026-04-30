@@ -9,6 +9,7 @@ import tableReducer from "./slice/adminTableSlice";
 import settingsReducer from "./slice/settingsSlice";
 import orderReducer from "./slice/adminOrderSlice";
 import bannerReducer from "./slice/bannerSlice";
+import ChefReducer from "./slice/chefSlice";
 
 export const store = configureStore({
   reducer: {
@@ -19,6 +20,9 @@ export const store = configureStore({
      settings: settingsReducer,
       order: orderReducer,
       banner: bannerReducer,
+      chef: ChefReducer,
+  
+
   
   },
 });
