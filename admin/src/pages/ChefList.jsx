@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllChefs, deleteChef } from "../redux/chefSlice";
+import { getAllChefs, deleteChef } from "../redux/slice/chefSlice";
 
 export default function ChefList() {
   const dispatch = useDispatch();

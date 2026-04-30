@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import API from "../api/axios";
+import API from "../adminApi"
 
 // 🔥 REGISTER
 export const registerChef = createAsyncThunk(

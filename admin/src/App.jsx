@@ -17,6 +17,7 @@ import AdminOtpSettings from './pages/AdminOtpSettings';
 import TableManage from './pages/TableManage';
 import AdminProfile from './pages/AdminProfile';
 import BannerManager from './component/BannerManager';
+import ChefList from "./pages/ChefList"
 
 
 function App() {
@@ -47,6 +48,7 @@ function App() {
           <Route path="categories" element={<AdminCategory />} />
           <Route path="otpsetting" element={<AdminOtpSettings />} />
           <Route path="table" element={<TableManage />} />
+          <Route path="create_chef" element={<ChefList />} />
           <Route path="profile" element={<AdminProfile />} />
         </Route>
 
