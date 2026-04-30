@@ -11,6 +11,9 @@ import {
     updateOrderInState,
 } from "../redux/slice/adminOrderSlice";
 
+// ✅ NEW: item tracking thunk
+import { markItemReadyThunk } from "../redux/slice/itemPreparationSlice";
+
 import notifSound from "/notif.mp3";
 
 // 🔊 single audio instance
@@ -32,14 +35,16 @@ const Orders = () => {
     const playSound = () => {
         try {
             audioRef.currentTime = 0;
-            audioRef.play().catch(() => { });
-        } catch { }
+            audioRef.play().catch(() => {});
+        } catch {}
     };
 
+    // 📦 LOAD ORDERS
     useEffect(() => {
         dispatch(getOrders());
     }, [dispatch]);
 
+    // 🔌 SOCKET
     useEffect(() => {
         socket.emit("joinAdmin");
 
@@ -66,11 +71,30 @@ const Orders = () => {
         };
     }, [dispatch]);
 
-    const handleStatus = (id, status) => {
-        dispatch(updateOrderStatus({ id, status }));
+    // ✅ FIXED: STATUS HANDLER
+    const handleStatus = (order, status) => {
+        // update order status
+        dispatch(updateOrderStatus({ id: order._id, status }));
+
+        // 🔥 when READY → track each item
+        if (status === "ready") {
+            order.items?.forEach((item) => {
+                if (!item?._id) return;
+
+                dispatch(
+                    markItemReadyThunk({
+                        orderId: order._id,
+                        itemId: item._id,
+                        productId: item.product?._id,
+                    })
+                );
+            });
+
+            toast.success("✅ All items marked ready!");
+        }
     };
 
-    // ✅ TOTAL CALCULATION
+    // 💰 TOTAL CALCULATION
     const enrichedOrders = useMemo(() => {
         return orders.map((order) => {
             const totalAmount =
@@ -131,7 +155,7 @@ const Orders = () => {
                                     <p className="text-xs text-gray-400">
                                         Table:{" "}
                                         {order.tableNumber === "null" ||
-                                            !order.tableNumber
+                                        !order.tableNumber
                                             ? "N/A"
                                             : order.tableNumber}
                                     </p>
@@ -152,41 +176,34 @@ const Orders = () => {
                                             item.spiceLevel === "low"
                                                 ? "bg-green-500/10 text-green-400 border-green-500/30"
                                                 : item.spiceLevel === "medium"
-                                                    ? "bg-yellow-500/10 text-yellow-400 border-yellow-500/30"
-                                                    : "bg-red-500/10 text-red-400 border-red-500/30";
+                                                ? "bg-yellow-500/10 text-yellow-400 border-yellow-500/30"
+                                                : "bg-red-500/10 text-red-400 border-red-500/30";
 
                                         return (
                                             <div
                                                 key={idx}
                                                 className="border-b border-gray-800 pb-3"
                                             >
-                                                {/* ITEM NAME */}
                                                 <p className="text-sm font-semibold text-white mb-1">
                                                     {item.product?.name || "Item"} ×{item.quantity || 0}
                                                 </p>
 
-                                                {/* TAGS ROW */}
                                                 <div className="flex items-center gap-2 flex-wrap">
-
-                                                    {/* 🌶 SPICE BADGE */}
                                                     <span
-                                                        className={`text-[11px] px-2 py-1 rounded-full border font-medium flex justify-center items-center gap-1 ${spiceColor}`}
+                                                        className={`text-[11px] px-2 py-1 rounded-full border font-medium flex items-center gap-1 ${spiceColor}`}
                                                     >
-                                                        <FaFireFlameCurved />    {item.spiceLevel || "normal"}
+                                                        <FaFireFlameCurved />
+                                                        {item.spiceLevel || "normal"}
                                                     </span>
 
-                                                    {/* 🍕 PORTION BADGE */}
                                                     <span className="text-[11px] px-2 py-1 rounded-full border border-gray-700 text-gray-300 bg-gray-800">
                                                         {item.variantName || "Standard"}
                                                     </span>
-
                                                 </div>
                                             </div>
                                         );
                                     })}
                             </div>
-
-                            {/* TOTAL */}
 
                             {/* STATUS */}
                             <div className="flex justify-between items-center">
@@ -198,7 +215,7 @@ const Orders = () => {
                                     <button
                                         disabled={order.status !== "pending"}
                                         onClick={() =>
-                                            handleStatus(order._id, "preparing")
+                                            handleStatus(order, "preparing")
                                         }
                                         className="text-xs px-3 py-1 rounded border border-gray-700 disabled:opacity-40"
                                     >
@@ -208,7 +225,7 @@ const Orders = () => {
                                     <button
                                         disabled={order.status !== "preparing"}
                                         onClick={() =>
-                                            handleStatus(order._id, "ready")
+                                            handleStatus(order, "ready")
                                         }
                                         className="text-xs px-3 py-1 rounded border border-gray-700 disabled:opacity-40"
                                     >

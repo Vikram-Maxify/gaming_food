@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import API from "../axios";
+import API from "../adminApi";
 
 
 // =======================
@@ -11,7 +11,7 @@ export const markItemReadyThunk = createAsyncThunk(
   "itemPreparation/markReady",
   async (data, { rejectWithValue }) => {
     try {
-      const res = await API.post("/api/item-preparation/ready", data);
+      const res = await API.post("/item-preparation/ready", data);
       return res.data.data;
     } catch (err) {
       return rejectWithValue(
