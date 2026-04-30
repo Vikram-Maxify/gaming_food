@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Trash2,
   Minus,
@@ -18,6 +18,8 @@ import {
   removeFromCartThunk,
   updateQuantityLocal,
   getCartThunk,
+  clearCartLocal,
+  clearCartThunk,
 } from "../reducer/slice/cartSlice";
 import { getTablesThunk } from "../reducer/slice/tableSlice";
 import { selectTable, createOrder } from "../reducer/slice/orderSlice";
@@ -58,6 +60,8 @@ const AddToCart = () => {
   const deliveryFee = cartItems.length ? 47 : 0;
   const discount = 3.99;
   const grandTotal = totalAmount + deliveryFee - discount;
+
+  const navigate = useNavigate();
 
   const increaseQty = (item) => {
     const newQty = Number(item.quantity) + 1;
@@ -132,6 +136,7 @@ const AddToCart = () => {
         }
       }
 
+      // ✅ ORDER CREATE
       await dispatch(createOrder({
         takeaway,
         tableNumber: takeaway ? null : user?.tableNumber || selectedTable,
@@ -143,14 +148,26 @@ const AddToCart = () => {
         })),
       })).unwrap();
 
+      // 🔥🔥🔥 MAIN FIX START
+      // 1. instantly UI clear
+      dispatch(clearCartLocal());
+
+      // 2. backend clear
+      await dispatch(clearCartThunk());
+      // 🔥🔥🔥 MAIN FIX END
+
+      // UI reset
       setShowSuccessPopup(true);
       setShowTableModal(false);
       setSelectedTable(null);
       setTakeaway(false);
 
+      // optional redirect
       setTimeout(() => {
         setShowSuccessPopup(false);
-      }, 3000);
+        navigate("/menu"); // ya "/"
+      }, 2000);
+
     } catch (err) {
       alert(err.message || "Something went wrong");
     }
