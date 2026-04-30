@@ -27,6 +27,18 @@ export const getAllChefs = createAsyncThunk(
   }
 );
 
+export const updateChef = createAsyncThunk(
+  "chef/update",
+  async ({ id, data }, { rejectWithValue }) => {
+    try {
+      const res = await API.put(`/chef/${id}`, data); // 🔥 matches backend
+      return res.data.chef;
+    } catch (err) {
+      return rejectWithValue(err.response?.data);
+    }
+  }
+);
+
 // ❌ DELETE CHEF
 export const deleteChef = createAsyncThunk(
   "chef/delete",
@@ -102,6 +114,29 @@ const chefSlice = createSlice({
         );
       })
       .addCase(deleteChef.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message;
+      })
+      // 🔹 UPDATE
+      .addCase(updateChef.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateChef.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = true;
+
+        // 🔁 update in list
+        state.chefs = state.chefs.map((chef) =>
+          chef._id === action.payload._id ? action.payload : chef
+        );
+
+        // 🎯 update single chef if open
+        if (state.chef?._id === action.payload._id) {
+          state.chef = action.payload;
+        }
+      })
+      .addCase(updateChef.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message;
       });

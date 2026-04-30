@@ -113,7 +113,7 @@ const updateChefByAdmin = async (req, res) => {
     const chef = await Auth.findByIdAndUpdate(
       chefId,
       updates,
-      { new: true, runValidators: true }
+      { returnDocument: "after", runValidators: true }
     );
 
     if (!chef) {

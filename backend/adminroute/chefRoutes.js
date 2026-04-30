@@ -17,7 +17,7 @@ const { getAllOrders, updateOrderStatus } = require("../admincontroller/orderCon
 
 router.post("/register", chefRegister);
 router.get("/getall", getchef);
-router.put("/update/:id", updateChefByAdmin);
+router.put("/:id", updateChefByAdmin);
 router.delete("/delete/:id", chefdelet);
 
 module.exports = router;
