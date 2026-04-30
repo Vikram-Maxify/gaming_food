@@ -1,12 +1,12 @@
 const Category = require("../models/categoryModel");
 const uploadToImageBB = require("../utils/uploadToImageBB");
+const slugify = require("slugify");
 
 
-// ✅ CREATE (already yours - kept here for completeness)
+// ✅ CREATE
 const createCategory = async (req, res) => {
   try {
     const { name } = req.body;
-
 
     if (!name || !req.file) {
       return res.status(400).json({
@@ -18,6 +18,7 @@ const createCategory = async (req, res) => {
 
     const category = await Category.create({
       name,
+      slug: slugify(name, { lower: true, strict: true }), // 🔥 added
       image: imageUrl,
     });
 
@@ -30,7 +31,6 @@ const createCategory = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 
 // ✅ GET ALL
@@ -46,7 +46,6 @@ const getCategories = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 
 // ✅ GET SINGLE
@@ -65,8 +64,7 @@ const getCategoryById = async (req, res) => {
 };
 
 
-
-// ✅ UPDATE (with optional image change)
+// ✅ UPDATE
 const updateCategory = async (req, res) => {
   try {
     const { name } = req.body;
@@ -77,12 +75,13 @@ const updateCategory = async (req, res) => {
       return res.status(404).json({ message: "Category not found" });
     }
 
-    // update name if provided
+    // update name + slug
     if (name) {
       category.name = name;
+      category.slug = slugify(name, { lower: true, strict: true }); // 🔥 added
     }
 
-    // update image if new file uploaded
+    // update image
     if (req.file) {
       const imageUrl = await uploadToImageBB(req.file);
       category.image = imageUrl;
@@ -98,7 +97,6 @@ const updateCategory = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 
 // ✅ DELETE
@@ -119,7 +117,6 @@ const deleteCategory = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 
 // ✅ EXPORT ALL
