@@ -1,5 +1,3 @@
-// src/api/adminApi.js
-
 import axios from "axios";
 
 const API = axios.create({
@@ -7,6 +5,16 @@ const API = axios.create({
   withCredentials: true,
 });
 
+// 🔥 ADD THIS BLOCK (VERY IMPORTANT)
+API.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return config;
+});
 
 // ================= AUTH =================
 
@@ -19,50 +27,39 @@ export const getAdminProfileAPI = () => API.get("/profile");
 // 🚪 Logout
 export const logoutAdminAPI = () => API.post("/logout");
 
-
 // ================= PRODUCT =================
 
-// ➕ CREATE PRODUCT
 export const createProductAPI = (data) =>
-  API.post("/product/create", data,);
+  API.post("/product/create", data);
 
-// 📦 GET ALL
 export const getProductsAPI = () => API.get("/product");
 
-// 🔍 GET SINGLE
 export const getProductByIdAPI = (id) =>
   API.get(`/product/${id}`);
 
-// ✏️ UPDATE
 export const updateProductAPI = (id, data) =>
-  API.put(`/product/update/${id}`, data,);
+  API.put(`/product/update/${id}`, data);
 
-// ❌ DELETE
 export const deleteProductAPI = (id) =>
   API.delete(`/product/delete/${id}`);
 
-
 // ================= CATEGORY =================
 
-// ➕ CREATE
 export const createCategoryAPI = (data) =>
   API.post("/category/create", data);
-// 📦 GET ALL
+
 export const getCategoriesAPI = () => API.get("/category");
 
-// 🔍 GET SINGLE
 export const getCategoryByIdAPI = (id) =>
   API.get(`/category/${id}`);
 
-// ✏️ UPDATE
 export const updateCategoryAPI = (id, data) =>
-  API.put(`/category/update/${id}`, data,);
+  API.put(`/category/update/${id}`, data);
 
-// ❌ DELETE
 export const deleteCategoryAPI = (id) =>
   API.delete(`/category/delete/${id}`);
 
-//=================Table=======================//
+// ================= TABLE =================
 
 export const createTableAPI = (data) =>
   API.post("/table/create", data);
@@ -73,32 +70,30 @@ export const getTablesAPI = () =>
 export const deleteTableAPI = (id) =>
   API.delete(`/table/delete/${id}`);
 
+export const updatetableApi = (id) =>
+  API.put(`/table/free/${id}`);
 
-// 🔹 GET SETTINGS
+// ================= SETTINGS =================
+
 export const getSettingsAPI = () =>
   API.get("/settings/settings");
 
-// 🔹 UPDATE SETTINGS
 export const updateSettingsAPI = (data) =>
-  API.post("/settings/settings", data); // formData (title + logo)
+  API.post("/settings/settings", data);
 
+// ================= ORDERS =================
 
-// 🔹 GET ALL ORDERS
 export const getOrdersAPI = () =>
   API.get("/order/all");
 
-// 🔹 UPDATE STATUS
 export const updateOrderStatusAPI = (id, data) =>
   API.put(`/order/status/${id}`, data);
 
-// 🔹 GET ALL USERS
+// ================= USERS =================
+
 export const getAllUsersAPI = () =>
   API.get("/users");
 
-// Get Users
 export const getUsersAPI = () => API.get("/users");
-
-
-export const updatetableApi =()=>API.put(`/table/free/${id}`)
 
 export default API;

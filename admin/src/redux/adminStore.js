@@ -10,6 +10,7 @@ import settingsReducer from "./slice/settingsSlice";
 import orderReducer from "./slice/adminOrderSlice";
 import bannerReducer from "./slice/bannerSlice";
 import ChefReducer from "./slice/chefSlice";
+import promoReducer from "./slice/promoSlice";
 
 export const store = configureStore({
   reducer: {
@@ -21,6 +22,7 @@ export const store = configureStore({
       order: orderReducer,
       banner: bannerReducer,
       chef: ChefReducer,
+      promo: promoReducer,
   
 
   

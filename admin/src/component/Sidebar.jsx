@@ -32,6 +32,7 @@ const Sidebar = () => {
         { to: "/admin/coins_mng", label: "Coin Manage", icon: Gift },
         { to: "/admin/settings", label: "Settings", icon: Settings },
         { to: "/admin/create_chef", label: "Create Chef", icon: Settings },
+        { to: "/admin/promo", label: "Manage Promo", icon: Settings },
         { to: "/admin/baner_mng", label: "Banner Manager", icon: Settings },
         { to: "/admin/profile", label: "Profile", icon: User },
     ];

@@ -6,15 +6,13 @@ const {
   getAllPromos,
   deletePromo,
 } = require("../admincontroller/adminPromoController");
-const admin = require("../middleware/adminMiddleware");
-const protect = require("../middleware/authmiddleware");
+const protectAdmin = require("../middleware/Adminauthmiddleware");
 
 
 // 🔐 middleware apply
-router.use(protect, admin);
 
 // ✅ create promo
-router.post("/create", createPromo);
+router.post("/create",protectAdmin, createPromo);
 
 // ✅ get all promos
 router.get("/", getAllPromos);
