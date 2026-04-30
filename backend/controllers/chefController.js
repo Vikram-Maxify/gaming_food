@@ -1,6 +1,9 @@
-const Auth = require("../models/authModels");
+const Auth = require("../models/Chefmodel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+
+
+
 
 // 🔐 CHEF LOGIN
 const chefLogin = async (req, res) => {
@@ -68,6 +71,15 @@ const chefLogin = async (req, res) => {
   }
 };
 
+const getchef = async (req, res) => {
+  try {
+    const chef = await Auth.find();
+    res.status(200).json(chef);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 
 
 // 👨‍🍳 2. CHEF PROFILE
@@ -102,6 +114,7 @@ const chefLogout = async (req, res) => {
 };
 
 module.exports = {
+  getchef,
   chefLogin,
   chefProfile,
   chefLogout

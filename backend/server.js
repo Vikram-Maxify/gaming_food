@@ -51,6 +51,8 @@ app.use("/api/admin/settings", require("./adminroute/adminSettingsRoutes"));
 app.use("/api/admin/banner", require("./adminroute/adminBannerRoutes"));
 app.use("/api/admin/notification", require("./adminroute/adminNotificationRoutes"));
 app.use("/api/admin/promo", require("./adminroute/adminPromoRoutes"));
+app.use("/api/admin/chef", require("./adminroute/chefRoutes"));
+
 
 // ✅ Create HTTP server
 const server = http.createServer(app);
