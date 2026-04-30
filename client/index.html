@@ -3,13 +3,13 @@
   <head>
     <meta charset="UTF-8" />
 
-    <!-- Prevent scrolling & ensure full height -->
     <style>
       html, body, #root {
         margin: 0;
         padding: 0;
         height: 100%;
-        overflow: hidden;
+        overflow-x: hidden; /* ✅ stop left-right scroll */
+        overflow-y: auto;   /* ✅ allow top-bottom scroll */
       }
     </style>
 
@@ -19,10 +19,9 @@
       rel="stylesheet"
     />
 
-    <!-- Prevent zoom + scrolling issues on mobile -->
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+      content="width=device-width, initial-scale=1.0"
     />
 
     <title>client</title>
