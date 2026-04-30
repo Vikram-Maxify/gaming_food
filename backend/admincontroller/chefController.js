@@ -94,26 +94,30 @@ const chefdelet = async (req, res) => {
 const updateChefByAdmin = async (req, res) => {
   try {
     const chefId = req.params.id;
-    const updates = req.body;
+    let updates = { ...req.body };
 
-    // ❌ fields that should NOT be updated directly
+    // ❌ remove restricted fields
     const restrictedFields = ["password", "role", "_id"];
+    restrictedFields.forEach((field) => delete updates[field]);
 
-    // 🔍 remove restricted fields
-    restrictedFields.forEach((field) => {
-      if (updates[field]) delete updates[field];
-    });
+    // ❌ remove empty category (prevents ObjectId error)
+    if (!updates.category || updates.category === "") {
+      delete updates.category;
+    }
 
-    // 🔄 optional: handle credit increment
-    if (updates.credit !== undefined && typeof updates.credit === "number") {
-      updates.$inc = { credit: updates.credit };
+    // 💰 credit increment (safe)
+    if (updates.credit !== undefined) {
+      updates.$inc = { credit: Number(updates.credit) };
       delete updates.credit;
     }
 
     const chef = await Auth.findByIdAndUpdate(
       chefId,
       updates,
-      { returnDocument: "after", runValidators: true }
+      {
+        returnDocument: "after", // ✅ mongoose v8 fix
+        runValidators: true,
+      }
     );
 
     if (!chef) {

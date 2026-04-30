@@ -31,6 +31,8 @@ exports.getdatabyid = async (req, res) => {
     try {
         const chefId = req.user._id
         const data = await ItemPreparation.find({ chefId })
+            .populate("chefId", "name")
+            .populate("productId", "name");
         res.json(data)
     } catch (error) {
         res.status(500).json({ message: error.message })
