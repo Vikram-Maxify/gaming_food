@@ -1,12 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import API from "../adminApi"
+import API from "../adminApi";
 
 // 🔥 REGISTER
 export const registerChef = createAsyncThunk(
   "chef/register",
   async (data, { rejectWithValue }) => {
     try {
-      const res = await API.post("/api/chef/register", data);
+      const res = await API.post("/chef/register", data); // ✅ FIX
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data);
@@ -19,7 +19,7 @@ export const getAllChefs = createAsyncThunk(
   "chef/getAll",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await API.get("/api/chef");
+      const res = await API.get("/chef"); // ✅ FIX
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data);
@@ -32,7 +32,7 @@ export const deleteChef = createAsyncThunk(
   "chef/delete",
   async (id, { rejectWithValue }) => {
     try {
-      await API.delete(`/api/chef/${id}`);
+      await API.delete(`/chef/${id}`); // ✅ FIX
       return id;
     } catch (err) {
       return rejectWithValue(err.response?.data);
@@ -49,6 +49,7 @@ const chefSlice = createSlice({
     error: null,
     success: false,
   },
+
   reducers: {
     clearChefState: (state) => {
       state.loading = false;
@@ -56,18 +57,20 @@ const chefSlice = createSlice({
       state.success = false;
     },
   },
+
   extraReducers: (builder) => {
     builder
 
       // 🔹 REGISTER
       .addCase(registerChef.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(registerChef.fulfilled, (state, action) => {
         state.loading = false;
         state.success = true;
         state.chef = action.payload.chef;
-        state.chefs.push(action.payload.chef); // auto add
+        state.chefs.unshift(action.payload.chef); // 🔥 better UX (new on top)
       })
       .addCase(registerChef.rejected, (state, action) => {
         state.loading = false;
@@ -77,6 +80,7 @@ const chefSlice = createSlice({
       // 🔹 GET ALL
       .addCase(getAllChefs.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(getAllChefs.fulfilled, (state, action) => {
         state.loading = false;
