@@ -19,7 +19,7 @@ export const getAllChefs = createAsyncThunk(
   "chef/getAll",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await API.get("/chef"); // ✅ FIX
+      const res = await API.get("/chef/getall"); // ✅ FIXED
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data);
@@ -32,7 +32,7 @@ export const deleteChef = createAsyncThunk(
   "chef/delete",
   async (id, { rejectWithValue }) => {
     try {
-      await API.delete(`/chef/${id}`); // ✅ FIX
+      await API.delete(`/chef/delete/${id}`); // ✅ FIXED
       return id;
     } catch (err) {
       return rejectWithValue(err.response?.data);
