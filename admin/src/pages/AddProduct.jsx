@@ -81,6 +81,8 @@ const AddProduct = () => {
         setVariants([{ name: "", price: "" }]);
     };
 
+    console.log(categories);
+
     return (
         <div className="p-6">
 
