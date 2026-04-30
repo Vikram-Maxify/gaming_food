@@ -4,6 +4,7 @@ import { ShoppingCart, Search, Menu, X } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { getSettings } from "../reducer/slice/settingSlice";
 import { getCartThunk } from "../reducer/slice/cartSlice";
+import ProfilePopup from "./ProfilePopup";
 
 const Navbar = () => {
     const { token } = useSelector((state) => state.auth);
