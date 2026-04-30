@@ -232,7 +232,8 @@ export default function FruitNinjaPro() {
 
       <canvas
         ref={canvasRef}
-        className="w-full max-w-[500px] aspect-[5/6.5] border overflow-y-hidden border-cyan-400 rounded-xl bg-black"
+        className="w-full max-w-[500px] aspect-[5/6.5] border overflow-y-hidden
+         border-cyan-400 rounded-xl bg-black"
         onMouseMove={handleMove}
         onTouchMove={handleMove}
       />
