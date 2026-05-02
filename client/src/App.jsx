@@ -23,6 +23,8 @@ import Navbar from './components/Navbar'
 import CakeTower from './page/CakeTower'
 import FruitNinjaPro from './page/FruitNinjaPro'
 import ShootingGame from './page/ShootingGame'
+import OrderHistory from './page/OrderHistory'
+import OrderStatusBanner from './components/OrderStatusBanner'
 
 function App() {
   return (
@@ -42,11 +44,19 @@ function App() {
           <Route path='/menu' element={<MenuPage />} />
           <Route path='/cart' element={<AddToCart />} />
           <Route path='/profile' element={<Profile />} />
+
+          {/*Profile page routes */}
+
+          <Route path="/orders" element={<OrderHistory />} />
+        
           {/* Games */}
 
           <Route path='/tictactoe' element={<TicTacToe />} />
           <Route path="/ludo" element={<Ludo />} />
           <Route path='/car' element={<CarRace />} />
+          <Route path='/cake' element={<CakeTower />} />
+          <Route path='/ninja' element={<FruitNinjaPro />} />
+          <Route path='/shoot' element={<ShootingGame />} />
         </Route>
 
         {/* footer  */}
@@ -55,11 +65,10 @@ function App() {
         <Route path='/security' element={<Security />} />
         <Route path='/help' element={<HelpAndSupport />} />
         <Route path='/about' element={<About />} />
-        <Route path='/cake' element={<CakeTower/>} />
-        <Route path='/ninja' element={<FruitNinjaPro />} />
-        <Route path='/shoot' element={<ShootingGame />} />
-        
+
+
       </Routes>
+      <OrderStatusBanner /> 
       <TabStyle1 />
 
     </>
