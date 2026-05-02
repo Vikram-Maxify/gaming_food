@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser, logoutUser } from "../reducer/slice/authSlice";
+import { fetchMyOrders } from "../reducer/slice/orderSlice";
 import { useNavigate, Link } from "react-router-dom";
 import { 
   User, 
@@ -21,11 +22,25 @@ const Profile = () => {
   const navigate = useNavigate();
 
   const { user, loading, error } = useSelector((state) => state.auth);
+  const { orders } = useSelector((state) => state.order);
+  const totalOrders = orders?.length || 0;
+
+
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
+  const totalSpent = orders?.reduce((total, order) => {
+  const orderTotal = order.items?.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+  return total + orderTotal;
+}, 0);
+
+
   useEffect(() => {
-    dispatch(getUser());
-  }, [dispatch]);
+  dispatch(getUser());
+  dispatch(fetchMyOrders()); // 🔥 add this
+}, [dispatch]);
 
   const handleLogout = async () => {
     await dispatch(logoutUser());
@@ -33,13 +48,17 @@ const Profile = () => {
     navigate("/login");
   };
 
-  // Mock order stats (replace with actual data from Redux)
+
   const orderStats = {
-    totalOrders: 24,
-    totalSpent: 3450,
-    memberSince: user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : "January 2024",
-    loyaltyPoints: 1250,
-  };
+  totalOrders: totalOrders,
+  totalSpent: totalSpent,
+  memberSince: user?.createdAt
+    ? new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+    : "January 2024",
+};
+
+  
+
 
   if (loading) {
     return (
@@ -129,7 +148,8 @@ const Profile = () => {
             </div>
             <div className="flex items-center justify-center md:justify-start gap-2 mt-1">
               <Award size={14} className="text-orange-500" />
-              <p className="text-sm text-orange-600 font-medium">{orderStats.loyaltyPoints} Loyalty Points</p>
+              {/* <p className="text-sm text-orange-600 font-medium">{orderStats.loyaltyPoints} Loyalty Points</p> */}
+              <p className="text-sm text-orange-600 font-medium">{user?.credit} Credit Points</p>
             </div>
           </div>
           
@@ -164,33 +184,72 @@ const Profile = () => {
 
         {/* Menu Options */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-6">
-          <div className="p-4 border-b border-gray-100">
-            <h3 className="font-semibold text-gray-800">Account Settings</h3>
+  <div className="p-4 border-b border-gray-100">
+    <h3 className="font-semibold text-gray-800">Account Settings</h3>
+  </div>
+  
+  {[
+    { icon: User, label: "Personal Information", color: "text-blue-500", bg: "bg-blue-50" },
+    { icon: ShoppingBag, label: "Order History", color: "text-green-500", bg: "bg-green-50", path: "/orders" },
+    { icon: Heart, label: "Saved Items", color: "text-red-500", bg: "bg-red-50" },
+    { icon: Settings, label: "App Settings", color: "text-purple-500", bg: "bg-purple-50" },
+  ].map((item, idx) => {
+    
+    const content = (
+      <div className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0 group">
+        <div className="flex items-center gap-3">
+          <div className={`w-10 h-10 ${item.bg} rounded-xl flex items-center justify-center`}>
+            <item.icon size={18} className={item.color} />
           </div>
-          
-          {[
-            { icon: User, label: "Personal Information", color: "text-blue-500", bg: "bg-blue-50" },
-            { icon: ShoppingBag, label: "Order History", color: "text-green-500", bg: "bg-green-50" },
-            { icon: Heart, label: "Saved Items", color: "text-red-500", bg: "bg-red-50" },
-            { icon: Settings, label: "App Settings", color: "text-purple-500", bg: "bg-purple-50" },
-          ].map((item, idx) => (
-            <button
-              key={idx}
-              className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0 group"
-            >
-              <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 ${item.bg} rounded-xl flex items-center justify-center`}>
-                  <item.icon size={18} className={item.color} />
-                </div>
-                <span className="text-gray-700 group-hover:text-orange-500 transition">{item.label}</span>
-              </div>
-              <ChevronRight size={18} className="text-gray-400 group-hover:text-orange-500 transition" />
-            </button>
-          ))}
+          <span className="text-gray-700 group-hover:text-orange-500 transition">
+            {item.label}
+          </span>
         </div>
+        <ChevronRight size={18} className="text-gray-400 group-hover:text-orange-500 transition" />
+      </div>
+    );
+
+    return item.path ? (
+      <Link to={item.path} key={idx}>
+        {content}
+      </Link>
+    ) : (
+      <button key={idx} className="w-full text-left">
+        {content}
+      </button>
+    );
+  })}
+</div>
+
+        {/* Games Section */}
+<div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-6">
+  <div className="p-4 border-b border-gray-100">
+    <h3 className="font-semibold text-gray-800">🎮 Games</h3>
+  </div>
+
+  {[
+    { name: "Tic Tac Toe", path: "/tictactoe" },
+    { name: "Ludo", path: "/ludo" },
+    { name: "Car Race", path: "/car" },
+    { name: "Cake Tower", path: "/cake" },
+    { name: "Fruit Ninja Pro", path: "/ninja" },
+    { name: "Shooting Game", path: "/shoot" },
+  ].map((game, idx) => (
+    <Link
+      key={idx}
+      to={game.path}
+      className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0 group"
+    >
+      <span className="text-gray-700 group-hover:text-orange-500 transition">
+        {game.name}
+      </span>
+      <ChevronRight size={18} className="text-gray-400 group-hover:text-orange-500 transition" />
+    </Link>
+  ))}
+</div>
 
         {/* Logout Button */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-20">
           <button
             onClick={() => setShowLogoutConfirm(true)}
             className="w-full flex items-center gap-3 p-4 hover:bg-red-50 transition-colors group"
