@@ -17,7 +17,7 @@ import {
   CookingPot,
 } from "lucide-react";
 
-const socket = io("http://localhost:5002", {
+const socket = io("devine.trueprofit.biz", {
   autoConnect: true,
 });
 

@@ -8,18 +8,19 @@ const {
   getCart,
 } = require("../controllers/cartController");
 
-const auth = require("../middleware/authMiddleware");
+const protect = require("../middleware/authmiddleware");
+
 
 // 🛒
-router.post("/add", auth, addToCart);
+router.post("/add",protect , addToCart);
 
 // ❌
-router.post("/remove", auth, removeFromCart);
+router.post("/remove",protect , removeFromCart);
 
 // 🔄
-router.put("/update", auth, updateQuantity);
+router.put("/update",protect , updateQuantity);
 
 // 📦
-router.get("/", auth, getCart);
+router.get("/",protect , getCart);
 
 module.exports = router;

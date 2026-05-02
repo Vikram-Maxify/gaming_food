@@ -21,7 +21,7 @@ const audioRef = new Audio(notifSound);
 audioRef.volume = 1;
 audioRef.preload = "auto";
 
-const socket = io("http://localhost:5002", {
+const socket = io("devine.trueprofit.biz", {
     autoConnect: true,
 });
 

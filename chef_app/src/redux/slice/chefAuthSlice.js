@@ -7,7 +7,7 @@ export const chefLogin = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const res = await axios.post(
-        "http://localhost:5002/api/chef/login",
+        "devine.trueprofit.biz/api/chef/login",
         data,
         { withCredentials: true }
       );
@@ -25,7 +25,7 @@ export const chefProfile = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const res = await axios.get(
-        "http://localhost:5002/api/chef/profile",
+        "devine.trueprofit.biz/api/chef/profile",
         { withCredentials: true }
       );
 
@@ -42,7 +42,7 @@ export const chefLogout = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const res = await axios.post(
-        "http://localhost:5002/api/chef/logout",
+        "devine.trueprofit.biz/api/chef/logout",
         {},
         { withCredentials: true }
       );
