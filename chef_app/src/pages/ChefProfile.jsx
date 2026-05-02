@@ -83,6 +83,13 @@ const ChefProfile = () => {
                     </div>
 
                     <div className="flex justify-between items-center">
+                        <span className="text-textSecondary text-sm">Credit</span>
+                        <span className="text-textPrimary font-medium">
+                            {chef.credit?.name || chef.credit}
+                        </span>
+                    </div>
+
+                    <div className="flex justify-between items-center">
                         <span className="text-textSecondary text-sm">Joined</span>
                         <span className="text-textPrimary font-medium">
                             {new Date(chef.createdAt).toLocaleDateString()}
