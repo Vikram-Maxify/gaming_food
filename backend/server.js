@@ -54,6 +54,7 @@ app.use("/api/notification", require("./route/userNotificationRoutes"));
 app.use("/api/promo", require("./route/userPromoRoutes"));
 app.use("/api/chef", require("./route/chefRoutes"));
 app.use("/api/chef/item-preparation", require("./adminroute/itemPreparationRoutes"));
+app.use("/api/favorite", require("./route/favoriteRoutes"));
 
 // Admin
 app.use("/api/admin", require("./adminroute/adminRoutes"));
