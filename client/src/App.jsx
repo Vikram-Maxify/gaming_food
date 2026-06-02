@@ -48,7 +48,7 @@ function App() {
           {/*Profile page routes */}
 
           <Route path="/orders" element={<OrderHistory />} />
-        
+
           {/* Games */}
 
           <Route path='/tictactoe' element={<TicTacToe />} />
@@ -68,7 +68,7 @@ function App() {
 
 
       </Routes>
-      <OrderStatusBanner /> 
+      <OrderStatusBanner />
       <TabStyle1 />
 
     </>

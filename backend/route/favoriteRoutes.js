@@ -6,12 +6,12 @@ const {
   getFavorites,
 } = require("../controllers/favoriteController");
 
-const { isAuthenticated } = require("../middleware/auth");
+const protect = require("../middleware/authmiddleware");
 
 // Add/Remove
-router.post("/toggle", isAuthenticated, toggleFavorite);
+router.post("/toggle", protect, toggleFavorite);
 
 // Get all
-router.get("/", isAuthenticated, getFavorites);
+router.get("/", protect, getFavorites);
 
 module.exports = router;
