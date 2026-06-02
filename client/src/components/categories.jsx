@@ -75,9 +75,9 @@ const Categories = () => {
                                 className="group relative min-w-[85px] cursor-pointer pt-4"
                             >
                                 <div className="relative bg-white rounded-2xl p-3 flex flex-col items-center 
-                                shadow-sm hover:shadow-xl transition-all duration-300 
+                                shadow-sm hover:shadow-sm transition-all duration-300 
                                 border border-gray-100 hover:border-orange-200
-                                hover:-translate-y-1">
+                                hover:-translate-y-0.5">
 
                                     {/* IMAGE */}
                                     <div className="relative mb-2">
@@ -86,7 +86,7 @@ const Categories = () => {
                                             alt={cat.name}
                                             className="w-14 h-14 object-cover rounded-full 
                                ring-2 ring-gray-100 group-hover:ring-orange-300 
-                               transition-all duration-300 group-hover:scale-110"
+                               transition-all duration-300 group-hover:scale-[1.02]"
                                         />
                                     </div>
 

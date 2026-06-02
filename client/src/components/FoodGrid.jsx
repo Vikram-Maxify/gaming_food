@@ -58,44 +58,81 @@ export default function PopularFood() {
       {loading ? (
         <div className="text-center py-10">Loading...</div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 px-4 ">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-3 md:gap-8 px-2 md:px-10">
           {popularFoods?.map((item) => {
             const price = item.variants?.[0]?.price;
 
             return (
               <div
                 key={item._id}
-                className="group bg-white rounded-xl overflow-hidden shadow hover:shadow-2xl cursor-pointer  hover:-translate-y-2 border transition-all duration-300 border-gray-100"
+                className="group relative bg-white rounded-2xl overflow-hidden border border-zinc-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-500 ease-out cursor-pointer"
                 onClick={() => handleOpen(item)}
               >
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="h-32 w-full object-cover rounded-t-xl transition-transform duration-500 group-hover:scale-105"
-                />
 
-                <div className="p-3">
-                  <h3 className="font-semibold text-sm">{item.name}</h3>
+                {/* IMAGE SECTION */}
+                <div className="relative w-full h-40 md:h-56 overflow-hidden bg-zinc-100">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
+                  />
 
-                  <div className="flex justify-between items-center mt-2">
-                    <span className="text-orange-500 font-bold">
-                      ₹{price}
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                  {/* Rating Badge */}
+                  <div className="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-sm px-2 py-0.5 rounded-lg text-[11px] font-bold text-zinc-800 flex items-center gap-0.5 shadow-sm">
+                    <Star size={11} className="text-amber-500 fill-amber-500" />
+                    <span>{item.rating || "4.2"}</span>
+                  </div>
+                </div>
+
+                {/* CONTENT SECTION */}
+                <div className="p-3 flex flex-col gap-2">
+
+                  {/* TAG */}
+                  <div className="flex items-center gap-1">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
+                    <span className="text-[10px] uppercase tracking-wider font-semibold text-zinc-400">
+                      Must Try
                     </span>
+                  </div>
+
+                  {/* NAME */}
+                  <h3 className="font-semibold text-zinc-800 text-sm leading-snug line-clamp-2 group-hover:text-orange-600 transition-colors duration-200">
+                    {item.name}
+                  </h3>
+
+                  {/* PRICE + BUTTON */}
+                  <div className="flex justify-between items-center border-t border-zinc-50">
+
+                    <div className="flex items-center gap-2">
+
+
+                      {/* Discounted Price */}
+                      <span className="text-base font-extrabold text-zinc-900 tracking-tight">
+                        ₹{price}
+                      </span>
+
+
+                      {/* Original Price (cut) */}
+                      <span className="text-xs text-zinc-400 line-through font-medium">
+                        ₹{Math.round(price * 1.2)}
+                      </span>
+
+
+                    </div>
 
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         handleOpen(item);
                       }}
-                      className="bg-orange-500 text-white p-1 rounded-full"
+                      className="bg-orange-50 text-orange-600 hover:bg-orange-500 hover:text-white px-3.5 py-1.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow-sm hover:shadow-md transition-all duration-200 flex items-center gap-1 active:scale-95 border border-orange-100 hover:border-orange-500"
                     >
-                      <Plus size={14} />
+                      <span>Add</span>
+                      <Plus size={12} strokeWidth={3} />
                     </button>
-                  </div>
-
-                  <div className="text-xs text-gray-400 mt-1 flex items-center gap-1">
-                    <Star size={12} className="text-yellow-500" />
-                    {item.rating || 4}
                   </div>
                 </div>
               </div>
@@ -164,8 +201,8 @@ export default function PopularFood() {
                       key={i}
                       onClick={() => setSelectedVariantIndex(i)}
                       className={`px-4 py-2 rounded-full text-sm font-medium border ${selectedVariantIndex === i
-                          ? "bg-orange-500 text-white border-orange-500"
-                          : "border-gray-200 text-gray-700"
+                        ? "bg-orange-500 text-white border-orange-500"
+                        : "border-gray-200 text-gray-700"
                         }`}
                     >
                       {v.name} • ₹{v.price}

@@ -6,9 +6,10 @@ import { MdRestaurant, MdDeliveryDining, MdSecurity } from "react-icons/md";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { BsCreditCard } from "react-icons/bs";
 
+
 const Footer = () => {
     const currentYear = new Date().getFullYear();
-    
+
     // 🔥 Get settings from Redux (same as Navbar)
     const { settings } = useSelector((state) => state.settings);
 
@@ -17,7 +18,7 @@ const Footer = () => {
             {/* Animated Background Elements */}
             <div className="absolute top-0 left-0 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl animate-pulse"></div>
             <div className="absolute bottom-0 right-0 w-96 h-96 bg-orange-600/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
-            
+
             <div className="max-w-7xl mx-auto px-4 relative z-10">
                 {/* Main Footer Content - Desktop */}
                 <div className="hidden md:block">
@@ -25,22 +26,24 @@ const Footer = () => {
                     <div className="text-center md:text-left mb-12">
                         <div className="flex items-center justify-center md:justify-start gap-3 mb-4">
                             {/* Logo - Same as Navbar */}
-                            {settings?.logo ? (
-                                <img
-                                    src={settings.logo}
-                                    alt={settings.title}
-                                    className="w-12 h-12 object-contain rounded-xl"
-                                />
-                            ) : (
-                                <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
-                                    <MdRestaurant className="text-white text-2xl" />
-                                </div>
-                            )}
-                            
-                            {/* Title - Same as Navbar */}
-                            <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-                                {settings?.title || "Foodzzy"}
-                            </h1>
+                            <Link to="/">
+                                {settings?.logo ? (
+                                    <img
+                                        src={settings.logo}
+                                        alt={settings.title}
+                                        className="w-12 h-12 object-contain rounded-xl"
+                                    />
+                                ) : (
+                                    <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
+                                        <MdRestaurant className="text-white text-2xl" />
+                                    </div>
+                                )}
+
+                                {/* Title - Same as Navbar */}
+                                <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+                                    {settings?.title || "Foodzzy"}
+                                </h1>
+                            </Link>
                         </div>
                         <p className="text-gray-400 max-w-md">
                             Delivering happiness to your doorstep. Order your favorite food from the best restaurants in town.
@@ -98,7 +101,7 @@ const Footer = () => {
                                 Connect With Us
                                 <div className="absolute -bottom-2 left-0 w-8 h-0.5 bg-orange-500 rounded-full"></div>
                             </h3>
-                            
+
                             {/* Social Icons */}
                             <div className="flex gap-3 mb-6">
                                 <Link to="#" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center text-gray-400 hover:bg-orange-500 hover:text-white transition-all duration-300 hover:scale-110">
@@ -151,7 +154,7 @@ const Footer = () => {
                                     <MdRestaurant className="text-white text-xl" />
                                 </div>
                             )}
-                            
+
                             {/* Title - Same as Navbar */}
                             <h1 className="text-2xl font-bold text-white">
                                 {settings?.title || "Foodzzy"}
@@ -212,24 +215,24 @@ const Footer = () => {
                 <div className="border-t border-gray-800 pt-6 mt-6">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                         <div className="flex gap-4 text-sm">
-                            <img 
-                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Amex_logo.svg/1200px-Amex_logo.svg.png" 
-                                alt="amex" 
+                            <img
+                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Amex_logo.svg/1200px-Amex_logo.svg.png"
+                                alt="amex"
                                 className="h-6 w-auto brightness-0 invert opacity-50 hover:opacity-100 transition-opacity"
                             />
-                            <img 
-                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/1200px-Visa_Inc._logo.svg.png" 
-                                alt="visa" 
+                            <img
+                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/1200px-Visa_Inc._logo.svg.png"
+                                alt="visa"
                                 className="h-6 w-auto brightness-0 invert opacity-50 hover:opacity-100 transition-opacity"
                             />
-                            <img 
-                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1200px-Mastercard-logo.svg.png" 
-                                alt="mastercard" 
+                            <img
+                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1200px-Mastercard-logo.svg.png"
+                                alt="mastercard"
                                 className="h-6 w-auto brightness-0 invert opacity-50 hover:opacity-100 transition-opacity"
                             />
-                            <img 
-                                src="https://upload.wikimedia.org/wikipedia/en/thumb/4/44/PayPal_logo.svg/1200px-PayPal_logo.svg.png" 
-                                alt="paypal" 
+                            <img
+                                src="https://upload.wikimedia.org/wikipedia/en/thumb/4/44/PayPal_logo.svg/1200px-PayPal_logo.svg.png"
+                                alt="paypal"
                                 className="h-6 w-auto brightness-0 invert opacity-50 hover:opacity-100 transition-opacity"
                             />
                         </div>
